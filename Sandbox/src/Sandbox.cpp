@@ -5,7 +5,7 @@ class Sandbox : public gbc::Application
 public:
 	Sandbox()
 	{
-
+		
 	}
 
 	~Sandbox()

@@ -20,8 +20,11 @@ namespace gbc
 	{
 		GBC_CORE_TRACE(e);
 
-		EventDispatcher dispatcher(e);
-		dispatcher.dispatch<WindowClosedEvent>(GBC_BIND_FUNC(Application::onWindowClosedEvent));
+		if (!layerStack.onEvent(e))
+		{
+			EventDispatcher dispatcher(e);
+			dispatcher.dispatch<WindowClosedEvent>(GBC_BIND_FUNC(Application::onWindowClosedEvent));
+		}
 	}
 
 	bool Application::onWindowClosedEvent(WindowClosedEvent &e)
@@ -37,7 +40,19 @@ namespace gbc
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
+			layerStack.onUpdate();
+			
 			window->onUpdate();
 		}
+	}
+
+	void Application::pushLayer(Layer *layer)
+	{
+		layerStack.pushLayer(layer);
+	}
+
+	void Application::pushOverlay(Layer *overlay)
+	{
+		layerStack.pushOverlay(overlay);
 	}
 }

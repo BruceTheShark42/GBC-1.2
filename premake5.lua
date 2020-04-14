@@ -59,14 +59,17 @@ project "GBC"
 
 	filter "configurations:Debug"
 		defines "GBC_DEBUG"
+		buildoptions "/MDd"
 		symbols "on"
 
 	filter "configurations:Release"
 		defines "GBC_RELEASE"
+		buildoptions "/MD"
 		optimize "on"
 
 	filter "configurations:Dist"
 		defines "GBC_DIST"
+		buildoptions "/MD"
 		optimize "on"
 
 project "Sandbox"
@@ -102,12 +105,15 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "GBC_DEBUG"
+		buildoptions "/MDd"
 		symbols "on"
 
 	filter "configurations:Release"
 		defines "GBC_RELEASE"
+		buildoptions "/MD"
 		optimize "on"
 
 	filter "configurations:Dist"
 		defines "GBC_DIST"
+		buildoptions "/MD"
 		optimize "on"

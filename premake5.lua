@@ -9,6 +9,13 @@ workspace "GBC 1.2"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+includedir = {}
+includedir["GLFW"] = "GBC/vendor/GLFW/include"
+
+group "Dependencies"
+	include "GBC/vendor/GLFW"
+group ""
+
 project "GBC"
 	location "GBC"
 	kind "SharedLib"
@@ -28,8 +35,14 @@ project "GBC"
 	}
 
 	includedirs {
+		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
-		"%{prj.name}/src"
+		"%{includedir.GLFW}"
+	}
+
+	links {
+		"GLFW",
+		"opengl32.lib"
 	}
 
 	filter "system:windows"

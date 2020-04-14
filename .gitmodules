@@ -1,3 +1,6 @@
 [submodule "GBC/vendor/spdlog"]
 	path = GBC/vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "GBC/vendor/GLFW"]
+	path = GBC/vendor/GLFW
+	url = https://github.com/TheCherno/GLFW

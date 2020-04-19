@@ -4,3 +4,6 @@
 [submodule "GBC/vendor/GLFW"]
 	path = GBC/vendor/GLFW
 	url = https://github.com/TheCherno/GLFW
+[submodule "GBC/vendor/ImGui"]
+	path = GBC/vendor/ImGui
+	url = https://github.com/TheCherno/imgui

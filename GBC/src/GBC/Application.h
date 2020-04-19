@@ -20,12 +20,17 @@ namespace gbc
 		
 		void pushLayer(Layer *layer);
 		void pushOverlay(Layer *overlay);
+
+		inline static Application& getInstance() { return *instance; }
+		inline Window& getWindow() const { return *window; }
 	private:
 		std::unique_ptr<Window> window;
 		
 		LayerStack layerStack;
 
 		bool running;
+
+		static Application *instance;
 	};
 
 	Application* createApplication();

@@ -4,6 +4,7 @@
 #include "GBC/Events/KeyEvent.h"
 #include "GBC/Events/MouseEvent.h"
 #include "GBC/Events/WindowEvent.h"
+#include <glad/glad.h>
 
 namespace gbc
 {
@@ -64,6 +65,8 @@ namespace gbc
 		GBC_CORE_ASSERT(window != nullptr, "Unable to create window!");
 
 		glfwMakeContextCurrent(window);
+		int success = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		GBC_CORE_ASSERT(success, "Couldn't initialize Glad!");
 		glfwSetWindowUserPointer(window, &data);
 
 		glfwSetWindowPos(window, data.x, data.y);

@@ -2,6 +2,7 @@
 #include "GBC/Application.h"
 #include "GBC/Log.h"
 #include "GBC/Layers/Layer.h"
+#include "GBC/ImGui/ImGuiLayer.h"
 
 // Entry Point
 #include "GBC/entryPoint.h"

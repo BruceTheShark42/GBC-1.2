@@ -11,9 +11,13 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 includedir = {}
 includedir["GLFW"] = "GBC/vendor/GLFW/include"
+includedir["Glad"] = "GBC/vendor/Glad/include"
+includedir["ImGui"] = "GBC/vendor/ImGui"
 
 group "Dependencies"
 	include "GBC/vendor/GLFW"
+	include "GBC/vendor/Glad"
+	include "GBC/vendor/ImGui"
 group ""
 
 project "GBC"
@@ -21,7 +25,7 @@ project "GBC"
 	kind "SharedLib"
 	language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
+	staticruntime "off"
 	
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -37,11 +41,15 @@ project "GBC"
 	includedirs {
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
-		"%{includedir.GLFW}"
+		"%{includedir.GLFW}",
+		"%{includedir.Glad}",
+		"%{includedir.ImGui}"
 	}
 
 	links {
 		"GLFW",
+		"Glad",
+		"ImGui",
 		"opengl32.lib"
 	}
 
@@ -50,26 +58,27 @@ project "GBC"
 
 		defines {
 			"GBC_PLATFORM_WINDOWS",
-			"GBC_BUILD_DLL"
+			"GBC_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
 		}
 
 		postbuildcommands {
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
+			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox\"")
 		}
 
 	filter "configurations:Debug"
 		defines "GBC_DEBUG"
-		buildoptions "/MDd"
+		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
 		defines "GBC_RELEASE"
-		buildoptions "/MD"
+		runtime "Release"
 		optimize "on"
 
 	filter "configurations:Dist"
 		defines "GBC_DIST"
-		buildoptions "/MD"
+		runtime "Release"
 		optimize "on"
 
 project "Sandbox"
@@ -77,7 +86,7 @@ project "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
+	staticruntime "off"
 	
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -105,15 +114,15 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "GBC_DEBUG"
-		buildoptions "/MDd"
+		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
 		defines "GBC_RELEASE"
-		buildoptions "/MD"
+		runtime "Release"
 		optimize "on"
 
 	filter "configurations:Dist"
 		defines "GBC_DIST"
-		buildoptions "/MD"
+		runtime "Release"
 		optimize "on"

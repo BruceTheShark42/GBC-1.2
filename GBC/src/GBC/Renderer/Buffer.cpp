@@ -9,8 +9,8 @@ namespace gbc
 	{
 		switch (Renderer::getAPI())
 		{
-			case RendererAPI::None: GBC_CORE_ASSERT(false, "Must have a renderer API!"); return nullptr;
-			case RendererAPI::OpenGL: return new OpenGLVertexBuffer(vertices, size);
+		case RendererAPI::API::None: GBC_CORE_ASSERT(false, "Must have a renderer API!"); return nullptr;
+			case RendererAPI::API::OpenGL: return new OpenGLVertexBuffer(vertices, size);
 		}
 		GBC_CORE_ASSERT(false, "Unknown renderer API!");
 		return nullptr;
@@ -20,8 +20,8 @@ namespace gbc
 	{
 		switch (Renderer::getAPI())
 		{
-			case RendererAPI::None: GBC_CORE_ASSERT(false, "Must have a renderer API!"); return nullptr;
-			case RendererAPI::OpenGL: return new OpenGLIndexBuffer(indices, size);
+			case RendererAPI::API::None: GBC_CORE_ASSERT(false, "Must have a renderer API!"); return nullptr;
+			case RendererAPI::API::OpenGL: return new OpenGLIndexBuffer(indices, size);
 		}
 		GBC_CORE_ASSERT(false, "Unknown renderer API!");
 		return nullptr;

@@ -1,6 +1,6 @@
 #include "gbcpch.h"
 #include "Application.h"
-#include <glad/glad.h>
+#include "GBC/Renderer/Renderer.h"
 
 namespace gbc
 {
@@ -102,12 +102,13 @@ namespace gbc
 	{
 		while (running)
 		{
-			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
+			RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
+			RenderCommand::clear();
 
+			Renderer::beginScene();
 			shader->bind();
-			vao->bind();
-			glDrawElements(GL_TRIANGLES, vao->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::submit(vao);
+			Renderer::endScene();
 
 			layerStack.onUpdate();
 

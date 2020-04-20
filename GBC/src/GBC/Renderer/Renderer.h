@@ -1,17 +1,17 @@
 #pragma once
 
+#include "RenderCommand.h"
+
 namespace gbc
 {
-	enum class RendererAPI
-	{
-		None, OpenGL
-	};
-
 	class Renderer
 	{
 	public:
-		inline static RendererAPI getAPI() { return api; }
-	private:
-		static RendererAPI api;
+		static void beginScene();
+		static void endScene();
+
+		static void submit(const std::shared_ptr<VertexArray> &vertexArray);
+
+		inline static RendererAPI::API getAPI() { return RendererAPI::getAPI(); }
 	};
 }

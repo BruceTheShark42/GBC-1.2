@@ -13,6 +13,6 @@ namespace gbc
 		void bind() const;
 		void unbind() const;
 	protected:
-		unsigned int programID;
+		unsigned int rendererID;
 	};
 }

@@ -70,29 +70,29 @@ namespace gbc
 		// Vertex and fragment shaders are successfully compiled.
 		// Now time to link them together into a program.
 		// Get a program object.
-		programID = glCreateProgram();
+		rendererID = glCreateProgram();
 
 		// Attach our shaders to our program
-		glAttachShader(programID, vertexShader);
-		glAttachShader(programID, fragmentShader);
+		glAttachShader(rendererID, vertexShader);
+		glAttachShader(rendererID, fragmentShader);
 
 		// Link our program
-		glLinkProgram(programID);
+		glLinkProgram(rendererID);
 
 		// Note the different functions here: glGetProgram* instead of glGetShader*.
 		GLint isLinked = 0;
-		glGetProgramiv(programID, GL_LINK_STATUS, (int*)&isLinked);
+		glGetProgramiv(rendererID, GL_LINK_STATUS, (int*)&isLinked);
 		if (isLinked == GL_FALSE)
 		{
 			GLint maxLength = 0;
-			glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &maxLength);
+			glGetProgramiv(rendererID, GL_INFO_LOG_LENGTH, &maxLength);
 
 			// The maxLength includes the NULL character
 			std::vector<GLchar> infoLog(maxLength);
-			glGetProgramInfoLog(programID, maxLength, &maxLength, &infoLog[0]);
+			glGetProgramInfoLog(rendererID, maxLength, &maxLength, &infoLog[0]);
 
 			// We don't need the program anymore.
-			glDeleteProgram(programID);
+			glDeleteProgram(rendererID);
 			// Don't leak shaders either.
 			glDeleteShader(vertexShader);
 			glDeleteShader(fragmentShader);
@@ -102,18 +102,18 @@ namespace gbc
 		}
 
 		// Always detach shaders after a successful link.
-		glDetachShader(programID, vertexShader);
-		glDetachShader(programID, fragmentShader);
+		glDetachShader(rendererID, vertexShader);
+		glDetachShader(rendererID, fragmentShader);
 	}
 
 	Shader::~Shader()
 	{
-		glDeleteProgram(programID);
+		glDeleteProgram(rendererID);
 	}
 
 	void Shader::bind() const
 	{
-		glUseProgram(programID);
+		glUseProgram(rendererID);
 	}
 
 	void Shader::unbind() const

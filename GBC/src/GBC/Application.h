@@ -6,6 +6,8 @@
 #include "Layers/LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
 #include "GBC/Renderer/Shader.h"
+#include "GBC/Renderer/Buffer.h"
+#include "GBC/Renderer/VertexArray.h"
 
 namespace gbc
 {
@@ -31,8 +33,8 @@ namespace gbc
 		ImGuiLayer *imguiLayer;
 #endif
 
-		unsigned int vao, vbo, ibo;
-		std::unique_ptr<Shader> shader;
+		std::shared_ptr<VertexArray> vao;
+		std::shared_ptr<Shader> shader;
 
 		LayerStack layerStack;
 

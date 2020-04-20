@@ -4,10 +4,11 @@
 #include "Window.h"
 #include "Events/WindowEvent.h"
 #include "Layers/LayerStack.h"
+#include "ImGui/ImGuiLayer.h"
 
 namespace gbc
 {
-	class GBC_API Application
+	class Application
 	{
 	public:
 		Application();
@@ -25,11 +26,13 @@ namespace gbc
 		inline Window& getWindow() const { return *window; }
 	private:
 		std::unique_ptr<Window> window;
-		
+#ifdef GBC_ENABLE_IMGUI
+		ImGuiLayer *imguiLayer;
+#endif
+
 		LayerStack layerStack;
 
 		bool running;
-
 		static Application *instance;
 	};
 

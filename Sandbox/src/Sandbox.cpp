@@ -1,11 +1,27 @@
 #include <gbc.h>
+#include <ImGui/imgui.h>
+
+class TestLayer : public gbc::Layer
+{
+	void onImGuiRender() // override // depending on the configuration, this might break
+	{
+		ImGui::Begin("Test Window");
+		ImGui::Text("This is text!");
+		ImGui::End();
+	}
+};
 
 class Sandbox : public gbc::Application
 {
 public:
 	Sandbox()
 	{
-		pushOverlay(new gbc::ImGuiLayer());
+		pushOverlay(new TestLayer());
+	}
+
+	~Sandbox()
+	{
+
 	}
 };
 

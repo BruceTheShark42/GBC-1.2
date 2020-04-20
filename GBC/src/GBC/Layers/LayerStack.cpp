@@ -61,4 +61,12 @@ namespace gbc
 		}
 		return false;
 	}
+
+#ifdef GBC_ENABLE_IMGUI
+	void LayerStack::onImGuiRender()
+	{
+		for (Layer *layer : layers)
+			layer->onImGuiRender();
+	}
+#endif
 }

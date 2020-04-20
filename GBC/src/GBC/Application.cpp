@@ -14,11 +14,16 @@ namespace gbc
 
 		window = std::unique_ptr<Window>(Window::create());
 		window->setEventCallback(GBC_BIND_FUNC(Application::onEvent));
+
+#ifdef GBC_ENABLE_IMGUI
+		imguiLayer = new ImGuiLayer();
+		layerStack.pushOverlay(imguiLayer);
+#endif
 	}
 
 	Application::~Application()
 	{
-
+		
 	}
 
 	void Application::onEvent(Event &e)
@@ -46,7 +51,13 @@ namespace gbc
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			layerStack.onUpdate();
-			
+
+#ifdef GBC_ENABLE_IMGUI
+			imguiLayer->begin();
+			layerStack.onImGuiRender();
+			imguiLayer->end();
+#endif
+
 			window->onUpdate();
 		}
 	}

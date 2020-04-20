@@ -5,7 +5,7 @@
 
 namespace gbc
 {
-	class GBC_API WindowsInput : public Input
+	class WindowsInput : public Input
 	{
 	public:
 		virtual bool isKeyPressedImpl(int keyCode) override;

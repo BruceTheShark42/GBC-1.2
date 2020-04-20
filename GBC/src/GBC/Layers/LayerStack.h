@@ -5,7 +5,7 @@
 
 namespace gbc
 {
-	class GBC_API LayerStack
+	class LayerStack
 	{
 	public:
 		LayerStack();
@@ -18,6 +18,9 @@ namespace gbc
 
 		void onUpdate();
 		bool onEvent(Event &e);
+#ifdef GBC_ENABLE_IMGUI
+		void onImGuiRender();
+#endif
 
 		std::vector<Layer*>::iterator begin() { return layers.begin(); }
 		std::vector<Layer*>::iterator end() { return layers.end(); }

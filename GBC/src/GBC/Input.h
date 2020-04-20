@@ -5,7 +5,7 @@
 
 namespace gbc
 {
-	class GBC_API Input
+	class Input
 	{
 	public:
 		inline static bool isKeyPressed(int keyCode) { return instance->isKeyPressedImpl(keyCode); }

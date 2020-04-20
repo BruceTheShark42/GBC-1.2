@@ -5,7 +5,7 @@
 
 namespace gbc
 {
-	class GBC_API Layer
+	class Layer
 	{
 	public:
 		Layer(bool enabled = true)
@@ -16,6 +16,9 @@ namespace gbc
 		virtual void onDetach() {}
 		virtual void onUpdate() {}
 		virtual void onEvent(Event &e) {}
+#ifdef GBC_ENABLE_IMGUI
+		virtual void onImGuiRender() {}
+#endif
 
 		const inline bool isEnabled() const { return enabled; }
 		const inline void setEnabled(bool enabled) { this->enabled = enabled; }

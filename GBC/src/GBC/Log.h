@@ -6,7 +6,7 @@
 
 namespace gbc
 {
-	class GBC_API Log
+	class Log
 	{
 	public:
 		static void init();

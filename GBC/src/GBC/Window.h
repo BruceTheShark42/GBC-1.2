@@ -20,7 +20,7 @@ namespace gbc
 			vsync(vsync), cursorEnabled(cursorEnabled) {}
 	};
 
-	class GBC_API Window
+	class Window
 	{
 	public:
 		using EventCallbackFunc = std::function<void(Event&)>;

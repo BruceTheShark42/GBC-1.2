@@ -1,15 +1,15 @@
 #ifdef GBC_PLATFORM_WINDOWS
-	#ifdef GBC_BUILD_DLL
-		#define	GBC_API __declspec(dllexport)
-	#else
-		#define GBC_API __declspec(dllimport)
-	#endif
+	
 #else
 	#error GBC currently only supports Windows!
 #endif
 
 #ifdef GBC_DEBUG
 	#define GBC_ENABLE_ASSERTS
+#endif
+
+#ifndef GBC_DIST
+	#define GBC_ENABLE_IMGUI
 #endif
 
 #ifdef GBC_ENABLE_ASSERTS

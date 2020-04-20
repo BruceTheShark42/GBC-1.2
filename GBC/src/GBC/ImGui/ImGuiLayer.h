@@ -1,20 +1,19 @@
 #pragma once
 
+#ifdef GBC_ENABLE_IMGUI
 #include "GBC/Layers/Layer.h"
 
 namespace gbc
 {
-	class GBC_API ImGuiLayer : public Layer
+	class ImGuiLayer : public Layer
 	{
 	public:
-		ImGuiLayer();
-		~ImGuiLayer();
-
 		virtual void onAttach() override;
 		virtual void onDetach() override;
-		virtual void onUpdate() override;
-		virtual void onEvent(Event &e) override;
-	private:
-		float time;
+		virtual void onImGuiRender() override;
+
+		void begin();
+		void end();
 	};
 }
+#endif

@@ -4,7 +4,7 @@
 #include "GBC/Events/KeyEvent.h"
 #include "GBC/Events/MouseEvent.h"
 #include "GBC/Events/WindowEvent.h"
-#include <glad/glad.h>
+#include "Platform/OpenGL/OpenGLContext.h"
 
 namespace gbc
 {
@@ -64,11 +64,10 @@ namespace gbc
 
 		GBC_CORE_ASSERT(window != nullptr, "Unable to create window!");
 
-		glfwMakeContextCurrent(window);
-		int success = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		GBC_CORE_ASSERT(success, "Couldn't initialize Glad!");
-		glfwSetWindowUserPointer(window, &data);
+		context = new OpenGLContext(window);
+		context->init();
 
+		glfwSetWindowUserPointer(window, &data);
 		glfwSetWindowPos(window, data.x, data.y);
 		glfwSetWindowUserPointer(window, &data);
 		setVSync(props.vsync);
@@ -181,7 +180,7 @@ namespace gbc
 	void WindowsWindow::onUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(window);
+		context->swapBuffers();
 	}
 
 	void WindowsWindow::setFullscreen(bool enabled)

@@ -2,6 +2,7 @@
 
 #include "GBC/Window.h"
 #include <GLFW/glfw3.h>
+#include "GBC/Renderer/GraphicsContext.h"
 
 namespace gbc
 {
@@ -32,6 +33,7 @@ namespace gbc
 		GLFWwindow *window;
 		GLFWmonitor *monitor;
 		const GLFWvidmode *videoMode;
+		GraphicsContext *context;
 
 		struct WindowData
 		{

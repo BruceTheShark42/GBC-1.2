@@ -1,7 +1,6 @@
 #include "gbcpch.h"
 #include "Application.h"
 #include <glad/glad.h>
-#include "Input.h"
 
 namespace gbc
 {
@@ -48,9 +47,6 @@ namespace gbc
 
 			layerStack.onUpdate();
 			
-			auto [x, y] = Input::getMousePos();
-			GBC_CORE_INFO("({0}, {1})", x, y);
-
 			window->onUpdate();
 		}
 	}

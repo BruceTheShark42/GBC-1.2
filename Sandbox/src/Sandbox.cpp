@@ -5,12 +5,7 @@ class Sandbox : public gbc::Application
 public:
 	Sandbox()
 	{
-		pushLayer(new gbc::ImGuiLayer());
-	}
-
-	~Sandbox()
-	{
-
+		pushOverlay(new gbc::ImGuiLayer());
 	}
 };
 

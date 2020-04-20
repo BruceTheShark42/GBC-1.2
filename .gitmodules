@@ -7,3 +7,6 @@
 [submodule "GBC/vendor/ImGui"]
 	path = GBC/vendor/ImGui
 	url = https://github.com/TheCherno/imgui
+[submodule "GBC/vendor/glm"]
+	path = GBC/vendor/glm
+	url = https://github.com/g-truc/glm

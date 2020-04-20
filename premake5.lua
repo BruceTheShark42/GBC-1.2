@@ -13,6 +13,7 @@ includedir = {}
 includedir["GLFW"] = "GBC/vendor/GLFW/include"
 includedir["Glad"] = "GBC/vendor/Glad/include"
 includedir["ImGui"] = "GBC/vendor/ImGui"
+includedir["glm"] = "GBC/vendor/glm"
 
 group "Dependencies"
 	include "GBC/vendor/GLFW"
@@ -35,7 +36,9 @@ project "GBC"
 
 	files {
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/glm/glm/**.hpp",
+		"%{prj.name}/vendor/glm/glm/**.inl"
 	}
 
 	includedirs {
@@ -43,7 +46,8 @@ project "GBC"
 		"%{prj.name}/vendor/spdlog/include",
 		"%{includedir.GLFW}",
 		"%{includedir.Glad}",
-		"%{includedir.ImGui}"
+		"%{includedir.ImGui}",
+		"%{includedir.glm}"
 	}
 
 	links {
@@ -98,7 +102,8 @@ project "Sandbox"
 
 	includedirs {
 		"GBC/vendor/spdlog/include",
-		"GBC/src"
+		"GBC/src",
+		"%{includedir.glm}"
 	}
 
 	links {

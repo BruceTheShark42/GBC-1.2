@@ -5,6 +5,7 @@
 #include "Events/WindowEvent.h"
 #include "Layers/LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
+#include "GBC/Renderer/Shader.h"
 
 namespace gbc
 {
@@ -29,6 +30,9 @@ namespace gbc
 #ifdef GBC_ENABLE_IMGUI
 		ImGuiLayer *imguiLayer;
 #endif
+
+		unsigned int vao, vbo, ibo;
+		std::unique_ptr<Shader> shader;
 
 		LayerStack layerStack;
 

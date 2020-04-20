@@ -16,6 +16,11 @@ namespace gbc
 		glfwMakeContextCurrent(window);
 		int success = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		GBC_CORE_ASSERT(success, "Couldn't initialize Glad!");
+
+		GBC_CORE_INFO("OpenGL:");
+		GBC_CORE_INFO(" - Vendor={0}", glGetString(GL_VENDOR));
+		GBC_CORE_INFO(" - Renderer={0}", glGetString(GL_RENDERER));
+		GBC_CORE_INFO(" - Version={0}", glGetString(GL_VERSION));
 	}
 
 	void OpenGLContext::swapBuffers()

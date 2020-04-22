@@ -26,7 +26,7 @@ namespace gbc
 		inline static Application& getInstance() { return *instance; }
 		inline Window& getWindow() const { return *window; }
 	private:
-		std::unique_ptr<Window> window;
+		Scope<Window> window;
 		LayerStack layerStack;
 #ifdef GBC_ENABLE_IMGUI
 		ImGuiLayer *imguiLayer;

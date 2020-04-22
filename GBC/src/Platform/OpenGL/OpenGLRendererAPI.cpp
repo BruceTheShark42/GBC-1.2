@@ -14,7 +14,7 @@ namespace gbc
 		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
-	void OpenGLRendererAPI::drawIndexed(const std::shared_ptr<VertexArray> &vertexArray)
+	void OpenGLRendererAPI::drawIndexed(const Ref<VertexArray> &vertexArray)
 	{
 		glDrawElements(GL_TRIANGLES, vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 	}

@@ -45,7 +45,7 @@ namespace gbc
 		glBindVertexArray(0);
 	}
 
-	void OpenGLVertexArray::addVertexBuffer(const std::shared_ptr<VertexBuffer> &vertexBuffer)
+	void OpenGLVertexArray::addVertexBuffer(const Ref<VertexBuffer> &vertexBuffer)
 	{
 		GBC_CORE_ASSERT(vertexBuffer->getLayout().getElements().size() != 0, "Vertex buffer has no layout!");
 
@@ -63,7 +63,7 @@ namespace gbc
 		}
 	}
 
-	void OpenGLVertexArray::setIndexBuffer(const std::shared_ptr<IndexBuffer> &indexBuffer)
+	void OpenGLVertexArray::setIndexBuffer(const Ref<IndexBuffer> &indexBuffer)
 	{
 		glBindVertexArray(rendererID);
 		indexBuffer->bind();

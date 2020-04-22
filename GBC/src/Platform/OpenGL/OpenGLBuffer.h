@@ -14,7 +14,7 @@ namespace gbc
 		virtual void unbind() const override;
 
 		inline virtual const BufferLayout& getLayout() const override { return layout; }
-		inline virtual void setLayout(const BufferLayout& layout) override { this->layout = layout; }
+		inline virtual void setLayout(const BufferLayout &layout) override { this->layout = layout; }
 	private:
 		unsigned int rendererID;
 		BufferLayout layout;

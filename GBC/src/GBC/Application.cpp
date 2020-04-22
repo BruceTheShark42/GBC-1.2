@@ -12,7 +12,7 @@ namespace gbc
 		GBC_CORE_ASSERT(instance == nullptr, "Attempted to recreate Application!");
 		instance = this;
 
-		window = std::unique_ptr<Window>(Window::create());
+		window = Scope<Window>(Window::create());
 		window->setEventCallback(GBC_BIND_FUNC(Application::onEvent));
 
 #ifdef GBC_ENABLE_IMGUI

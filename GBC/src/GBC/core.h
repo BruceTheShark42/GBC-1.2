@@ -1,3 +1,7 @@
+#pragma once
+
+#include <memory>
+
 #ifdef GBC_PLATFORM_WINDOWS
 	
 #else
@@ -23,3 +27,12 @@
 #define BIT(b) (1 << b)
 
 #define GBC_BIND_FUNC(func) std::bind(&func, this, std::placeholders::_1)
+
+namespace gbc
+{
+	template<typename T>
+	using Ref = std::shared_ptr<T>;
+
+	template<typename T>
+	using Scope = std::unique_ptr<T>;
+}

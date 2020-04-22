@@ -14,6 +14,7 @@ includedir["GLFW"] = "GBC/vendor/GLFW/include"
 includedir["Glad"] = "GBC/vendor/Glad/include"
 includedir["ImGui"] = "GBC/vendor/ImGui"
 includedir["glm"] = "GBC/vendor/glm"
+includedir["stb_image"] = "GBC/vendor/stb_image"
 
 group "Dependencies"
 	include "GBC/vendor/GLFW"
@@ -37,6 +38,8 @@ project "GBC"
 	files {
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/stb_image/**.h",
+		"%{prj.name}/vendor/stb_image/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl"
 	}
@@ -51,7 +54,8 @@ project "GBC"
 		"%{includedir.GLFW}",
 		"%{includedir.Glad}",
 		"%{includedir.ImGui}",
-		"%{includedir.glm}"
+		"%{includedir.glm}",
+		"%{includedir.stb_image}"
 	}
 
 	links {

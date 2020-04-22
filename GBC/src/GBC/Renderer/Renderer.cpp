@@ -6,6 +6,11 @@ namespace gbc
 {
 	Renderer::SceneData *Renderer::sceneData = new Renderer::SceneData();
 
+	void Renderer::init()
+	{
+		RenderCommand::init();
+	}
+
 	void Renderer::beginScene(const OrthographicCamera &camera)
 	{
 		sceneData->projectionView = camera.getProjectionView();

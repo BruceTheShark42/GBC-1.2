@@ -20,6 +20,7 @@
 #include "GBC/Renderer/Buffer.h"
 #include "GBC/Renderer/VertexArray.h"
 #include "GBC/Renderer/Shader.h"
+#include "GBC/Renderer/Texture.h"
 #include "GBC/Renderer/Camera.h"
 
 // Entry Point

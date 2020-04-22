@@ -1,6 +1,7 @@
 #include "gbcpch.h"
 #include "Application.h"
 #include <GLFW/glfw3.h>
+#include "Renderer/Renderer.h"
 
 namespace gbc
 {
@@ -14,6 +15,8 @@ namespace gbc
 
 		window = Scope<Window>(Window::create());
 		window->setEventCallback(GBC_BIND_FUNC(Application::onEvent));
+
+		Renderer::init();
 
 #ifdef GBC_ENABLE_IMGUI
 		imguiLayer = new ImGuiLayer();

@@ -1,12 +1,13 @@
 #include "gbcpch.h"
 #include "Application.h"
+#include <GLFW/glfw3.h>
 
 namespace gbc
 {
 	Application *Application::instance = nullptr;
 
 	Application::Application()
-		: running(true)
+		: running(true), lastFrameTime(0.0f)
 	{
 		GBC_CORE_ASSERT(instance == nullptr, "Attempted to recreate Application!");
 		instance = this;
@@ -46,7 +47,11 @@ namespace gbc
 	{
 		while (running)
 		{
-			layerStack.onUpdate();
+			float time = (float)glfwGetTime();
+			TimeStep ts = time - lastFrameTime;
+			lastFrameTime = time;
+
+			layerStack.onUpdate(ts);
 
 #ifdef GBC_ENABLE_IMGUI
 			imguiLayer->begin();

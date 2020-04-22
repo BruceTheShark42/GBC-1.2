@@ -63,24 +63,24 @@ public:
 		)"));
 	}
 
-	void onUpdate() override
+	void onUpdate(gbc::TimeStep ts) override
 	{
 		gbc::RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 		gbc::RenderCommand::clear();
 
 		if (gbc::Input::isKeyPressed(GBC_KEY_W))
-			cameraPos.y += cameraSpeed;
+			cameraPos.y += cameraSpeed * ts;
 		if (gbc::Input::isKeyPressed(GBC_KEY_S))
-			cameraPos.y -= cameraSpeed;
+			cameraPos.y -= cameraSpeed * ts;
 		if (gbc::Input::isKeyPressed(GBC_KEY_A))
-			cameraPos.x -= cameraSpeed;
+			cameraPos.x -= cameraSpeed * ts;
 		if (gbc::Input::isKeyPressed(GBC_KEY_D))
-			cameraPos.x += cameraSpeed;
+			cameraPos.x += cameraSpeed * ts;
 
 		if (gbc::Input::isKeyPressed(GBC_KEY_LEFT))
-			cameraRotation += cameraRotSpeed;
+			cameraRotation += cameraRotSpeed * ts.seconds();
 		if (gbc::Input::isKeyPressed(GBC_KEY_RIGHT))
-			cameraRotation -= cameraRotSpeed;
+			cameraRotation -= cameraRotSpeed * ts.seconds();
 
 		camera.setPosition(cameraPos);
 		camera.setRotation(cameraRotation);
@@ -110,7 +110,7 @@ private:
 	gbc::OrthographicCamera camera;
 	glm::vec3 cameraPos;
 	float cameraRotation;
-	float cameraSpeed = 0.01f, cameraRotSpeed = 1.0f;
+	float cameraSpeed = 1.0f, cameraRotSpeed = 180.0f;
 };
 
 class Sandbox : public gbc::Application
@@ -130,7 +130,7 @@ public:
 /*
  * Trello: https://trello.com/b/DaO3KVu2/gbc-12
  * GitHub: https://github.com/BruceTheShark42/GBC-1.2
- * Cherno: https://www.youtube.com/watch?v=NjKv-HWstxA&list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT&index=35 22:07
+ * Cherno: https://www.youtube.com/watch?v=cbB2fh0UxZ0&list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT&index=38 9:14
  * JSABMS: https://www.youtube.com/watch?v=EzMyMbtLfbQ&list=PLydwAuTBfPJX0dn9OrrHpH0F3hjmPRuXe&index=69
  */
 

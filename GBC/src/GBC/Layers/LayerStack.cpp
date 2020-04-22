@@ -45,10 +45,10 @@ namespace gbc
 		}
 	}
 
-	void LayerStack::onUpdate()
+	void LayerStack::onUpdate(TimeStep ts)
 	{
 		for (Layer *layer : layers)
-			layer->onUpdate();
+			layer->onUpdate(ts);
 	}
 
 	bool LayerStack::onEvent(Event &e)

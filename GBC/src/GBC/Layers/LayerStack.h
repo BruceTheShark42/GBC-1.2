@@ -2,6 +2,7 @@
 
 #include "GBC/core.h"
 #include "Layer.h"
+#include "GBC/Core/TimeStep.h"
 
 namespace gbc
 {
@@ -16,7 +17,7 @@ namespace gbc
 		void popLayer(Layer *layer);
 		void popOverlay(Layer *overlay);
 
-		void onUpdate();
+		void onUpdate(TimeStep ts);
 		bool onEvent(Event &e);
 #ifdef GBC_ENABLE_IMGUI
 		void onImGuiRender();

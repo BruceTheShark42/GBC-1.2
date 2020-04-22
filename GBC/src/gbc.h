@@ -2,6 +2,8 @@
 #include "GBC/Application.h"
 #include "GBC/Log.h"
 
+#include "GBC/Core/TimeStep.h"
+
 #include "GBC/Events/KeyEvent.h"
 #include "GBC/Events/MouseEvent.h"
 #include "GBC/Events/WindowEvent.h"

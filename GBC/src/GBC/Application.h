@@ -5,6 +5,7 @@
 #include "Events/WindowEvent.h"
 #include "Layers/LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
+#include "GBC/Core/TimeStep.h"
 
 namespace gbc
 {
@@ -31,6 +32,7 @@ namespace gbc
 		ImGuiLayer *imguiLayer;
 #endif
 
+		float lastFrameTime;
 		bool running;
 		static Application *instance;
 	};

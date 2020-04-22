@@ -2,6 +2,7 @@
 
 #include "GBC/core.h"
 #include "GBC/Events/Event.h"
+#include "GBC/Core/TimeStep.h"
 
 namespace gbc
 {
@@ -14,7 +15,7 @@ namespace gbc
 
 		virtual void onAttach() {}
 		virtual void onDetach() {}
-		virtual void onUpdate() {}
+		virtual void onUpdate(TimeStep ts) {}
 		virtual void onEvent(Event &e) {}
 #ifdef GBC_ENABLE_IMGUI
 		virtual void onImGuiRender() {}

@@ -1,13 +1,14 @@
 #pragma once
 
 #include "RenderCommand.h"
+#include "Camera.h"
 
 namespace gbc
 {
 	class Renderer
 	{
 	public:
-		static void beginScene();
+		static void beginScene(const OrthographicCamera &camera);
 		static void endScene();
 
 		static void submit(const std::shared_ptr<VertexArray> &vertexArray);

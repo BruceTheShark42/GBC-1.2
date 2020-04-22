@@ -5,9 +5,6 @@
 #include "Events/WindowEvent.h"
 #include "Layers/LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
-#include "GBC/Renderer/Shader.h"
-#include "GBC/Renderer/Buffer.h"
-#include "GBC/Renderer/VertexArray.h"
 
 namespace gbc
 {
@@ -29,14 +26,10 @@ namespace gbc
 		inline Window& getWindow() const { return *window; }
 	private:
 		std::unique_ptr<Window> window;
+		LayerStack layerStack;
 #ifdef GBC_ENABLE_IMGUI
 		ImGuiLayer *imguiLayer;
 #endif
-
-		std::shared_ptr<VertexArray> vao;
-		std::shared_ptr<Shader> shader;
-
-		LayerStack layerStack;
 
 		bool running;
 		static Application *instance;

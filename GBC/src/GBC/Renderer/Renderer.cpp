@@ -3,7 +3,7 @@
 
 namespace gbc
 {
-	void Renderer::beginScene()
+	void Renderer::beginScene(const OrthographicCamera &camera)
 	{
 
 	}

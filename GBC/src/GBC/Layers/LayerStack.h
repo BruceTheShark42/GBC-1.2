@@ -1,8 +1,8 @@
 #pragma once
 
-#include "GBC/core.h"
-#include "Layer.h"
+#include "GBC/Core/core.h"
 #include "GBC/Core/TimeStep.h"
+#include "Layer.h"
 
 namespace gbc
 {

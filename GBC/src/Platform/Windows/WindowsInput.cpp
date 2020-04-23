@@ -1,9 +1,9 @@
 #pragma once
 
 #include "gbcpch.h"
-#include "Platform/Windows/WindowsInput.h"
+#include "WindowsInput.h"
 #include <GLFW/glfw3.h>
-#include "GBC/Application.h"
+#include "GBC/Core/Application.h"
 
 namespace gbc
 {

@@ -1,7 +1,7 @@
 #include "gbcpch.h"
 #include "OrthographicCameraController.h"
-#include "GBC/Input.h"
-#include "GBC/keyCodes.h"
+#include "GBC/Core/Input.h"
+#include "GBC/Core/keyCodes.h"
 
 namespace gbc
 {

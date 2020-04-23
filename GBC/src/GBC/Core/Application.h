@@ -2,10 +2,10 @@
 
 #include "core.h"
 #include "Window.h"
-#include "Events/WindowEvent.h"
-#include "Layers/LayerStack.h"
-#include "ImGui/ImGuiLayer.h"
-#include "GBC/Core/TimeStep.h"
+#include "TimeStep.h"
+#include "GBC/Events/WindowEvent.h"
+#include "GBC/Layers/LayerStack.h"
+#include "GBC/ImGui/ImGuiLayer.h"
 
 namespace gbc
 {

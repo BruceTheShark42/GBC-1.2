@@ -1,8 +1,8 @@
 #pragma once
 
-#include "GBC/core.h"
-#include "GBC/Events/Event.h"
+#include "GBC/Core/core.h"
 #include "GBC/Core/TimeStep.h"
+#include "GBC/Events/Event.h"
 
 namespace gbc
 {

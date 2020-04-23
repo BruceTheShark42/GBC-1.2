@@ -1,7 +1,7 @@
 #pragma once
 
-#include "GBC/core.h"
-#include "GBC/Input.h"
+#include "GBC/Core/core.h"
+#include "GBC/Core/Input.h"
 
 namespace gbc
 {

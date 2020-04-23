@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <cmath>
+#include <array>
 #include <fstream>
 #include <iostream>
 #include <functional>
@@ -14,7 +15,7 @@
 #include <unordered_map>
 #include <array>
 
-#include "GBC/Log.h"
+#include "GBC/Core/Log.h"
 
 #ifdef GBC_PLATFORM_WINDOWS
 	#include <Windows.h>

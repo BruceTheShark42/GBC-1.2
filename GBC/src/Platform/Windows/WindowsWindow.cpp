@@ -1,6 +1,6 @@
 #include "gbcpch.h"
 #include "WindowsWindow.h"
-#include "GBC/core.h"
+#include "GBC/Core/core.h"
 #include "GBC/Events/KeyEvent.h"
 #include "GBC/Events/MouseEvent.h"
 #include "GBC/Events/WindowEvent.h"

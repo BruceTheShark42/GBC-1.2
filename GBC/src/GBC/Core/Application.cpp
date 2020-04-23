@@ -1,7 +1,7 @@
 #include "gbcpch.h"
 #include "Application.h"
+#include "GBC/Renderer/Renderer.h"
 #include <GLFW/glfw3.h>
-#include "Renderer/Renderer.h"
 
 namespace gbc
 {

@@ -109,7 +109,7 @@ public:
 /*
  * Trello: https://trello.com/b/DaO3KVu2/gbc-12
  * GitHub: https://github.com/BruceTheShark42/GBC-1.2
- * Cherno: https://www.youtube.com/watch?v=8wFEzIYRZXg&list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT&index=44
+ * Cherno: https://www.youtube.com/watch?v=sEiZZ2APlDs&list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT&index=50
  * JSABMS: https://www.youtube.com/watch?v=EzMyMbtLfbQ&list=PLydwAuTBfPJX0dn9OrrHpH0F3hjmPRuXe&index=69
  */
 

@@ -18,7 +18,7 @@ namespace gbc
 #ifdef GBC_DEBUG
 		std::string path;
 #endif
-		unsigned int width, height, channels;
+		unsigned int width, height;
 		unsigned int rendererID;
 	};
 }

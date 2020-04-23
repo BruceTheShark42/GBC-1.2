@@ -1,7 +1,7 @@
 #pragma once
 
 #include "gbcpch.h"
-#include "GBC/core.h"
+#include "GBC/Core/core.h"
 
 namespace gbc
 {

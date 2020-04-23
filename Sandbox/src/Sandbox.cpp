@@ -1,8 +1,15 @@
 #include <gbc.h>
-#include <Platform/OpenGL/OpenGLShader.h>
-#include <ImGui/imgui.h>
+#include <GBC/Core/entryPoint.h>
+
+// Includes for TestLayer
+#ifdef GBC_ENABLE_IMGUI
+	#include <ImGui/imgui.h>
+#endif
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+// Sandbox2D
+#include "Sandbox2D.h"
 
 class TestLayer : public gbc::Layer
 {
@@ -38,8 +45,8 @@ public:
 		textureShader = gbc::Shader::create("assets/shaders/Texture.glsl");
 
 		texture = gbc::Texture2D::create("assets/textures/ChernoLogo.png");
-		std::dynamic_pointer_cast<gbc::OpenGLShader>(textureShader)->bind();
-		std::dynamic_pointer_cast<gbc::OpenGLShader>(textureShader)->setUniform("tex", 0);
+		textureShader->bind();
+		textureShader->setInt("tex", 0);
 	}
 
 	void onUpdate(gbc::TimeStep ts) override
@@ -51,8 +58,8 @@ public:
 
 		gbc::Renderer::beginScene(cameraController.getCamera());
 
-		std::dynamic_pointer_cast<gbc::OpenGLShader>(shader)->bind();
-		std::dynamic_pointer_cast<gbc::OpenGLShader>(shader)->setUniform("color", color);
+		shader->bind();
+		shader->setFloat3("color", color);
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 		for (int y = 0; y < 20; ++y)
@@ -76,12 +83,14 @@ public:
 		cameraController.onEvent(e);
 	}
 
-	void onImGuiRender() // override // this breaks in Dist because ImGui is completely stripped from it
+#ifdef GBC_ENABLE_IMGUI
+	void onImGuiRender() override
 	{
 		ImGui::Begin("Settings");
 		ImGui::ColorEdit3("Color", glm::value_ptr(color));
 		ImGui::End();
 	}
+#endif
 private:
 	gbc::Ref<gbc::VertexArray> vao;
 	gbc::Ref<gbc::Shader> shader, textureShader;
@@ -97,7 +106,8 @@ class Sandbox : public gbc::Application
 public:
 	Sandbox()
 	{
-		pushOverlay(new TestLayer());
+		//pushLayer(new TestLayer());
+		pushLayer(new Sandbox2DLayer());
 	}
 
 	~Sandbox()
@@ -109,7 +119,7 @@ public:
 /*
  * Trello: https://trello.com/b/DaO3KVu2/gbc-12
  * GitHub: https://github.com/BruceTheShark42/GBC-1.2
- * Cherno: https://www.youtube.com/watch?v=sEiZZ2APlDs&list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT&index=50
+ * Cherno: https://www.youtube.com/watch?v=-myXuS3t1W4&list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT&index=54
  * JSABMS: https://www.youtube.com/watch?v=EzMyMbtLfbQ&list=PLydwAuTBfPJX0dn9OrrHpH0F3hjmPRuXe&index=69
  */
 

@@ -16,7 +16,7 @@ namespace gbc
 
 	void OrthographicCamera::calculate()
 	{
-		view = glm::inverse(glm::rotate(glm::translate(glm::mat4(1.0f), position), /* dont use degrees */ glm::radians(rotation), { 0.0f, 0.0f, 1.0f }));
+		view = glm::inverse(glm::rotate(glm::translate(glm::mat4(1.0f), position), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }));
 		projectionView = projection * view;
 	}
 }

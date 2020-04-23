@@ -21,7 +21,6 @@
 #include "GBC/Renderer/Shader.h"
 #include "GBC/Renderer/Texture.h"
 
-#include "GBC/OrthographicCameraController.h"
+#include "GBC/Renderer/Renderer2D.h"
 
-// Entry Point
-#include "GBC/Core/entryPoint.h"
+#include "GBC/OrthographicCameraController.h"

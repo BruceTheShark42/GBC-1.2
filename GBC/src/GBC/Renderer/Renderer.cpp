@@ -1,5 +1,6 @@
 #include "gbcpch.h"
 #include "Renderer.h"
+#include "Renderer2D.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 
 namespace gbc
@@ -9,6 +10,7 @@ namespace gbc
 	void Renderer::init()
 	{
 		RenderCommand::init();
+		Renderer2D::init();
 	}
 
 	void Renderer::onWindowResized(unsigned int width, unsigned int height)
@@ -29,8 +31,8 @@ namespace gbc
 	void Renderer::submit(const Ref<VertexArray> &vertexArray, const Ref<Shader> &shader, const glm::mat4 &transform)
 	{
 		shader->bind();
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("projectionView", sceneData->projectionView);
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("transform", transform);
+		shader->setMat4("projectionView", sceneData->projectionView);
+		shader->setMat4("transform", transform);
 
 		vertexArray->bind();
 		RenderCommand::drawIndexed(vertexArray);

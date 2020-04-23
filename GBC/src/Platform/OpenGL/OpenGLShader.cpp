@@ -152,43 +152,43 @@ namespace gbc
 		return glGetUniformLocation(rendererID, name.c_str());
 	}
 
-	void OpenGLShader::setUniform(int location, bool value)
+	void OpenGLShader::setBool(const std::string &name, bool value)
 	{
-		glUniform1i(location, (int)value);
+		glUniform1i(getUniformLocation(name), (int)value);
 	}
 
-	void OpenGLShader::setUniform(int location, int value)
+	void OpenGLShader::setInt(const std::string &name, int value)
 	{
-		glUniform1i(location, value);
+		glUniform1i(getUniformLocation(name), value);
 	}
 
-	void OpenGLShader::setUniform(int location, float value)
+	void OpenGLShader::setFloat(const std::string &name, float value)
 	{
-		glUniform1f(location, value);
+		glUniform1f(getUniformLocation(name), value);
 	}
 
-	void OpenGLShader::setUniform(int location, const glm::vec2 &value)
+	void OpenGLShader::setFloat2(const std::string &name, const glm::vec2 &value)
 	{
-		glUniform2fv(location, 1, glm::value_ptr(value));
+		glUniform2fv(getUniformLocation(name), 1, glm::value_ptr(value));
 	}
 
-	void OpenGLShader::setUniform(int location, const glm::vec3 &value)
+	void OpenGLShader::setFloat3(const std::string &name, const glm::vec3 &value)
 	{
-		glUniform3fv(location, 1, glm::value_ptr(value));
+		glUniform3fv(getUniformLocation(name), 1, glm::value_ptr(value));
 	}
 
-	void OpenGLShader::setUniform(int location, const glm::vec4 &value)
+	void OpenGLShader::setFloat4(const std::string &name, const glm::vec4 &value)
 	{
-		glUniform4fv(location, 1, glm::value_ptr(value));
+		glUniform4fv(getUniformLocation(name), 1, glm::value_ptr(value));
 	}
 
-	void OpenGLShader::setUniform(int location, const glm::mat3 &value)
+	void OpenGLShader::setMat3(const std::string &name, const glm::mat3 &value)
 	{
-		glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
+		glUniformMatrix3fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 	}
 
-	void OpenGLShader::setUniform(int location, const glm::mat4 &value)
+	void OpenGLShader::setMat4(const std::string &name, const glm::mat4 &value)
 	{
-		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+		glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 	}
 }

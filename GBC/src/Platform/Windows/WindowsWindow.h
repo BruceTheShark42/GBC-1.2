@@ -14,8 +14,8 @@ namespace gbc
 
 		void onUpdate() override;
 
-		inline int getWidth() const override { return data.width; }
-		inline int getHeight() const override { return data.height; }
+		inline unsigned int getWidth() const override { return data.width; }
+		inline unsigned int getHeight() const override { return data.height; }
 
 		inline virtual void setEventCallback(const EventCallbackFunc &callback) override { data.callback = callback; };
 
@@ -38,8 +38,8 @@ namespace gbc
 		struct WindowData
 		{
 			std::string title;
-			int x, y, width, height;
-			int pX, pY, pWidth, pHeight;
+			int x, y, pX, pY;
+			unsigned int width, height, pWidth, pHeight;
 			bool resizable, fullscreen, vsync, cursorEnabled;
 			EventCallbackFunc callback;
 		} data;

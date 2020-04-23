@@ -8,7 +8,7 @@ namespace gbc
 	Application *Application::instance = nullptr;
 
 	Application::Application()
-		: running(true), lastFrameTime(0.0f)
+		: running(true), minimized(false), lastFrameTime(0.0f)
 	{
 		GBC_CORE_ASSERT(instance == nullptr, "Attempted to recreate Application!");
 		instance = this;
@@ -36,14 +36,9 @@ namespace gbc
 		if (!layerStack.onEvent(e))
 		{
 			EventDispatcher dispatcher(e);
-			dispatcher.dispatch<WindowClosedEvent>(GBC_BIND_FUNC(Application::onWindowClosedEvent));
+			dispatcher.dispatch<WindowClosedEvent>(GBC_BIND_FUNC(Application::onWindowClosed));
+			dispatcher.dispatch<WindowResizedEvent>(GBC_BIND_FUNC(Application::onWindowResized));
 		}
-	}
-
-	bool Application::onWindowClosedEvent(WindowClosedEvent &e)
-	{
-		running = false;
-		return true;
 	}
 
 	void Application::run()
@@ -54,16 +49,36 @@ namespace gbc
 			TimeStep ts = time - lastFrameTime;
 			lastFrameTime = time;
 
-			layerStack.onUpdate(ts);
+			if (!minimized)
+				layerStack.onUpdate(ts);
 
 #ifdef GBC_ENABLE_IMGUI
-			imguiLayer->begin();
-			layerStack.onImGuiRender();
-			imguiLayer->end();
+				imguiLayer->begin();
+				layerStack.onImGuiRender();
+				imguiLayer->end();
 #endif
 
 			window->onUpdate();
 		}
+	}
+
+	bool Application::onWindowClosed(WindowClosedEvent &e)
+	{
+		running = false;
+		return true;
+	}
+
+	bool Application::onWindowResized(WindowResizedEvent &e)
+	{
+		if (e.getWidth() == 0 || e.getHeight() == 0)
+		{
+			minimized = true;
+			return false;
+		}
+
+		minimized = false;
+		Renderer::onWindowResized(e.getWidth(), e.getHeight());
+		return false;
 	}
 
 	void Application::pushLayer(Layer *layer)

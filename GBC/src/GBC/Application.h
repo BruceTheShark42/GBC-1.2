@@ -18,7 +18,8 @@ namespace gbc
 		void run();
 
 		void onEvent(Event &e);
-		bool onWindowClosedEvent(WindowClosedEvent &e);
+		bool onWindowClosed(WindowClosedEvent &e);
+		bool onWindowResized(WindowResizedEvent &e);
 		
 		void pushLayer(Layer *layer);
 		void pushOverlay(Layer *overlay);
@@ -33,7 +34,7 @@ namespace gbc
 #endif
 
 		float lastFrameTime;
-		bool running;
+		bool running, minimized;
 		static Application *instance;
 	};
 

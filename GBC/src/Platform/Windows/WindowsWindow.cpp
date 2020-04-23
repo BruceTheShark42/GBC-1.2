@@ -44,8 +44,8 @@ namespace gbc
 		monitor = glfwGetPrimaryMonitor();
 		videoMode = glfwGetVideoMode(monitor);
 
-		data.x = (videoMode->width - data.width) / 2;
-		data.y = (videoMode->height - data.height) / 2;
+		data.x = ((unsigned int)videoMode->width - data.width) / 2;
+		data.y = ((unsigned int)videoMode->height - data.height) / 2;
 
 		if (data.fullscreen)
 		{

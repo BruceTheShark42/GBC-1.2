@@ -11,6 +11,11 @@ namespace gbc
 		RenderCommand::init();
 	}
 
+	void Renderer::onWindowResized(unsigned int width, unsigned int height)
+	{
+		RenderCommand::setViewport(0, 0, width, height);
+	}
+
 	void Renderer::beginScene(const OrthographicCamera &camera)
 	{
 		sceneData->projectionView = camera.getProjectionView();

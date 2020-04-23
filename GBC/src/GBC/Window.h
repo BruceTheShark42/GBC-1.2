@@ -8,11 +8,11 @@ namespace gbc
 	struct WindowProps
 	{
 		std::string title;
-		int width, height;
+		unsigned int width, height;
 		bool resizable, fullscreen, vsync, cursorEnabled;
 
 		WindowProps(std::string title = "GBC Engine",
-			int width = 1280, int height = 720,
+			unsigned int width = 1280, unsigned int height = 720,
 			bool resizable = true, bool fullscreen = false,
 			bool vsync = true, bool cursorEnabled = true)
 			: title(title), width(width), height(height),
@@ -29,8 +29,8 @@ namespace gbc
 
 		virtual void onUpdate() = 0;
 
-		virtual int getWidth() const = 0;
-		virtual int getHeight() const = 0;
+		virtual unsigned int getWidth() const = 0;
+		virtual unsigned int getHeight() const = 0;
 
 		virtual void setEventCallback(const EventCallbackFunc &callback) = 0;
 

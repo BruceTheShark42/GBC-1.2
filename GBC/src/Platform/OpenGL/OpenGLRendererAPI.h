@@ -8,6 +8,7 @@ namespace gbc
 	{
 	public:
 		virtual void init() override;
+		virtual void setViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height) override;
 		virtual void clear() override;
 		virtual void setClearColor(const glm::vec4 &color) override;
 

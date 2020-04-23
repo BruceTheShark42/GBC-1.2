@@ -62,8 +62,6 @@ namespace gbc
 			size_t nextLinePos = source.find_first_not_of("\r\n", lineEnd);
 			pos = source.find(typeToken, nextLinePos);
 			sources[type] = source.substr(nextLinePos, pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
-
-			GBC_CORE_TRACE("npos={0} pos={1}", std::string::npos, pos);
 		}
 
 		return sources;

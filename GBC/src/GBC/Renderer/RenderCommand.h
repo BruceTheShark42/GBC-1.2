@@ -11,6 +11,11 @@ namespace gbc
 		{
 			api->init();
 		}
+		
+		inline static void setViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
+		{
+			api->setViewport(x, y, width, height);
+		}
 
 		inline static void clear()
 		{

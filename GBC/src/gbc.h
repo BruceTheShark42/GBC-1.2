@@ -21,7 +21,7 @@
 #include "GBC/Renderer/VertexArray.h"
 #include "GBC/Renderer/Shader.h"
 #include "GBC/Renderer/Texture.h"
-#include "GBC/Renderer/Camera.h"
+#include "GBC/OrthographicCameraController.h"
 
 // Entry Point
 #include "GBC/entryPoint.h"

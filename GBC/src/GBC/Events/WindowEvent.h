@@ -20,12 +20,12 @@ namespace gbc
 	class WindowResizedEvent : public Event
 	{
 	public:
-		WindowResizedEvent(int width, int height)
+		WindowResizedEvent(unsigned int width, unsigned int height)
 			: width(width), height(height) {}
 		EVENT_CATEGORY(EventCategoryWindow)
 		EVENT_TYPE(WindowResized)
-		inline int getWidth() const { return width; }
-		inline int getHeight() const { return height; }
+		inline unsigned int getWidth() const { return width; }
+		inline unsigned int getHeight() const { return height; }
 #ifdef GBC_DEBUG
 		std::string toString() const override
 		{
@@ -35,7 +35,7 @@ namespace gbc
 		}
 #endif
 	private:
-		int width, height;
+		unsigned int width, height;
 	};
 
 	class WindowMovedEvent : public Event

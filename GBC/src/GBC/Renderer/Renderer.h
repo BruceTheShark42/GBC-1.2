@@ -10,6 +10,7 @@ namespace gbc
 	{
 	public:
 		static void init();
+		static void onWindowResized(unsigned int width, unsigned int height);
 
 		static void beginScene(const OrthographicCamera &camera);
 		static void endScene();

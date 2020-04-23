@@ -13,6 +13,8 @@ namespace gbc
 		virtual unsigned int getWidth() const = 0;
 		virtual unsigned int getHeight() const = 0;
 
+		virtual void setData(void *data, unsigned int size) = 0;
+
 		virtual void bind(unsigned int slot = 0) const = 0;
 	};
 
@@ -20,5 +22,6 @@ namespace gbc
 	{
 	public:
 		static Ref<Texture2D> create(const std::string &path);
+		static Ref<Texture2D> create(unsigned int width, unsigned int height);
 	};
 }

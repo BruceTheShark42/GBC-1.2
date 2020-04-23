@@ -10,7 +10,7 @@ namespace gbc
 		switch (Renderer::getAPI())
 		{
 			case RendererAPI::API::None: GBC_CORE_ASSERT(false, "Must have a renderer API!"); return nullptr;
-			case RendererAPI::API::OpenGL: return std::make_shared<OpenGLVertexBuffer>(vertices, size);
+			case RendererAPI::API::OpenGL: return createRef<OpenGLVertexBuffer>(vertices, size);
 		}
 		GBC_CORE_ASSERT(false, "Unknown renderer API!");
 		return nullptr;
@@ -21,7 +21,7 @@ namespace gbc
 		switch (Renderer::getAPI())
 		{
 			case RendererAPI::API::None: GBC_CORE_ASSERT(false, "Must have a renderer API!"); return nullptr;
-			case RendererAPI::API::OpenGL: return std::make_shared<OpenGLIndexBuffer>(indices, size);
+			case RendererAPI::API::OpenGL: return createRef<OpenGLIndexBuffer>(indices, size);
 		}
 		GBC_CORE_ASSERT(false, "Unknown renderer API!");
 		return nullptr;

@@ -16,7 +16,7 @@ namespace gbc
 		
 		static void drawQuad(const glm::vec2 &position, float rotation, const glm::vec2 &size, const glm::vec4 &color);
 		static void drawQuad(const glm::vec3 &position, float rotation, const glm::vec2 &size, const glm::vec4 &color);
-		static void drawQuad(const glm::vec2 &position, float rotation, const glm::vec2 &size, const Ref<Texture2D> &texture, const glm::vec4 &tint = glm::vec4(0.0f));
-		static void drawQuad(const glm::vec3 &position, float rotation, const glm::vec2 &size, const Ref<Texture2D> &texture, const glm::vec4 &tint = glm::vec4(0.0f));
+		static void drawQuad(const glm::vec2 &position, float rotation, const glm::vec2 &size, const Ref<Texture2D> &texture, const glm::vec4 &tint = glm::vec4(1.0f));
+		static void drawQuad(const glm::vec3 &position, float rotation, const glm::vec2 &size, const Ref<Texture2D> &texture, const glm::vec4 &tint = glm::vec4(1.0f));
 	};
 }

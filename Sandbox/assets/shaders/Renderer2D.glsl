@@ -23,9 +23,9 @@ in vec2 _texCoord;
 out vec4 outColor;
 
 uniform sampler2D tex;
-uniform vec4 tint;
+uniform vec4 color;
 
 void main()
 {
-	outColor = mix(texture(tex, _texCoord), vec4(tint.xyz, 1.0), tint.w);
+	outColor = texture(tex, _texCoord) * color;
 }

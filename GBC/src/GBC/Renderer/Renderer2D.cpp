@@ -10,13 +10,16 @@ namespace gbc
 	struct Renderer2DStorage
 	{
 		Ref<VertexArray> quadVertexArray;
-		Ref<Shader> quadShader, quadTextureShader;
+		Ref<Shader> quadShader;
+		Ref<Texture2D> whiteTexture;
 	};
 
 	static Renderer2DStorage *data;
 
 	void Renderer2D::init()
 	{
+		GBC_CORE_ASSERT(data == nullptr, "Renderer2D reinitialized!");
+
 		data = new Renderer2DStorage();
 		data->quadVertexArray = VertexArray::create();
 
@@ -42,10 +45,13 @@ namespace gbc
 		Ref<IndexBuffer> ibo = IndexBuffer::create(indices, sizeof(indices) / sizeof(unsigned int));
 		data->quadVertexArray->setIndexBuffer(ibo);
 
-		data->quadShader = Shader::create("assets/shaders/Shader2D.glsl");
-		data->quadTextureShader = Shader::create("assets/shaders/Texture2D.glsl");
-		data->quadTextureShader->bind();
-		data->quadTextureShader->setInt("tex", 0);
+		data->whiteTexture = Texture2D::create(1, 1);
+		unsigned int whiteTextureData = 0xffffffff;
+		data->whiteTexture->setData(&whiteTextureData, sizeof(whiteTextureData));
+
+		data->quadShader = Shader::create("assets/shaders/Renderer2D.glsl");
+		data->quadShader->bind();
+		data->quadShader->setInt("tex", 0);
 	}
 
 	void Renderer2D::shutdown()
@@ -57,8 +63,6 @@ namespace gbc
 	{
 		data->quadShader->bind();
 		data->quadShader->setMat4("projectionView", camera.getProjectionView());
-		data->quadTextureShader->bind();
-		data->quadTextureShader->setMat4("projectionView", camera.getProjectionView());
 	}
 
 	void Renderer2D::endScene()
@@ -73,9 +77,9 @@ namespace gbc
 
 	void Renderer2D::drawQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, const glm::vec4 &color)
 	{
-		data->quadShader->bind();
 		data->quadShader->setFloat4("color", color);
-		
+		data->whiteTexture->bind();
+
 		glm::mat4 transform = glm::scale(glm::rotate(glm::translate(glm::mat4(1.0f), position), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }), glm::vec3(scale, 0.0f));
 		data->quadShader->setMat4("transform", transform);
 
@@ -83,20 +87,18 @@ namespace gbc
 		RenderCommand::drawIndexed(data->quadVertexArray);
 	}
 
-	void Renderer2D::drawQuad(const glm::vec2 &position, float rotation, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec4 &tint)
+	void Renderer2D::drawQuad(const glm::vec2 &position, float rotation, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec4 &color)
 	{
-		drawQuad(glm::vec3(position, 0.0f), rotation, scale, texture, tint);
+		drawQuad(glm::vec3(position, 0.0f), rotation, scale, texture, color);
 	}
 
-	void Renderer2D::drawQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec4 &tint)
+	void Renderer2D::drawQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec4 &color)
 	{
-		data->quadTextureShader->bind();
-		
-		glm::mat4 transform = glm::scale(glm::rotate(glm::translate(glm::mat4(1.0f), position), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }), glm::vec3(scale, 0.0f));
-		data->quadTextureShader->setMat4("transform", transform);
-		data->quadTextureShader->setFloat4("tint", tint);
-
+		data->quadShader->setFloat4("color", color);
 		texture->bind();
+
+		glm::mat4 transform = glm::scale(glm::rotate(glm::translate(glm::mat4(1.0f), position), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }), glm::vec3(scale, 0.0f));
+		data->quadShader->setMat4("transform", transform);
 
 		data->quadVertexArray->bind();
 		RenderCommand::drawIndexed(data->quadVertexArray);

@@ -10,7 +10,18 @@ namespace gbc
 		switch (Renderer::getAPI())
 		{
 			case RendererAPI::API::None: GBC_CORE_ASSERT(false, "Must have a renderer API!"); return nullptr;
-			case RendererAPI::API::OpenGL: return std::make_shared<OpenGLTexture2D>(path);
+			case RendererAPI::API::OpenGL: return createRef<OpenGLTexture2D>(path);
+		}
+		GBC_CORE_ASSERT(false, "Unknown renderer API!");
+		return nullptr;
+	}
+
+	Ref<Texture2D> Texture2D::create(unsigned int width, unsigned int height)
+	{
+		switch (Renderer::getAPI())
+		{
+			case RendererAPI::API::None: GBC_CORE_ASSERT(false, "Must have a renderer API!"); return nullptr;
+			case RendererAPI::API::OpenGL: return createRef<OpenGLTexture2D>(width, height);
 		}
 		GBC_CORE_ASSERT(false, "Unknown renderer API!");
 		return nullptr;

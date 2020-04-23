@@ -10,7 +10,7 @@ namespace gbc
 		switch (Renderer::getAPI())
 		{
 			case RendererAPI::API::None: GBC_CORE_ASSERT(false, "Must have a renderer API!"); return nullptr;
-			case RendererAPI::API::OpenGL: return std::make_shared<OpenGLShader>(path);
+			case RendererAPI::API::OpenGL: return createRef<OpenGLShader>(path);
 		}
 		GBC_CORE_ASSERT(false, "Unknown renderer API!");
 		return nullptr;

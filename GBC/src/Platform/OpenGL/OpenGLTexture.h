@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GBC/Renderer/Texture.h"
+#include <glad/glad.h>
 
 namespace gbc
 {
@@ -8,10 +9,13 @@ namespace gbc
 	{
 	public:
 		OpenGLTexture2D(const std::string &path);
+		OpenGLTexture2D(unsigned int width, unsigned int height);
 		virtual ~OpenGLTexture2D();
 
 		inline virtual unsigned int getWidth() const override { return width; }
 		inline virtual unsigned int getHeight() const override { return height; }
+
+		virtual void setData(void *data, unsigned int size) override;
 
 		virtual void bind(unsigned int slot = 0) const override;
 	private:
@@ -20,5 +24,6 @@ namespace gbc
 #endif
 		unsigned int width, height;
 		unsigned int rendererID;
+		GLenum internalFormat, dataFormat;
 	};
 }

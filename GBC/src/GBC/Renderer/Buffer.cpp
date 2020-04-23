@@ -5,23 +5,23 @@
 
 namespace gbc
 {
-	VertexBuffer* VertexBuffer::create(float *vertices, unsigned int size)
+	Ref<VertexBuffer> VertexBuffer::create(float *vertices, unsigned int size)
 	{
 		switch (Renderer::getAPI())
 		{
-		case RendererAPI::API::None: GBC_CORE_ASSERT(false, "Must have a renderer API!"); return nullptr;
-			case RendererAPI::API::OpenGL: return new OpenGLVertexBuffer(vertices, size);
+			case RendererAPI::API::None: GBC_CORE_ASSERT(false, "Must have a renderer API!"); return nullptr;
+			case RendererAPI::API::OpenGL: return std::make_shared<OpenGLVertexBuffer>(vertices, size);
 		}
 		GBC_CORE_ASSERT(false, "Unknown renderer API!");
 		return nullptr;
 	}
 
-	IndexBuffer* IndexBuffer::create(unsigned int *indices, unsigned int size)
+	Ref<IndexBuffer> IndexBuffer::create(unsigned int *indices, unsigned int size)
 	{
 		switch (Renderer::getAPI())
 		{
 			case RendererAPI::API::None: GBC_CORE_ASSERT(false, "Must have a renderer API!"); return nullptr;
-			case RendererAPI::API::OpenGL: return new OpenGLIndexBuffer(indices, size);
+			case RendererAPI::API::OpenGL: return std::make_shared<OpenGLIndexBuffer>(indices, size);
 		}
 		GBC_CORE_ASSERT(false, "Unknown renderer API!");
 		return nullptr;

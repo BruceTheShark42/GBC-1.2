@@ -10,7 +10,7 @@ public:
 	TestLayer()
 		: cameraPos(0.0f), cameraRotation(0.0f), camera(-1.6f, 1.6f, -0.9f, 0.9f), color(0.870588f, 0.270588f, 0.270588f)
 	{
-		vao.reset(gbc::VertexArray::create());
+		vao = gbc::VertexArray::create();
 
 		float vertices[4 * 5] = {
 			-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 
@@ -20,7 +20,7 @@ public:
 		};
 
 		gbc::Ref<gbc::VertexBuffer> vbo;
-		vbo.reset(gbc::VertexBuffer::create(vertices, sizeof(vertices) / sizeof(float)));
+		vbo = gbc::VertexBuffer::create(vertices, sizeof(vertices) / sizeof(float));
 		vbo->setLayout({
 			{ gbc::ShaderDataType::Float3, "position" },
 			{ gbc::ShaderDataType::Float2, "texCoord" }
@@ -34,70 +34,13 @@ public:
 		};
 
 		gbc::Ref<gbc::IndexBuffer> ibo;
-		ibo.reset(gbc::IndexBuffer::create(indices, sizeof(indices) / sizeof(unsigned int)));
+		ibo = gbc::IndexBuffer::create(indices, sizeof(indices) / sizeof(unsigned int));
 		vao->setIndexBuffer(ibo);
 
-		shader.reset(gbc::Shader::create(R"(
-			#version 460 core
-			
-			layout (location = 0) in vec3 position;
-			layout (location = 1) in vec2 texCoord;
-			
-			uniform mat4 projectionView;
-			uniform mat4 transform;
+		shader = gbc::Shader::create("assets/shaders/Plain.glsl");
+		textureShader = gbc::Shader::create("assets/shaders/Texture.glsl");
 
-			void main()
-			{
-				gl_Position = projectionView * transform * vec4(position, 1.0);
-			}
-		)", R"(
-			#version 460 core
-			
-			out vec4 outColor;
-			
-			uniform vec3 color;
-			
-			void main()
-			{
-				outColor = vec4(color, 1.0);
-			}
-		)"));
-
-		textureShader.reset(gbc::Shader::create(R"(
-			#version 460 core
-			
-			layout (location = 0) in vec3 position;
-			layout (location = 1) in vec2 texCoord;
-			
-			out vec2 _texCoord;
-
-			uniform mat4 projectionView;
-			uniform mat4 transform;
-
-			void main()
-			{
-				gl_Position = projectionView * transform * vec4(position, 1.0);
-				_texCoord = texCoord;
-			}
-		)", R"(
-			#version 460 core
-			
-			in vec2 _texCoord;
-			
-			out vec4 outColor;
-			
-			uniform vec3 color;
-			uniform sampler2D tex;
-			
-			void main()
-			{
-				outColor = texture(tex, _texCoord);
-				//outColor = vec4(_texCoord, 0.0, 1.0);
-			}
-		)"));
-
-		texture = gbc::Texture2D::create("assets/textures/checkerboard.png");
-
+		texture = gbc::Texture2D::create("assets/textures/ChernoLogo.png");
 		std::dynamic_pointer_cast<gbc::OpenGLShader>(textureShader)->bind();
 		std::dynamic_pointer_cast<gbc::OpenGLShader>(textureShader)->setUniform("tex", 0);
 
@@ -171,14 +114,18 @@ public:
 		ImGui::End();
 	}
 private:
+	// Assets
 	gbc::Ref<gbc::VertexArray> vao;
 	gbc::Ref<gbc::Shader> shader, textureShader;
+	gbc::Ref<gbc::Texture2D> texture;
+
+	// Camera
 	gbc::OrthographicCamera camera;
 	glm::vec3 cameraPos;
 	float cameraRotation;
 	float cameraSpeed = 1.0f, cameraRotSpeed = 180.0f;
+
 	glm::vec3 color;
-	gbc::Ref<gbc::Texture2D> texture;
 };
 
 class Sandbox : public gbc::Application

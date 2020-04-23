@@ -3,16 +3,21 @@
 #include "GBC/Renderer/Shader.h"
 #include <glm/glm.hpp>
 
+// TODO: remove
+typedef unsigned int GLenum;
+
 namespace gbc
 {
 	class OpenGLShader : public Shader
 	{
 	public:
-		OpenGLShader(const std::string &vertexSrc, const std::string &fragmentSrc);
+		OpenGLShader(const std::string &path);
 		virtual ~OpenGLShader();
 
 		virtual void bind() const override;
 		virtual void unbind() const override;
+
+		inline virtual std::string getName() const override { return name; }
 
 		// TODO: TEMPORARY
 		inline void setUniform(const std::string &name, bool value) { setUniform(getUniformLocation(name), value); }
@@ -35,6 +40,11 @@ namespace gbc
 		void setUniform(int location, const glm::mat3 &value);
 		void setUniform(int location, const glm::mat4 &value);
 
+		std::string readFile(const std::string &path);
+		std::unordered_map<GLenum, std::string> preProcess(const std::string &source);
+		void compile(const std::unordered_map<GLenum, std::string> &shaderSources);
+
 		unsigned int rendererID;
+		std::string name;
 	};
 }

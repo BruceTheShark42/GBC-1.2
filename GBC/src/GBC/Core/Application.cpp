@@ -13,7 +13,7 @@ namespace gbc
 		GBC_CORE_ASSERT(instance == nullptr, "Attempted to recreate Application!");
 		instance = this;
 
-		window = Scope<Window>(Window::create());
+		window = Window::create();
 		window->setEventCallback(GBC_BIND_FUNC(Application::onEvent));
 
 		Renderer::init();
@@ -53,9 +53,9 @@ namespace gbc
 				layerStack.onUpdate(ts);
 
 #ifdef GBC_ENABLE_IMGUI
-				imguiLayer->begin();
-				layerStack.onImGuiRender();
-				imguiLayer->end();
+			imguiLayer->begin();
+			layerStack.onImGuiRender();
+			imguiLayer->end();
 #endif
 
 			window->onUpdate();

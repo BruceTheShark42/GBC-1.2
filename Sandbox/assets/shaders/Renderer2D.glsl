@@ -23,9 +23,10 @@ in vec2 _texCoord;
 out vec4 outColor;
 
 uniform sampler2D tex;
+uniform float tilingFactor;
 uniform vec4 color;
 
 void main()
 {
-	outColor = texture(tex, _texCoord) * color;
+	outColor = texture(tex, _texCoord * tilingFactor) * color;
 }

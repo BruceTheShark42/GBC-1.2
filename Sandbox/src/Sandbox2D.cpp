@@ -32,8 +32,8 @@ void Sandbox2DLayer::onUpdate(gbc::TimeStep ts)
 	gbc::RenderCommand::clear();
 
 	gbc::Renderer2D::beginScene(cameraController.getCamera());
-	gbc::Renderer2D::drawQuad({ -0.5f, -0.5f, 0.0f }, 0.0f, { 1.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
-	gbc::Renderer2D::drawQuad(position, rotation, scale, texture, color);
+	gbc::Renderer2D::drawQuad({ 0.0f, 0.0f, -0.1f }, 0.0f, { 8.0f, 8.0f }, texture, 8.0f, { 0.5f, 0.7f, 0.8f, 1.0f });
+	gbc::Renderer2D::drawQuad(position, rotation, scale, color);
 	gbc::Renderer2D::endScene();
 }
 

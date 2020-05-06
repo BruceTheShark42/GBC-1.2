@@ -10,10 +10,18 @@
 
 #ifdef GBC_DEBUG
 	#define GBC_ENABLE_ASSERTS
+	#define GBC_ENABLE_LOGGING
+	#define GBC_ENABLE_IMGUI
+	#define GBC_ENABLE_STATS
 #endif
 
-#ifndef GBC_DIST
+#ifdef GBC_RELEASE
 	#define GBC_ENABLE_IMGUI
+	#define GBC_ENABLE_STATS
+#endif
+
+#ifdef GBC_DIST
+
 #endif
 
 #ifdef GBC_ENABLE_ASSERTS

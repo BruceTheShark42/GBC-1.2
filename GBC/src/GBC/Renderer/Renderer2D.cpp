@@ -17,9 +17,9 @@ namespace gbc
 
 	struct Renderer2DData
 	{
-		const unsigned int MAX_QUADS = 10000;
-		const unsigned int MAX_VERTICES = MAX_QUADS * 4;
-		const unsigned int MAX_INDICES = MAX_QUADS * 6;
+		static const unsigned int MAX_QUADS = 10000;
+		static const unsigned int MAX_VERTICES = MAX_QUADS * 4;
+		static const unsigned int MAX_INDICES = MAX_QUADS * 6;
 		// TODO: query driver (currently in OpenGLContext.cpp)
 		static const unsigned int MAX_TEXTURES = 32;
 
@@ -36,6 +36,10 @@ namespace gbc
 		unsigned int textureSlotIndex = 1;
 
 		glm::vec4 quadVertexPositions[4];
+
+#ifdef GBC_ENABLE_STATS
+		Renderer2D::Statistics stats;
+#endif
 	};
 
 	static Renderer2DData data;
@@ -89,6 +93,10 @@ namespace gbc
 		data.quadVertexPositions[1] = {  0.5f, -0.5f, 0.0f, 1.0f };
 		data.quadVertexPositions[2] = {  0.5f,  0.5f, 0.0f, 1.0f };
 		data.quadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
+
+#ifdef GBC_ENABLE_STATS
+		resetStats();
+#endif
 	}
 
 	void Renderer2D::shutdown()
@@ -100,10 +108,9 @@ namespace gbc
 	{
 		data.quadShader->bind();
 		data.quadShader->setMat4("projectionView", camera.getProjectionView());
-
+		
 		data.quadIndexCount = 0;
 		data.quadBufferPtr = data.quadBufferBase;
-
 		data.textureSlotIndex = 1;
 	}
 
@@ -121,7 +128,38 @@ namespace gbc
 			data.textureSlots[i]->bind(i);
 
 		RenderCommand::drawIndexed(data.quadVertexArray, data.quadIndexCount);
+
+#ifdef GBC_ENABLE_STATS
+		++data.stats.drawCalls;
+#endif
 	}
+
+	void Renderer2D::ensureBatch()
+	{
+		if (data.quadIndexCount >= Renderer2DData::MAX_INDICES || data.textureSlotIndex == Renderer2DData::MAX_TEXTURES)
+		{
+			endScene();
+
+			data.quadIndexCount = 0;
+			data.quadBufferPtr = data.quadBufferBase;
+			data.textureSlotIndex = 1;
+		}
+	}
+
+	// Stats
+#ifdef GBC_ENABLE_STATS
+
+	const Renderer2D::Statistics& Renderer2D::getStats()
+	{
+		return data.stats;
+	}
+
+	void Renderer2D::resetStats()
+	{
+		data.stats.drawCalls = 0;
+		data.stats.quadCount = 0;
+	}
+#endif
 
 	// drawQuad stuff
 
@@ -156,6 +194,8 @@ namespace gbc
 
 	void Renderer2D::createQuad(const glm::vec3 &position, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color)
 	{
+		ensureBatch();
+
 		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
 		const glm::mat4 transform = glm::translate(glm::mat4(1.0f), position);
 
@@ -169,6 +209,10 @@ namespace gbc
 		}
 
 		data.quadIndexCount += 6;
+
+#ifdef GBC_ENABLE_STATS
+		++data.stats.quadCount;
+#endif
 	}
 
 	// Rotated non-scaled quad
@@ -202,6 +246,8 @@ namespace gbc
 
 	void Renderer2D::createQuad(const glm::vec3 &position, float rotation, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color)
 	{
+		ensureBatch();
+
 		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
 		const glm::mat4 transform = glm::rotate(glm::translate(glm::mat4(1.0f), position), rotation, { 0.0f, 0.0f, 1.0f });
 
@@ -215,6 +261,10 @@ namespace gbc
 		}
 
 		data.quadIndexCount += 6;
+
+#ifdef GBC_ENABLE_STATS
+		++data.stats.quadCount;
+#endif
 	}
 
 	// Non-rotated scaled quad
@@ -248,6 +298,8 @@ namespace gbc
 
 	void Renderer2D::createQuad(const glm::vec3 &position, const glm::vec2 &scale, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color)
 	{
+		ensureBatch();
+
 		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
 		const glm::mat4 transform = glm::scale(glm::translate(glm::mat4(1.0f), position), { scale, 1.0f });
 
@@ -261,6 +313,10 @@ namespace gbc
 		}
 
 		data.quadIndexCount += 6;
+
+#ifdef GBC_ENABLE_STATS
+		++data.stats.quadCount;
+#endif
 	}
 
 	// Rotated scaled quad
@@ -294,6 +350,8 @@ namespace gbc
 
 	void Renderer2D::createQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color)
 	{
+		ensureBatch();
+
 		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
 		const glm::mat4 transform = glm::scale(glm::rotate(glm::translate(glm::mat4(1.0f), position), rotation, { 0.0f, 0.0f, 1.0f }), { scale, 1.0f });
 
@@ -307,5 +365,9 @@ namespace gbc
 		}
 
 		data.quadIndexCount += 6;
+
+#ifdef GBC_ENABLE_STATS
+		++data.stats.quadCount;
+#endif
 	}
 }

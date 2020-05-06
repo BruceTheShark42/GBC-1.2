@@ -14,6 +14,23 @@ namespace gbc
 		static void beginScene(const OrthographicCamera &camera);
 		static void endScene();
 		static void flush();
+	private:
+		static void ensureBatch();
+		
+		// Stats
+#ifdef GBC_ENABLE_STATS
+	public:
+		struct Statistics
+		{
+			unsigned int drawCalls, quadCount;
+
+			unsigned int getVertexCount() const { return quadCount * 4; }
+			unsigned int getIndexCount() const { return quadCount * 6; }
+		};
+
+		static const Statistics& getStats();
+		static void resetStats();
+#endif
 
 		// drawQuad
 	private:

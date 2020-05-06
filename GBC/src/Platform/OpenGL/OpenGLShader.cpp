@@ -162,6 +162,11 @@ namespace gbc
 		glUniform1i(getUniformLocation(name), value);
 	}
 
+	void OpenGLShader::setIntArray(const std::string &name, int* values, unsigned int count)
+	{
+		glUniform1iv(getUniformLocation(name), count, values);
+	}
+
 	void OpenGLShader::setFloat(const std::string &name, float value)
 	{
 		glUniform1f(getUniformLocation(name), value);

@@ -8,7 +8,7 @@ namespace gbc
 	OrthographicCameraController::OrthographicCameraController(float aspectRatio, float zoomLevel, const glm::vec3 &position, float rotation)
 		: aspectRatio(aspectRatio), zoomLevel(zoomLevel), zoomSpeed(0.5f),
 		camera(-aspectRatio * zoomLevel, aspectRatio * zoomLevel, -zoomLevel, zoomLevel),
-		position(position), rotation(rotation), movementSpeed(1.0f), rotationSpeed(180.0f) {}
+		position(position), rotation(rotation), movementSpeed(5.0f), rotationSpeed(180.0f) {}
 
 	void OrthographicCameraController::onUpdate(TimeStep ts)
 	{

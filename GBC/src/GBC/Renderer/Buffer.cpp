@@ -15,13 +15,24 @@ namespace gbc
 		GBC_CORE_ASSERT(false, "Unknown renderer API!");
 		return nullptr;
 	}
-
-	Ref<IndexBuffer> IndexBuffer::create(unsigned int *indices, unsigned int size)
+	
+	Ref<VertexBuffer> VertexBuffer::create(unsigned int size)
 	{
 		switch (Renderer::getAPI())
 		{
 			case RendererAPI::API::None: GBC_CORE_ASSERT(false, "Must have a renderer API!"); return nullptr;
-			case RendererAPI::API::OpenGL: return createRef<OpenGLIndexBuffer>(indices, size);
+			case RendererAPI::API::OpenGL: return createRef<OpenGLVertexBuffer>(size);
+		}
+		GBC_CORE_ASSERT(false, "Unknown renderer API!");
+		return nullptr;
+	}
+
+	Ref<IndexBuffer> IndexBuffer::create(unsigned int *indices, unsigned int count)
+	{
+		switch (Renderer::getAPI())
+		{
+			case RendererAPI::API::None: GBC_CORE_ASSERT(false, "Must have a renderer API!"); return nullptr;
+			case RendererAPI::API::OpenGL: return createRef<OpenGLIndexBuffer>(indices, count);
 		}
 		GBC_CORE_ASSERT(false, "Unknown renderer API!");
 		return nullptr;

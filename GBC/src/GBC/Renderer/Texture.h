@@ -16,6 +16,8 @@ namespace gbc
 		virtual void setData(void *data, unsigned int size) = 0;
 
 		virtual void bind(unsigned int slot = 0) const = 0;
+
+		virtual bool operator==(const Texture &texture) = 0;
 	};
 
 	class Texture2D : public Texture

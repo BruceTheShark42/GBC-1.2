@@ -101,7 +101,10 @@ namespace gbc
 		virtual const BufferLayout& getLayout() const = 0;
 		virtual void setLayout(const BufferLayout &layout) = 0;
 
-		static Ref<VertexBuffer> create(float *vertices, unsigned int count);
+		virtual void setData(const void *data, unsigned int size) = 0;
+		
+		static Ref<VertexBuffer> create(float *vertices, unsigned int size);
+		static Ref<VertexBuffer> create(unsigned int size);
 	};
 
 	class IndexBuffer
@@ -113,6 +116,6 @@ namespace gbc
 		virtual void unbind() const = 0;
 		virtual unsigned int getCount() const = 0;
 
-		static Ref<IndexBuffer> create(unsigned int* indices, unsigned int count);
+		static Ref<IndexBuffer> create(unsigned int* indices, unsigned int size);
 	};
 }

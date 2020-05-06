@@ -18,6 +18,8 @@ namespace gbc
 		virtual void setData(void *data, unsigned int size) override;
 
 		virtual void bind(unsigned int slot = 0) const override;
+
+		virtual bool operator==(const Texture &texture) override { return rendererID == ((OpenGLTexture2D&)texture).rendererID; }
 	private:
 #ifdef GBC_DEBUG
 		std::string path;

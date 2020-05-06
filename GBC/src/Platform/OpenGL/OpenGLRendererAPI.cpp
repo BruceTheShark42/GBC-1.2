@@ -26,8 +26,9 @@ namespace gbc
 		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
-	void OpenGLRendererAPI::drawIndexed(const Ref<VertexArray> &vertexArray)
+	void OpenGLRendererAPI::drawIndexed(const Ref<VertexArray> &vertexArray, unsigned int count)
 	{
-		glDrawElements(GL_TRIANGLES, vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+		unsigned int indexCount = count ? vertexArray->getIndexBuffer()->getCount() : count;
+		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
 	}
 }

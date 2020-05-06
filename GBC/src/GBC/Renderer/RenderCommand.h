@@ -27,9 +27,9 @@ namespace gbc
 			api->setClearColor(color);
 		}
 
-		inline static void drawIndexed(const Ref<VertexArray>& vertexArray)
+		inline static void drawIndexed(const Ref<VertexArray> &vertexArray, unsigned int count = 0)
 		{
-			api->drawIndexed(vertexArray);
+			api->drawIndexed(vertexArray, count);
 		}
 	private:
 		static RendererAPI *api;

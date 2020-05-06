@@ -62,9 +62,14 @@ namespace gbc
 		}
 	}
 
-	bool Application::onWindowClosed(WindowClosedEvent &e)
+	void Application::terminate()
 	{
 		running = false;
+	}
+
+	bool Application::onWindowClosed(WindowClosedEvent &e)
+	{
+		terminate();
 		return true;
 	}
 

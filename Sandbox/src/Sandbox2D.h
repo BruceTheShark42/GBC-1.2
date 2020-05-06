@@ -23,5 +23,6 @@ private:
 	glm::vec4 color = { 0.870588f, 0.270588f, 0.270588f, 1.0f };
 	gbc::Ref<gbc::Texture2D> texture;
 
+	// TODO: Should be moved into Renderer2D::Statistics
 	float millis = 0.0f;
 };

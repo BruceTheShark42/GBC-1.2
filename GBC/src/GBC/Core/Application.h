@@ -16,6 +16,7 @@ namespace gbc
 		virtual ~Application();
 
 		void run();
+		void terminate();
 
 		void onEvent(Event &e);
 		bool onWindowClosed(WindowClosedEvent &e);

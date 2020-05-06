@@ -49,6 +49,29 @@ void Sandbox2DLayer::onUpdate(gbc::TimeStep ts)
 void Sandbox2DLayer::onEvent(gbc::Event &e)
 {
 	cameraController.onEvent(e);
+
+	if (e.getType() == gbc::EventType::KeyPressed)
+	{
+		const gbc::KeyPressedEvent &kpe = (gbc::KeyPressedEvent&)e;
+		switch (kpe.getKeyCode())
+		{
+			case GBC_KEY_F9:
+				if (!kpe.hasRepeated())
+					gbc::Application::getInstance().getWindow().toggleVSync();
+				break;
+			case GBC_KEY_F10:
+				if (!kpe.hasRepeated())
+					gbc::Application::getInstance().getWindow().toggleCursorEnabled();
+				break;
+			case GBC_KEY_F11:
+				if (!kpe.hasRepeated())
+					gbc::Application::getInstance().getWindow().toggleFullscreen();
+				break;
+			case GBC_KEY_ESCAPE:
+				gbc::Application::getInstance().terminate();
+				break;
+		}
+	}
 }
 
 #ifdef GBC_ENABLE_IMGUI

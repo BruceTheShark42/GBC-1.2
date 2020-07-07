@@ -9,7 +9,7 @@
 Sandbox2DLayer::Sandbox2DLayer()
 	: cameraController(1280.0f / 720.0f)
 {
-
+	cameraController.setZoomLevel(5.0f);
 }
 
 void Sandbox2DLayer::onAttach()

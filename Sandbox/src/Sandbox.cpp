@@ -21,7 +21,7 @@ public:
 /*
  * Trello: https://trello.com/b/DaO3KVu2/gbc-12
  * GitHub: https://github.com/BruceTheShark42/GBC-1.2
- * Cherno: (DONE WITH) https://www.youtube.com/watch?v=FATUxECqhbg&list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT&index=67
+ * Cherno: https://www.youtube.com/watch?v=UljMVrQ_zYY&list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT&index=70
  */
 
 gbc::Application* gbc::createApplication()

@@ -18,13 +18,17 @@ namespace gbc
 		void onEvent(Event &e);
 
 		inline const OrthographicCamera& getCamera() const { return camera; }
+
+		void setZoomLevel(float zoomLevel);
 	private:
+		void calculate();
+
 		bool onMouseScrolled(MouseScrolledEvent &e);
 		bool onWindowResized(WindowResizedEvent &e);
 	private:
 		float aspectRatio;
 		float zoomLevel, zoomSpeed;
-		
+
 		OrthographicCamera camera;
 		glm::vec3 position;
 		float movementSpeed;

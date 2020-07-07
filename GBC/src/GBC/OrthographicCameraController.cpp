@@ -49,19 +49,30 @@ namespace gbc
 		dispatcher.dispatch<WindowResizedEvent>(GBC_BIND_FUNC(OrthographicCameraController::onWindowResized));
 	}
 
+	void OrthographicCameraController::setZoomLevel(float zoomLevel)
+	{
+		this->zoomLevel = zoomLevel;
+		calculate();
+	}
+
+	void OrthographicCameraController::calculate()
+	{
+		camera.setProjection(-aspectRatio * zoomLevel, aspectRatio * zoomLevel, -zoomLevel, zoomLevel);
+	}
+
 	bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent &e)
 	{
 		zoomLevel -= e.getY() * zoomSpeed;
 		if (zoomLevel < zoomSpeed)
 			zoomLevel = zoomSpeed;
-		camera.setProjection(-aspectRatio * zoomLevel, aspectRatio * zoomLevel, -zoomLevel, zoomLevel);
+		calculate();
 		return false;
 	}
 
 	bool OrthographicCameraController::onWindowResized(WindowResizedEvent &e)
 	{
 		aspectRatio = (float)e.getWidth() / (float)e.getHeight();
-		camera.setProjection(-aspectRatio * zoomLevel, aspectRatio * zoomLevel, -zoomLevel, zoomLevel);
+		calculate();
 		return false;
 	}
 }

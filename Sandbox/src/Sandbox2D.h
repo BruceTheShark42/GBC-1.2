@@ -22,6 +22,8 @@ private:
 	glm::vec2 scale = { 1.0f, 1.0f };
 	glm::vec4 color = { 0.870588f, 0.270588f, 0.270588f, 1.0f };
 	gbc::Ref<gbc::Texture2D> texture;
+	gbc::Ref<gbc::Texture2D> spriteSheet;
+	gbc::Ref<gbc::SubTexture2D> stairs;
 
 	// TODO: Should be moved into Renderer2D::Statistics
 	float millis = 0.0f;

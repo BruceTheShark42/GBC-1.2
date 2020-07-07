@@ -27,6 +27,7 @@ namespace gbc
 		Ref<VertexBuffer> quadVertexBuffer;
 		Ref<Shader> quadShader;
 		Ref<Texture2D> whiteTexture;
+		const glm::vec2 whiteTexCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
 
 		unsigned int quadIndexCount = 0;
 		QuadVertex *quadBufferBase = nullptr;
@@ -167,10 +168,29 @@ namespace gbc
 
 	void Renderer2D::drawQuad(const glm::vec3 &position, const glm::vec4 &color)
 	{
-		createQuad(position, 0.0f, { 0.0f, 0.0f }, color);
+		createQuad(position, data.whiteTexCoords, 0.0f, { 0.0f, 0.0f }, color);
 	}
 
 	void Renderer2D::drawQuad(const glm::vec3 &position, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	{
+		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
+		_drawQuad(position, texture, texCoords, tilingFactor, color);
+	}
+
+	void Renderer2D::drawQuad(const glm::vec3 &position, const Ref<SubTexture2D> &subtexture, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	{
+		// TODO: doesn't use tiling factor correctly
+		// because it's a subtexture the tiling factor will
+		// just go to the next texture instead of wrapping
+		// around back to the beginning of the subtexture
+		// how do I fix this? it's the same way for all
+		// four of these drawQuad functions.
+		const glm::vec2 *texCoords = subtexture->getTextureCoords();
+		const Ref<Texture2D> texture = subtexture->getTexture();
+		_drawQuad(position, texture, texCoords, tilingFactor, color);
+	}
+
+	void Renderer2D::_drawQuad(const glm::vec3 &position, const Ref<Texture2D> &texture, const glm::vec2 *texCoords, const glm::vec2 &tilingFactor, const glm::vec4 &color)
 	{
 		float textureIndex = 0.0f;
 
@@ -189,14 +209,13 @@ namespace gbc
 			data.textureSlots[data.textureSlotIndex++] = texture;
 		}
 
-		createQuad(position, textureIndex, tilingFactor, color);
+		createQuad(position, texCoords, textureIndex, tilingFactor, color);
 	}
 
-	void Renderer2D::createQuad(const glm::vec3 &position, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::createQuad(const glm::vec3 &position, const glm::vec2 *texCoords, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color)
 	{
 		ensureBatch();
 
-		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
 		const glm::mat4 transform = glm::translate(glm::mat4(1.0f), position);
 
 		for (unsigned char i = 0; i < 4; ++i)
@@ -219,10 +238,29 @@ namespace gbc
 
 	void Renderer2D::drawQuad(const glm::vec3 &position, float rotation, const glm::vec4 &color)
 	{
-		createQuad(position, rotation, 0.0f, { 0.0f, 0.0f }, color);
+		createQuad(position, rotation, data.whiteTexCoords, 0.0f, { 0.0f, 0.0f }, color);
 	}
 
 	void Renderer2D::drawQuad(const glm::vec3 &position, float rotation, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	{
+		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
+		_drawQuad(position, rotation, texture, texCoords, tilingFactor, color);
+	}
+
+	void Renderer2D::drawQuad(const glm::vec3 &position, float rotation, const Ref<SubTexture2D> &subtexture, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	{
+		// TODO: doesn't use tiling factor correctly
+		// because it's a subtexture the tiling factor will
+		// just go to the next texture instead of wrapping
+		// around back to the beginning of the subtexture
+		// how do I fix this? it's the same way for all
+		// four of these drawQuad functions.
+		const glm::vec2 *texCoords = subtexture->getTextureCoords();
+		const Ref<Texture2D> texture = subtexture->getTexture();
+		_drawQuad(position, rotation, texture, texCoords, tilingFactor, color);
+	}
+
+	void Renderer2D::_drawQuad(const glm::vec3 &position, float rotation, const Ref<Texture2D> &texture, const glm::vec2 *texCoords, const glm::vec2 &tilingFactor, const glm::vec4 &color)
 	{
 		float textureIndex = 0.0f;
 
@@ -241,14 +279,13 @@ namespace gbc
 			data.textureSlots[data.textureSlotIndex++] = texture;
 		}
 
-		createQuad(position, rotation, textureIndex, tilingFactor, color);
+		createQuad(position, rotation, texCoords, textureIndex, tilingFactor, color);
 	}
 
-	void Renderer2D::createQuad(const glm::vec3 &position, float rotation, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::createQuad(const glm::vec3 &position, float rotation, const glm::vec2 *texCoords, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color)
 	{
 		ensureBatch();
 
-		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
 		const glm::mat4 transform = glm::rotate(glm::translate(glm::mat4(1.0f), position), rotation, { 0.0f, 0.0f, 1.0f });
 
 		for (unsigned char i = 0; i < 4; ++i)
@@ -271,10 +308,29 @@ namespace gbc
 
 	void Renderer2D::drawQuad(const glm::vec3 &position, const glm::vec2 &scale, const glm::vec4 &color)
 	{
-		createQuad(position, scale, 0.0f, { 0.0f, 0.0f }, color);
+		createQuad(position, scale, data.whiteTexCoords, 0.0f, { 0.0f, 0.0f }, color);
 	}
 
 	void Renderer2D::drawQuad(const glm::vec3 &position, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	{
+		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
+		_drawQuad(position, scale, texture, texCoords, tilingFactor, color);
+	}
+
+	void Renderer2D::drawQuad(const glm::vec3 &position, const glm::vec2 &scale, const Ref<SubTexture2D> &subtexture, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	{
+		// TODO: doesn't use tiling factor correctly
+		// because it's a subtexture the tiling factor will
+		// just go to the next texture instead of wrapping
+		// around back to the beginning of the subtexture
+		// how do I fix this? it's the same way for all
+		// four of these drawQuad functions.
+		const glm::vec2 *texCoords = subtexture->getTextureCoords();
+		const Ref<Texture2D> texture = subtexture->getTexture();
+		_drawQuad(position, scale, texture, texCoords, tilingFactor, color);
+	}
+
+	void Renderer2D::_drawQuad(const glm::vec3 &position, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec2 *texCoords, const glm::vec2 &tilingFactor, const glm::vec4 &color)
 	{
 		float textureIndex = 0.0f;
 
@@ -293,14 +349,13 @@ namespace gbc
 			data.textureSlots[data.textureSlotIndex++] = texture;
 		}
 
-		createQuad(position, scale, textureIndex, tilingFactor, color);
+		createQuad(position, scale, texCoords, textureIndex, tilingFactor, color);
 	}
 
-	void Renderer2D::createQuad(const glm::vec3 &position, const glm::vec2 &scale, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::createQuad(const glm::vec3 &position, const glm::vec2 &scale, const glm::vec2 *texCoords, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color)
 	{
 		ensureBatch();
 
-		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
 		const glm::mat4 transform = glm::scale(glm::translate(glm::mat4(1.0f), position), { scale, 1.0f });
 
 		for (unsigned char i = 0; i < 4; ++i)
@@ -323,10 +378,29 @@ namespace gbc
 
 	void Renderer2D::drawQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, const glm::vec4 &color)
 	{
-		createQuad(position, rotation, scale, 0.0f, { 0.0f, 0.0f }, color);
+		createQuad(position, rotation, scale, data.whiteTexCoords, 0.0f, { 0.0f, 0.0f }, color);
 	}
 
 	void Renderer2D::drawQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	{
+		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
+		_drawQuad(position, rotation, scale, texture, texCoords, tilingFactor, color);
+	}
+
+	void Renderer2D::drawQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, const Ref<SubTexture2D> &subtexture, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	{
+		// TODO: doesn't use tiling factor correctly
+		// because it's a subtexture the tiling factor will
+		// just go to the next texture instead of wrapping
+		// around back to the beginning of the subtexture
+		// how do I fix this? it's the same way for all
+		// four of these drawQuad functions.
+		const glm::vec2 *texCoords = subtexture->getTextureCoords();
+		const Ref<Texture2D> texture = subtexture->getTexture();
+		_drawQuad(position, rotation, scale, texture, texCoords, tilingFactor, color);
+	}
+
+	void Renderer2D::_drawQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec2 *texCoords, const glm::vec2 &tilingFactor, const glm::vec4 &color)
 	{
 		float textureIndex = 0.0f;
 
@@ -345,14 +419,13 @@ namespace gbc
 			data.textureSlots[data.textureSlotIndex++] = texture;
 		}
 
-		createQuad(position, rotation, scale, textureIndex, tilingFactor, color);
+		createQuad(position, rotation, scale, texCoords, textureIndex, tilingFactor, color);
 	}
 
-	void Renderer2D::createQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::createQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, const glm::vec2 *texCoords, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color)
 	{
 		ensureBatch();
 
-		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
 		const glm::mat4 transform = glm::scale(glm::rotate(glm::translate(glm::mat4(1.0f), position), rotation, { 0.0f, 0.0f, 1.0f }), { scale, 1.0f });
 
 		for (unsigned char i = 0; i < 4; ++i)

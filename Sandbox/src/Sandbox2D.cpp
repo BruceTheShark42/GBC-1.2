@@ -15,6 +15,8 @@ Sandbox2DLayer::Sandbox2DLayer()
 void Sandbox2DLayer::onAttach()
 {
 	texture = gbc::Texture2D::create("assets/textures/checkerBoard.png");
+	spriteSheet = gbc::Texture2D::create("assets/textures/RPGpack_sheet_2X.png");
+	stairs = gbc::SubTexture2D::createFromCoords(spriteSheet, { 128.0f, 128.0f }, { 2.0f, 1.0f }, { 1.0f, 2.0f });
 }
 
 void Sandbox2DLayer::onDetach()
@@ -35,14 +37,18 @@ void Sandbox2DLayer::onUpdate(gbc::TimeStep ts)
 	gbc::Renderer2D::resetStats();
 #endif
 
-	gbc::Renderer2D::beginScene(cameraController.getCamera());
-	gbc::Renderer2D::drawQuad(position, glm::radians(rotation), scale, texture, { 2.0f, 4.0f },  color);
-	gbc::Renderer2D::drawQuad({ -1.0f, 0.5f, 0.2f }, { 1.0f, 1.0f }, { 0.5f, 0.7f, 0.8f, 1.0f });
-	gbc::Renderer2D::drawQuad({ 0.0f, 0.0f, -0.1f }, { 16.0f, 16.0f }, texture, { 16.0f, 16.0f });
+	//gbc::Renderer2D::beginScene(cameraController.getCamera());
+	//gbc::Renderer2D::drawQuad(position, glm::radians(rotation), scale, texture, { 2.0f, 4.0f }, color);
+	//gbc::Renderer2D::drawQuad({ -1.0f, 0.5f, 0.2f }, { 1.0f, 1.0f }, { 0.5f, 0.7f, 0.8f, 1.0f });
+	//gbc::Renderer2D::drawQuad({ 0.0f, 0.0f, -0.1f }, { 16.0f, 16.0f }, texture, { 16.0f, 16.0f });
 
-	for (float y = -5.0f; y <= 5.0f; y += 0.5f)
-		for (float x = -5.0f; x <= 5.0f; x += 0.5f)
-			gbc::Renderer2D::drawQuad({ x, y, 0.1f }, { 0.45f, 0.45f }, { (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.5f });
+	//for (float y = -5.0f; y <= 5.0f; y += 0.5f)
+	//	for (float x = -5.0f; x <= 5.0f; x += 0.5f)
+	//		gbc::Renderer2D::drawQuad({ x, y, 0.1f }, { 0.45f, 0.45f }, { (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.5f });
+	//gbc::Renderer2D::endScene();
+
+	gbc::Renderer2D::beginScene(cameraController.getCamera());
+	gbc::Renderer2D::drawQuad({ 0.0f, 0.0f }, { 1.0f, 2.0f }, stairs);
 	gbc::Renderer2D::endScene();
 }
 

@@ -20,6 +20,7 @@
 #include "GBC/Renderer/VertexArray.h"
 #include "GBC/Renderer/Shader.h"
 #include "GBC/Renderer/Texture.h"
+#include "GBC/Renderer/SubTexture2D.h"
 
 #include "GBC/Renderer/Renderer2D.h"
 

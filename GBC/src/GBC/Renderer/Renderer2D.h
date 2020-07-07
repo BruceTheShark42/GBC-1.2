@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Camera.h"
-#include "Texture.h"
+#include "SubTexture2D.h"
 
 namespace gbc
 {
@@ -32,43 +32,74 @@ namespace gbc
 		static void resetStats();
 #endif
 
-		// drawQuad
 	private:
-		static void createQuad(const glm::vec3 &position, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color);
-		static void createQuad(const glm::vec3 &position, float rotation, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color);
-		static void createQuad(const glm::vec3 &position, const glm::vec2 &scale, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color);
-		static void createQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color);
+		// drawQuad
+		static void createQuad(const glm::vec3 &position, const glm::vec2 *texCoords, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color);
+		static void createQuad(const glm::vec3 &position, float rotation, const glm::vec2 *texCoords, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color);
+		static void createQuad(const glm::vec3 &position, const glm::vec2 &scale, const glm::vec2 *texCoords, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color);
+		static void createQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, const glm::vec2 *texCoords, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color);
 	public:
 		// Non-rotated non-scaled quad
 		inline static void drawQuad(const glm::vec2 &position, const glm::vec4 &color)
 		{ drawQuad(glm::vec3(position, 0.0f), color); }
 		static void drawQuad(const glm::vec3 &position, const glm::vec4 &color);
+		
 		inline static void drawQuad(const glm::vec2 &position, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f))
 		{ drawQuad(glm::vec3(position, 0.0f), texture, tilingFactor, color); }
 		static void drawQuad(const glm::vec3 &position, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f));
-
-		// Non-rotated scaled quad
-		inline static void drawQuad(const glm::vec2 &position, const glm::vec2 &scale, const glm::vec4 &color)
-		{ drawQuad(glm::vec3(position, 0.0f), scale, color); }
-		static void drawQuad(const glm::vec3 &position, const glm::vec2 &scale, const glm::vec4 &color);
-		inline static void drawQuad(const glm::vec2 &position, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f))
-		{ drawQuad(glm::vec3(position, 0.0f), scale, texture, tilingFactor, color); }
-		static void drawQuad(const glm::vec3 &position, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f));
 		
+		inline static void drawQuad(const glm::vec2 &position, const Ref<SubTexture2D> &subtexture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f))
+		{ drawQuad(glm::vec3(position, 0.0f), subtexture, tilingFactor, color); }
+		static void drawQuad(const glm::vec3 &position, const Ref<SubTexture2D> &subtexture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f));
+	private:
+		static void _drawQuad(const glm::vec3 &position, const Ref<Texture2D> &texture, const glm::vec2 *texCoords, const glm::vec2 &tilingFactor, const glm::vec4 &color);
+
+	public:
 		// Rotated non-scaled quad
 		inline static void drawQuad(const glm::vec2 &position, float rotation, const glm::vec4 &color)
 		{ drawQuad(glm::vec3(position, 0.0f), rotation, color); }
 		static void drawQuad(const glm::vec3 &position, float rotation, const glm::vec4 &color);
+		
 		inline static void drawQuad(const glm::vec2 &position, float rotation, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f))
 		{ drawQuad(glm::vec3(position, 0.0f), rotation, texture, tilingFactor, color); }
 		static void drawQuad(const glm::vec3 &position, float rotation, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f));
+		
+		inline static void drawQuad(const glm::vec2 &position, float rotation, const Ref<SubTexture2D> &subtexture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f))
+		{ drawQuad(glm::vec3(position, 0.0f), rotation, subtexture, tilingFactor, color); }
+		static void drawQuad(const glm::vec3 &position, float rotation, const Ref<SubTexture2D> &subtexture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f));
+	private:
+		static void _drawQuad(const glm::vec3 &position, float rotation, const Ref<Texture2D> &texture, const glm::vec2 *texCoords, const glm::vec2 &tilingFactor, const glm::vec4 &color);
 
+	public:
+		// Non-rotated scaled quad
+		inline static void drawQuad(const glm::vec2 &position, const glm::vec2 &scale, const glm::vec4 &color)
+		{ drawQuad(glm::vec3(position, 0.0f), scale, color); }
+		static void drawQuad(const glm::vec3 &position, const glm::vec2 &scale, const glm::vec4 &color);
+		
+		inline static void drawQuad(const glm::vec2 &position, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f))
+		{ drawQuad(glm::vec3(position, 0.0f), scale, texture, tilingFactor, color); }
+		static void drawQuad(const glm::vec3 &position, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f));
+		
+		inline static void drawQuad(const glm::vec2 &position, const glm::vec2 &scale, const Ref<SubTexture2D> &subtexture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f))
+		{ drawQuad(glm::vec3(position, 0.0f), scale, subtexture, tilingFactor, color); }
+		static void drawQuad(const glm::vec3 &position, const glm::vec2 &scale, const Ref<SubTexture2D> &subtexture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f));
+	private:
+		static void _drawQuad(const glm::vec3 &position, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec2 *texCoords, const glm::vec2 &tilingFactor, const glm::vec4 &color);
+
+	public:
 		// Rotated scaled quad
 		inline static void drawQuad(const glm::vec2 &position, float rotation, const glm::vec2 &scale, const glm::vec4 &color)
 		{ drawQuad(glm::vec3(position, 0.0f), rotation, scale, color); }
 		static void drawQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, const glm::vec4 &color);
+		
 		inline static void drawQuad(const glm::vec2 &position, float rotation, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f))
 		{ drawQuad(glm::vec3(position, 0.0f), rotation, scale, texture, tilingFactor, color); }
 		static void drawQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f));
+
+		inline static void drawQuad(const glm::vec2 &position, float rotation, const glm::vec2 &scale, const Ref<SubTexture2D> &subtexture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f))
+		{ drawQuad(glm::vec3(position, 0.0f), rotation, scale, subtexture, tilingFactor, color); }
+		static void drawQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, const Ref<SubTexture2D> &subtexture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f));
+	private:
+		static void _drawQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec2 *texCoords, const glm::vec2 &tilingFactor, const glm::vec4 &color);
 	};
 }

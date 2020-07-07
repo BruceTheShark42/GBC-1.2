@@ -51,9 +51,9 @@ namespace gbc
 
 	// Rotated non-scaled quad
 	public:
+		static void drawQuad(const glm::vec3 &position, float rotation, const glm::vec4 &color);
 		inline static void drawQuad(const glm::vec2 &position, float rotation, const glm::vec4 &color)
 		{ drawQuad(glm::vec3(position, 0.0f), rotation, color); }
-		static void drawQuad(const glm::vec3 &position, float rotation, const glm::vec4 &color);
 
 		static void drawQuad(const glm::vec3 &position, float rotation, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f));
 		inline static void drawQuad(const glm::vec2 &position, float rotation, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor = glm::vec2(1.0f), const glm::vec4 &color = glm::vec4(1.0f))

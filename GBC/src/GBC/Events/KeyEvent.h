@@ -1,25 +1,26 @@
 #pragma once
 
 #include "Event.h"
+#include "GBC/Core/keyCodes.h"
 
 namespace gbc
 {
 	class KeyEvent : public Event
 	{
 	protected:
-		KeyEvent(int keyCode)
+		KeyEvent(KeyCode keyCode)
 			: keyCode(keyCode) {}
 	public:
 		EVENT_CATEGORY(EventCategoryInput | EventCategoryKeyboard)
-		inline int getKeyCode() const { return keyCode; }
+		inline KeyCode getKeyCode() const { return keyCode; }
 	protected:
-		int keyCode;
+		KeyCode keyCode;
 	};
 
 	class KeyPressedEvent : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(int keyCode, bool repeat)
+		KeyPressedEvent(KeyCode keyCode, bool repeat)
 			: KeyEvent(keyCode), repeat(repeat) {}
 		EVENT_TYPE(KeyPressed)
 		inline bool hasRepeated() const { return repeat; }
@@ -38,7 +39,7 @@ namespace gbc
 	class KeyReleasedEvent : public KeyEvent
 	{
 	public:
-		KeyReleasedEvent(int keyCode)
+		KeyReleasedEvent(KeyCode keyCode)
 			: KeyEvent(keyCode) {}
 		EVENT_TYPE(KeyReleased)
 #ifdef GBC_DEBUG
@@ -51,19 +52,23 @@ namespace gbc
 #endif
 	};
 
-	class KeyTypedEvent : public KeyEvent
+	class KeyTypedEvent : public Event
 	{
 	public:
-		KeyTypedEvent(int keyCode)
-			: KeyEvent(keyCode) {}
+		KeyTypedEvent(unsigned int unicode)
+			: unicode(unicode) {}
+		EVENT_CATEGORY(EventCategoryInput | EventCategoryKeyboard)
 		EVENT_TYPE(KeyTyped)
 #ifdef GBC_DEBUG
 		std::string toString() const override
 		{
 			std::stringstream ss;
-			ss << "Key Typed Event: keyCode=" << keyCode;
+			ss << "Key Typed Event: unicode=" << unicode;
 			return ss.str();
 		}
+		inline unsigned int getUnicode() const { return unicode; }
+	protected:
+		unsigned int unicode;
 #endif
 	};
 }

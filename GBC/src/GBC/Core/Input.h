@@ -9,11 +9,11 @@ namespace gbc
 	class Input
 	{
 	public:
-		static bool isKeyPressed(int keyCode);
-		static bool isKeyReleased(int keyCode);
+		static bool isKeyPressed(KeyCode keyCode);
+		static bool isKeyReleased(KeyCode keyCode);
 
-		static bool isMouseButtonPressed(int button);
-		static bool isMouseButtonReleased(int button);
+		static bool isMouseButtonPressed(MouseCode button);
+		static bool isMouseButtonReleased(MouseCode button);
 
 		static std::pair<float, float> getMousePos();
 		static float getMousePosX();

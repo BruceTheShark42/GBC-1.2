@@ -1,16 +1,26 @@
 #pragma once
 
-// Taken from glfw3.h
+namespace gbc
+{
+	enum class MouseCode : unsigned short
+	{
+		// Taken from glfw3.h and modified
+		MB1       = 0,
+		MB2       = 1,
+		MB3       = 2,
+		MB4       = 3,
+		MB5       = 4,
+		MB6       = 5,
+		MB7       = 6,
+		MB8       = 7,
+		MBLast    = MB8,
+		MBLeft    = MB1,
+		MBRight   = MB2,
+		MBMiddle  = MB3
+	};
 
-#define GBC_MOUSE_BUTTON_1         0
-#define GBC_MOUSE_BUTTON_2         1
-#define GBC_MOUSE_BUTTON_3         2
-#define GBC_MOUSE_BUTTON_4         3
-#define GBC_MOUSE_BUTTON_5         4
-#define GBC_MOUSE_BUTTON_6         5
-#define GBC_MOUSE_BUTTON_7         6
-#define GBC_MOUSE_BUTTON_8         7
-#define GBC_MOUSE_BUTTON_LAST      GBC_MOUSE_BUTTON_8
-#define GBC_MOUSE_BUTTON_LEFT      GBC_MOUSE_BUTTON_1
-#define GBC_MOUSE_BUTTON_RIGHT     GBC_MOUSE_BUTTON_2
-#define GBC_MOUSE_BUTTON_MIDDLE    GBC_MOUSE_BUTTON_3
+	inline std::ostream& operator<<(std::ostream &ostr, MouseCode button)
+	{
+		return ostr << static_cast<unsigned short>(button);
+	}
+}

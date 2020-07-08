@@ -1,25 +1,26 @@
 #pragma once
 
 #include "Event.h"
+#include "GBC/Core/mouseButtons.h"
 
 namespace gbc
 {
 	class MouseButtonEvent : public Event
 	{
 	protected:
-		MouseButtonEvent(int button)
+		MouseButtonEvent(MouseCode button)
 			: button(button) {}
 	public:
 		EVENT_CATEGORY(EventCategoryInput | EventCategoryMouse | EventCategoryMouseButton)
-		inline int getButton() const { return button; }
+		inline MouseCode getButton() const { return button; }
 	protected:
-		int button;
+		MouseCode button;
 	};
 
 	class MouseButtonPressedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonPressedEvent(int button)
+		MouseButtonPressedEvent(MouseCode button)
 			: MouseButtonEvent(button) {}
 		EVENT_TYPE(MouseButtonPressed)
 #ifdef GBC_DEBUG
@@ -35,7 +36,7 @@ namespace gbc
 	class MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonReleasedEvent(int button)
+		MouseButtonReleasedEvent(MouseCode button)
 			: MouseButtonEvent(button) {}
 		EVENT_TYPE(MouseButtonReleased)
 #ifdef GBC_DEBUG

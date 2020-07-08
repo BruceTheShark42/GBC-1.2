@@ -4,6 +4,8 @@
 #include "GBC/Events/KeyEvent.h"
 #include "GBC/Events/MouseEvent.h"
 #include "GBC/Events/WindowEvent.h"
+#include "GBC/Core/keyCodes.h"
+#include "GBC/Core/mouseButtons.h"
 #include "Platform/OpenGL/OpenGLContext.h"
 
 namespace gbc
@@ -117,37 +119,37 @@ namespace gbc
 			else
 				data.callback(WindowUnmaximizedEvent());
 		});
-		glfwSetKeyCallback(window, [](GLFWwindow *window, int key, int scancode, int action, int mods)
+		glfwSetKeyCallback(window, [](GLFWwindow *window, int keyCode, int scancode, int action, int mods)
 		{
 			WindowData &data = *(WindowData*)glfwGetWindowUserPointer(window);
-			if (key != GLFW_KEY_UNKNOWN)
+			if (keyCode != GLFW_KEY_UNKNOWN)
 			{
 				switch (action)
 				{
 					case GLFW_PRESS:
-						data.callback(KeyPressedEvent(key, false));
+						data.callback(KeyPressedEvent(static_cast<KeyCode>(keyCode), false));
 						break;
 					case GLFW_REPEAT:
-						data.callback(KeyPressedEvent(key, true));
+						data.callback(KeyPressedEvent(static_cast<KeyCode>(keyCode), true));
 						break;
 					case GLFW_RELEASE:
-						data.callback(KeyReleasedEvent(key));
+						data.callback(KeyReleasedEvent(static_cast<KeyCode>(keyCode)));
 						break;
 				}
 			}
 		});
-		glfwSetCharCallback(window, [](GLFWwindow *window, unsigned int keyCode)
+		glfwSetCharCallback(window, [](GLFWwindow *window, unsigned int charCode)
 		{
 			WindowData &data = *(WindowData*)glfwGetWindowUserPointer(window);
-			data.callback(KeyTypedEvent(keyCode));
+			data.callback(KeyTypedEvent(charCode));
 		});
 		glfwSetMouseButtonCallback(window, [](GLFWwindow *window, int button, int action, int mods)
 		{
 			WindowData &data = *(WindowData*)glfwGetWindowUserPointer(window);
 			if (action == GLFW_PRESS)
-				data.callback(MouseButtonPressedEvent(button));
+				data.callback(MouseButtonPressedEvent(static_cast<MouseCode>(button)));
 			else
-				data.callback(MouseButtonReleasedEvent(button));
+				data.callback(MouseButtonReleasedEvent(static_cast<MouseCode>(button)));
 		});
 		glfwSetCursorPosCallback(window, [](GLFWwindow *window, double x, double y)
 		{

@@ -60,19 +60,19 @@ void SandboxLayer::onEvent(gbc::Event &e)
 		const gbc::KeyPressedEvent &kpe = (gbc::KeyPressedEvent&)e;
 		switch (kpe.getKeyCode())
 		{
-			case GBC_KEY_F9:
+			case gbc::KeyCode::F9:
 				if (!kpe.hasRepeated())
 					gbc::Application::getInstance().getWindow().toggleVSync();
 				break;
-			case GBC_KEY_F10:
+			case gbc::KeyCode::F10:
 				if (!kpe.hasRepeated())
 					gbc::Application::getInstance().getWindow().toggleCursorEnabled();
 				break;
-			case GBC_KEY_F11:
+			case gbc::KeyCode::F11:
 				if (!kpe.hasRepeated())
 					gbc::Application::getInstance().getWindow().toggleFullscreen();
 				break;
-			case GBC_KEY_ESCAPE:
+			case gbc::KeyCode::Escape:
 				gbc::Application::getInstance().terminate();
 				break;
 		}

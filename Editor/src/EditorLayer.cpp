@@ -72,19 +72,19 @@ namespace gbc
 			const KeyPressedEvent& kpe = (KeyPressedEvent&)e;
 			switch (kpe.getKeyCode())
 			{
-			case GBC_KEY_F9:
+			case KeyCode::F9:
 				if (!kpe.hasRepeated())
 					Application::getInstance().getWindow().toggleVSync();
 				break;
-			case GBC_KEY_F10:
+			case KeyCode::F10:
 				if (!kpe.hasRepeated())
 					Application::getInstance().getWindow().toggleCursorEnabled();
 				break;
-			case GBC_KEY_F11:
+			case KeyCode::F11:
 				if (!kpe.hasRepeated())
 					Application::getInstance().getWindow().toggleFullscreen();
 				break;
-			case GBC_KEY_ESCAPE:
+			case KeyCode::Escape:
 				Application::getInstance().terminate();
 				break;
 			}
@@ -176,7 +176,7 @@ namespace gbc
 
 		Application::getInstance().getImGuiLayer()->setBlockEvents(!sceneFocused || !sceneHovered);
 
-		if (sceneSize != *((glm::vec2*)&viewportSize))
+		if (sceneSize != *((glm::vec2*)&viewportSize) && viewportSize.x > 0.0f && viewportSize.y > 0.0f)
 		{
 			fbo->resize((unsigned int)viewportSize.x, (unsigned int)viewportSize.y);
 			sceneSize = { viewportSize.x, viewportSize.y };

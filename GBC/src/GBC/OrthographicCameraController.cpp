@@ -12,30 +12,30 @@ namespace gbc
 
 	void OrthographicCameraController::onUpdate(TimeStep ts)
 	{
-		if (Input::isKeyPressed(GBC_KEY_W))
+		if (Input::isKeyPressed(KeyCode::W))
 		{
 			position.y += movementSpeed * cos(glm::radians(rotation)) * ts;
 			position.x -= movementSpeed * sin(glm::radians(rotation)) * ts;
 		}
-		if (Input::isKeyPressed(GBC_KEY_S))
+		if (Input::isKeyPressed(KeyCode::S))
 		{
 			position.y -= movementSpeed * cos(glm::radians(rotation)) * ts;
 			position.x += movementSpeed * sin(glm::radians(rotation)) * ts;
 		}
-		if (Input::isKeyPressed(GBC_KEY_A))
+		if (Input::isKeyPressed(KeyCode::A))
 		{
 			position.x -= movementSpeed * cos(glm::radians(rotation)) * ts;
 			position.y -= movementSpeed * sin(glm::radians(rotation)) * ts;
 		}
-		if (Input::isKeyPressed(GBC_KEY_D))
+		if (Input::isKeyPressed(KeyCode::D))
 		{
 			position.x += movementSpeed * cos(glm::radians(rotation)) * ts;
 			position.y += movementSpeed * sin(glm::radians(rotation)) * ts;
 		}
 		
-		if (Input::isKeyPressed(GBC_KEY_LEFT))
+		if (Input::isKeyPressed(KeyCode::Left))
 			rotation += rotationSpeed * ts;
-		if (Input::isKeyPressed(GBC_KEY_RIGHT))
+		if (Input::isKeyPressed(KeyCode::Right))
 			rotation -= rotationSpeed * ts;
 
 		camera.setPosition(position);

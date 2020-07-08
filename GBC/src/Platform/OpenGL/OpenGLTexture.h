@@ -14,6 +14,7 @@ namespace gbc
 
 		inline virtual unsigned int getWidth() const override { return width; }
 		inline virtual unsigned int getHeight() const override { return height; }
+		inline virtual unsigned int getRendererID() const override { return rendererID; }
 
 		virtual void setData(void *data, unsigned int size) override;
 

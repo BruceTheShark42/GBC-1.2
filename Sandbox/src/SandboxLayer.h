@@ -2,11 +2,11 @@
 
 #include <gbc.h>
 
-class Sandbox2DLayer : public gbc::Layer
+class SandboxLayer : public gbc::Layer
 {
 public:
-	Sandbox2DLayer();
-	virtual ~Sandbox2DLayer() = default;
+	SandboxLayer();
+	virtual ~SandboxLayer() = default;
 
 	virtual void onAttach() override;
 	virtual void onDetach() override;

@@ -2,14 +2,14 @@
 #include <GBC/Core/entryPoint.h>
 
 // Sandbox2D
-#include "Sandbox2D.h"
+#include "SandboxLayer.h"
 
 class Sandbox : public gbc::Application
 {
 public:
 	Sandbox()
 	{
-		pushLayer(new Sandbox2DLayer());
+		pushLayer(new SandboxLayer());
 	}
 
 	~Sandbox()

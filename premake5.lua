@@ -136,3 +136,51 @@ project "Sandbox"
 		defines "GBC_DIST"
 		runtime "Release"
 		optimize "on"
+		
+project "Editor"
+	location "Editor"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
+	
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files {
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
+
+	includedirs {
+		"GBC/vendor/spdlog/include",
+		"GBC/src",
+		"GBC/vendor",
+		"%{includedir.glm}"
+	}
+
+	links {
+		"GBC"
+	}
+
+	filter "system:windows"
+		systemversion "latest"
+
+		defines {
+			"GBC_PLATFORM_WINDOWS"
+		}
+
+	filter "configurations:Debug"
+		defines "GBC_DEBUG"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		defines "GBC_RELEASE"
+		runtime "Release"
+		optimize "on"
+
+	filter "configurations:Dist"
+		defines "GBC_DIST"
+		runtime "Release"
+		optimize "on"

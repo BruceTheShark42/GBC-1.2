@@ -12,6 +12,7 @@ namespace gbc
 
 		virtual unsigned int getWidth() const = 0;
 		virtual unsigned int getHeight() const = 0;
+		virtual unsigned int getRendererID() const = 0;
 
 		virtual void setData(void *data, unsigned int size) = 0;
 

@@ -32,9 +32,13 @@ namespace gbc
 	void EditorLayer::onUpdate(TimeStep ts)
 	{
 		// Update
-		cameraController.onUpdate(ts);
 		millis = ts.millis();
 		rotation += 90.0f * ts;
+
+		if (sceneFocused)
+		{
+			cameraController.onUpdate(ts);
+		}
 
 		// Render
 		fbo->bind();
@@ -100,7 +104,7 @@ namespace gbc
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
 		if (opt_fullscreen)
 		{
-			ImGuiViewport* viewport = ImGui::GetMainViewport();
+			ImGuiViewport *viewport = ImGui::GetMainViewport();
 			ImGui::SetNextWindowPos(viewport->Pos);
 			ImGui::SetNextWindowSize(viewport->Size);
 			ImGui::SetNextWindowViewport(viewport->ID);
@@ -127,7 +131,7 @@ namespace gbc
 			ImGui::PopStyleVar(2);
 
 		// DockSpace
-		ImGuiIO& io = ImGui::GetIO();
+		ImGuiIO &io = ImGui::GetIO();
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 		{
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
@@ -163,9 +167,25 @@ namespace gbc
 		ImGui::Text(" - Vertex Count: %d", stats.getVertexCount());
 		ImGui::End();
 
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
 		ImGui::Begin("Scene");
-		ImGui::Image((void*)fbo->getColorAttachment(), { 1280.0f, 720.0f }, { 0.0f, 1.0f }, { 1.0f, 0.0f });
+		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+
+		sceneFocused = ImGui::IsWindowFocused();
+		sceneHovered = ImGui::IsWindowHovered();
+
+		Application::getInstance().getImGuiLayer()->setBlockEvents(!sceneFocused || !sceneHovered);
+
+		if (sceneSize != *((glm::vec2*)&viewportSize))
+		{
+			fbo->resize((unsigned int)viewportSize.x, (unsigned int)viewportSize.y);
+			sceneSize = { viewportSize.x, viewportSize.y };
+			cameraController.resize(viewportSize.x, viewportSize.y);
+		}
+
+		ImGui::Image((void*)fbo->getColorAttachment(), viewportSize, { 0.0f, 1.0f }, { 1.0f, 0.0f });
 		ImGui::End();
+		ImGui::PopStyleVar();
 	}
 #endif
 }

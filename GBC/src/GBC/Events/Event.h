@@ -35,6 +35,7 @@ namespace gbc
 		virtual int getCategoryFlags() const = 0;
 		inline bool isInCategory(EventCategory category) const { return getCategoryFlags() & category; }
 		inline bool isHandled() const { return handled; }
+		inline void setHandled(bool handled) { this->handled = handled; }
 #ifdef GBC_DEBUG
 		virtual std::string toString() const = 0;
 #endif

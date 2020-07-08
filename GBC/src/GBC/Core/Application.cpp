@@ -39,6 +39,13 @@ namespace gbc
 			dispatcher.dispatch<WindowClosedEvent>(GBC_BIND_FUNC(Application::onWindowClosed));
 			dispatcher.dispatch<WindowResizedEvent>(GBC_BIND_FUNC(Application::onWindowResized));
 		}
+
+		for (auto it = layerStack.rbegin(); it != layerStack.rend(); ++it)
+		{
+			if (e.isHandled())
+				break;
+			(*it)->onEvent(e);
+		}
 	}
 
 	void Application::run()

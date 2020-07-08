@@ -67,8 +67,17 @@ namespace gbc
 
 	void ImGuiLayer::onImGuiRender()
 	{
-		//static bool show = true;
-		//ImGui::ShowDemoWindow(&show);
+		
+	}
+
+	void ImGuiLayer::onEvent(Event& e)
+	{
+		if (blockEvents)
+		{
+			ImGuiIO &io = ImGui::GetIO();
+			e.setHandled(e.isHandled() || (e.isInCategory(EventCategoryMouse) & io.WantCaptureMouse)
+									   || (e.isInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard));
+		}
 	}
 }
 #endif

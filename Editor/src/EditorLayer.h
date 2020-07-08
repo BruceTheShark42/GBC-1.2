@@ -28,6 +28,9 @@ namespace gbc
 		Ref<SubTexture2D> stairs;
 		Ref<FrameBuffer> fbo;
 
+		glm::vec2 sceneSize = { 0.0f, 0.0f };
+		bool sceneFocused = false, sceneHovered = false;
+
 		// TODO: Should be moved into Renderer2D::Statistics
 		float millis = 0.0f;
 	};

@@ -49,6 +49,12 @@ namespace gbc
 		dispatcher.dispatch<WindowResizedEvent>(GBC_BIND_FUNC(OrthographicCameraController::onWindowResized));
 	}
 
+	void OrthographicCameraController::resize(float width, float height)
+	{
+		aspectRatio = width / height;
+		calculate();
+	}
+
 	void OrthographicCameraController::setZoomLevel(float zoomLevel)
 	{
 		this->zoomLevel = zoomLevel;
@@ -71,8 +77,7 @@ namespace gbc
 
 	bool OrthographicCameraController::onWindowResized(WindowResizedEvent &e)
 	{
-		aspectRatio = (float)e.getWidth() / (float)e.getHeight();
-		calculate();
+		resize((float)e.getWidth(), (float)e.getHeight());
 		return false;
 	}
 }

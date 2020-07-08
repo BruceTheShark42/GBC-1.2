@@ -21,6 +21,8 @@ namespace gbc
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;
 
+		virtual void resize(unsigned int width, unsigned int height) = 0;
+
 		static Ref<FrameBuffer> create(const FrameBufferSpecs& specs);
 	};
 }

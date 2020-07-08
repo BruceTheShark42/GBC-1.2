@@ -17,6 +17,8 @@ namespace gbc
 		void onUpdate(TimeStep ts);
 		void onEvent(Event &e);
 
+		void resize(float width, float height);
+
 		inline const OrthographicCamera& getCamera() const { return camera; }
 
 		void setZoomLevel(float zoomLevel);

@@ -1,39 +1,37 @@
 #pragma once
 
 #include "gbcpch.h"
-#include "WindowsInput.h"
-#include <GLFW/glfw3.h>
+#include "GBC/Core/Input.h"
 #include "GBC/Core/Application.h"
+#include <GLFW/glfw3.h>
 
 namespace gbc
 {
-	Input *Input::instance = new WindowsInput();
-
-	bool WindowsInput::isKeyPressedImpl(int keyCode)
+	bool Input::isKeyPressed(int keyCode)
 	{
 		auto window = static_cast<GLFWwindow*>(Application::getInstance().getWindow().getNativeWindow());
 		return glfwGetKey(window, keyCode) != GLFW_RELEASE;
 	}
 
-	bool WindowsInput::isKeyReleasedImpl(int keyCode)
+	bool Input::isKeyReleased(int keyCode)
 	{
 		auto window = static_cast<GLFWwindow*>(Application::getInstance().getWindow().getNativeWindow());
 		return glfwGetKey(window, keyCode) == GLFW_RELEASE;
 	}
 
-	bool WindowsInput::isMouseButtonPressedImpl(int button)
+	bool Input::isMouseButtonPressed(int button)
 	{
 		auto window = static_cast<GLFWwindow*>(Application::getInstance().getWindow().getNativeWindow());
 		return glfwGetMouseButton(window, button) == GLFW_PRESS;
 	}
 
-	bool WindowsInput::isMouseButtonReleasedImpl(int button)
+	bool Input::isMouseButtonReleased(int button)
 	{
 		auto window = static_cast<GLFWwindow*>(Application::getInstance().getWindow().getNativeWindow());
 		return glfwGetMouseButton(window, button) == GLFW_RELEASE;
 	}
 
-	std::pair<float, float> WindowsInput::getMousePosImpl()
+	std::pair<float, float> Input::getMousePos()
 	{
 		auto window = static_cast<GLFWwindow*>(Application::getInstance().getWindow().getNativeWindow());
 		double x, y;
@@ -41,13 +39,13 @@ namespace gbc
 		return { (float)x, (float)y };
 	}
 
-	float WindowsInput::getMousePosXImpl()
+	float Input::getMousePosX()
 	{
 		auto [x, y] = getMousePos();
 		return x;
 	}
 
-	float WindowsInput::getMousePosYImpl()
+	float Input::getMousePosY()
 	{
 		auto [x, y] = getMousePos();
 		return y;

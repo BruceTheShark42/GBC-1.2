@@ -13,10 +13,19 @@ namespace gbc
 	OpenGLFrameBuffer::~OpenGLFrameBuffer()
 	{
 		glDeleteFramebuffers(1, &rendererID);
+		glDeleteTextures(1, &colorAttachment);
+		glDeleteTextures(1, &depthAttachment);
 	}
 
 	void OpenGLFrameBuffer::invalidate()
 	{
+		if (rendererID)
+		{
+			glDeleteFramebuffers(1, &rendererID);
+			glDeleteTextures(1, &colorAttachment);
+			glDeleteTextures(1, &depthAttachment);
+		}
+
 		glCreateFramebuffers(1, &rendererID);
 		glBindFramebuffer(GL_FRAMEBUFFER, rendererID);
 
@@ -40,10 +49,18 @@ namespace gbc
 	void OpenGLFrameBuffer::bind() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, rendererID);
+		glViewport(0, 0, specs.width, specs.height);
 	}
 
 	void OpenGLFrameBuffer::unbind() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	void OpenGLFrameBuffer::resize(unsigned int width, unsigned int height)
+	{
+		specs.width = width;
+		specs.height = height;
+		invalidate();
 	}
 }

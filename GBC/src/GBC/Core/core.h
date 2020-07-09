@@ -2,9 +2,7 @@
 
 #include <memory>
 
-#ifdef GBC_PLATFORM_WINDOWS
-	
-#else
+#ifndef GBC_PLATFORM_WINDOWS
 	#error GBC currently only supports Windows!
 #endif
 
@@ -21,7 +19,7 @@
 #endif
 
 #ifdef GBC_DIST
-
+	
 #endif
 
 #ifdef GBC_ENABLE_ASSERTS

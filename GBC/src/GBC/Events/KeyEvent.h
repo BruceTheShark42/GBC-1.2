@@ -66,9 +66,9 @@ namespace gbc
 			ss << "Key Typed Event: unicode=" << unicode;
 			return ss.str();
 		}
-		inline unsigned int getUnicode() const { return unicode; }
+#endif
+	inline unsigned int getUnicode() const { return unicode; }
 	protected:
 		unsigned int unicode;
-#endif
 	};
 }

@@ -24,8 +24,10 @@ namespace gbc
 		
 		void pushLayer(Layer *layer);
 		void pushOverlay(Layer *overlay);
-		ImGuiLayer* getImGuiLayer() const { return imguiLayer; }
 
+#ifdef GBC_ENABLE_IMGUI
+		ImGuiLayer* getImGuiLayer() const { return imguiLayer; }
+#endif // GBC_IMGUI_ENABLE
 		inline static Application& getInstance() { return *instance; }
 		inline Window& getWindow() const { return *window; }
 	private:

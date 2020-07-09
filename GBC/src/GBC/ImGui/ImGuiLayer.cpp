@@ -70,7 +70,7 @@ namespace gbc
 		
 	}
 
-	void ImGuiLayer::onEvent(Event& e)
+	void ImGuiLayer::onEvent(Event &e)
 	{
 		if (blockEvents)
 		{

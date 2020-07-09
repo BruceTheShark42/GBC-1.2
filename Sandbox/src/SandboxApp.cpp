@@ -1,7 +1,6 @@
 #include <gbc.h>
 #include <GBC/Core/entryPoint.h>
 
-// Sandbox2D
 #include "SandboxLayer.h"
 
 class Sandbox : public gbc::Application

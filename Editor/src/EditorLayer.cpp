@@ -20,8 +20,10 @@ namespace gbc
 		spriteSheet = Texture2D::create("assets/textures/RPGpack_sheet_2X.png");
 		stairs = SubTexture2D::createFromCoords(spriteSheet, { 128.0f, 128.0f }, { 2.0f, 1.0f }, { 1.0f, 2.0f });
 
+#ifdef GBC_ENABLE_IMGUI
 		FrameBufferSpecs specs = { 1280, 720 };
 		fbo = FrameBuffer::create(specs);
+#endif
 	}
 
 	void EditorLayer::onDetach()
@@ -35,13 +37,19 @@ namespace gbc
 		millis = ts.millis();
 		rotation += 90.0f * ts;
 
+#ifdef GBC_ENABLE_IMGUI
 		if (sceneFocused)
 		{
+#endif
 			cameraController.onUpdate(ts);
+#ifdef GBC_ENABLE_IMGUI
 		}
+#endif
 
 		// Render
+#ifdef GBC_ENABLE_IMGUI
 		fbo->bind();
+#endif
 		RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 		RenderCommand::clear();
 #ifdef GBC_ENABLE_STATS
@@ -60,33 +68,35 @@ namespace gbc
 		Renderer2D::drawQuad({ 0.0f, 0.0f, 0.3f }, { 1.0f, 2.0f }, stairs);
 		Renderer2D::endScene();
 
+#ifdef GBC_ENABLE_IMGUI
 		fbo->unbind();
+#endif
 	}
 
-	void EditorLayer::onEvent(Event& e)
+	void EditorLayer::onEvent(Event &e)
 	{
 		cameraController.onEvent(e);
 
 		if (e.getType() == EventType::KeyPressed)
 		{
-			const KeyPressedEvent& kpe = (KeyPressedEvent&)e;
+			const KeyPressedEvent &kpe = (KeyPressedEvent&)e;
 			switch (kpe.getKeyCode())
 			{
-			case KeyCode::F9:
-				if (!kpe.hasRepeated())
-					Application::getInstance().getWindow().toggleVSync();
-				break;
-			case KeyCode::F10:
-				if (!kpe.hasRepeated())
-					Application::getInstance().getWindow().toggleCursorEnabled();
-				break;
-			case KeyCode::F11:
-				if (!kpe.hasRepeated())
-					Application::getInstance().getWindow().toggleFullscreen();
-				break;
-			case KeyCode::Escape:
-				Application::getInstance().terminate();
-				break;
+				case KeyCode::F9:
+					if (!kpe.hasRepeated())
+						Application::getInstance().getWindow().toggleVSync();
+					break;
+				case KeyCode::F10:
+					if (!kpe.hasRepeated())
+						Application::getInstance().getWindow().toggleCursorEnabled();
+					break;
+				case KeyCode::F11:
+					if (!kpe.hasRepeated())
+						Application::getInstance().getWindow().toggleFullscreen();
+					break;
+				case KeyCode::Escape:
+					Application::getInstance().terminate();
+					break;
 			}
 		}
 	}
@@ -174,7 +184,7 @@ namespace gbc
 		sceneFocused = ImGui::IsWindowFocused();
 		sceneHovered = ImGui::IsWindowHovered();
 
-		Application::getInstance().getImGuiLayer()->setBlockEvents(!sceneFocused || !sceneHovered);
+		Application::getInstance().getImGuiLayer()->setBlockEvents(/*!sceneFocused || */!sceneHovered);
 
 		if (sceneSize != *((glm::vec2*)&viewportSize) && viewportSize.x > 0.0f && viewportSize.y > 0.0f)
 		{

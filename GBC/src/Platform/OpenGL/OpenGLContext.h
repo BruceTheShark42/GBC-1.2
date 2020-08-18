@@ -9,11 +9,11 @@ namespace gbc
 	class OpenGLContext : public GraphicsContext
 	{
 	public:
-		OpenGLContext(GLFWwindow *window);
+		OpenGLContext(GLFWwindow* window);
 
 		virtual void init() override;
 		virtual void swapBuffers() override;
 	private:
-		GLFWwindow *window;
+		GLFWwindow* window;
 	};
 }

@@ -30,8 +30,8 @@ namespace gbc
 		const glm::vec2 whiteTexCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
 
 		unsigned int quadIndexCount = 0;
-		QuadVertex *quadBufferBase = nullptr;
-		QuadVertex *quadBufferPtr = nullptr;
+		QuadVertex* quadBufferBase = nullptr;
+		QuadVertex* quadBufferPtr = nullptr;
 		
 		std::array<Ref<Texture>, MAX_TEXTURES> textureSlots;
 		unsigned int textureSlotIndex = 1;
@@ -60,7 +60,7 @@ namespace gbc
 
 		data.quadBufferBase = new QuadVertex[data.MAX_VERTICES];
 
-		unsigned int *quadIndices = new unsigned int[data.MAX_INDICES];
+		unsigned int* quadIndices = new unsigned int[data.MAX_INDICES];
 		for (unsigned int i = 0, offset = 0; i < data.MAX_INDICES; i += 6, offset += 4)
 		{
 			quadIndices[i + 0] = offset + 0;
@@ -80,7 +80,7 @@ namespace gbc
 		unsigned int whiteTextureData = 0xffffffff;
 		data.whiteTexture->setData(&whiteTextureData, sizeof(whiteTextureData));
 
-		int *samplers = new int[data.MAX_TEXTURES];
+		int* samplers = new int[data.MAX_TEXTURES];
 		for (int i = 0; i < data.MAX_TEXTURES; ++i)
 			samplers[i] = i;
 
@@ -105,7 +105,7 @@ namespace gbc
 		
 	}
 
-	void Renderer2D::beginScene(const OrthographicCamera &camera)
+	void Renderer2D::beginScene(const OrthographicCamera& camera)
 	{
 		data.quadShader->bind();
 		data.quadShader->setMat4("projectionView", camera.getProjectionView());
@@ -149,7 +149,6 @@ namespace gbc
 
 	// Stats
 #ifdef GBC_ENABLE_STATS
-
 	const Renderer2D::Statistics& Renderer2D::getStats()
 	{
 		return data.stats;
@@ -166,18 +165,18 @@ namespace gbc
 
 	// Non-rotated non-scaled quad
 
-	void Renderer2D::drawQuad(const glm::vec3 &position, const glm::vec4 &color)
+	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec4& color)
 	{
 		createQuad(position, data.whiteTexCoords, 0.0f, { 0.0f, 0.0f }, color);
 	}
 
-	void Renderer2D::drawQuad(const glm::vec3 &position, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::drawQuad(const glm::vec3& position, const Ref<Texture2D>& texture, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
 		_drawQuad(position, texture, texCoords, tilingFactor, color);
 	}
 
-	void Renderer2D::drawQuad(const glm::vec3 &position, const Ref<SubTexture2D> &subtexture, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::drawQuad(const glm::vec3& position, const Ref<SubTexture2D>& subtexture, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		// TODO: doesn't use tiling factor correctly
 		// because it's a subtexture the tiling factor will
@@ -185,12 +184,12 @@ namespace gbc
 		// around back to the beginning of the subtexture
 		// how do I fix this? it's the same way for all
 		// four of these drawQuad functions.
-		const glm::vec2 *texCoords = subtexture->getTextureCoords();
+		const glm::vec2* texCoords = subtexture->getTextureCoords();
 		const Ref<Texture2D> texture = subtexture->getTexture();
 		_drawQuad(position, texture, texCoords, tilingFactor, color);
 	}
 
-	void Renderer2D::_drawQuad(const glm::vec3 &position, const Ref<Texture2D> &texture, const glm::vec2 *texCoords, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::_drawQuad(const glm::vec3& position, const Ref<Texture2D>& texture, const glm::vec2* texCoords, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		float textureIndex = 0.0f;
 
@@ -212,7 +211,7 @@ namespace gbc
 		createQuad(position, texCoords, textureIndex, tilingFactor, color);
 	}
 
-	void Renderer2D::createQuad(const glm::vec3 &position, const glm::vec2 *texCoords, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::createQuad(const glm::vec3& position, const glm::vec2* texCoords, float textureIndex, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		ensureBatch();
 
@@ -236,18 +235,18 @@ namespace gbc
 
 	// Rotated non-scaled quad
 
-	void Renderer2D::drawQuad(const glm::vec3 &position, float rotation, const glm::vec4 &color)
+	void Renderer2D::drawQuad(const glm::vec3& position, float rotation, const glm::vec4& color)
 	{
 		createQuad(position, rotation, data.whiteTexCoords, 0.0f, { 0.0f, 0.0f }, color);
 	}
 
-	void Renderer2D::drawQuad(const glm::vec3 &position, float rotation, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::drawQuad(const glm::vec3& position, float rotation, const Ref<Texture2D>& texture, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
 		_drawQuad(position, rotation, texture, texCoords, tilingFactor, color);
 	}
 
-	void Renderer2D::drawQuad(const glm::vec3 &position, float rotation, const Ref<SubTexture2D> &subtexture, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::drawQuad(const glm::vec3& position, float rotation, const Ref<SubTexture2D>& subtexture, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		// TODO: doesn't use tiling factor correctly
 		// because it's a subtexture the tiling factor will
@@ -255,12 +254,12 @@ namespace gbc
 		// around back to the beginning of the subtexture
 		// how do I fix this? it's the same way for all
 		// four of these drawQuad functions.
-		const glm::vec2 *texCoords = subtexture->getTextureCoords();
+		const glm::vec2* texCoords = subtexture->getTextureCoords();
 		const Ref<Texture2D> texture = subtexture->getTexture();
 		_drawQuad(position, rotation, texture, texCoords, tilingFactor, color);
 	}
 
-	void Renderer2D::_drawQuad(const glm::vec3 &position, float rotation, const Ref<Texture2D> &texture, const glm::vec2 *texCoords, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::_drawQuad(const glm::vec3& position, float rotation, const Ref<Texture2D>& texture, const glm::vec2* texCoords, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		float textureIndex = 0.0f;
 
@@ -282,7 +281,7 @@ namespace gbc
 		createQuad(position, rotation, texCoords, textureIndex, tilingFactor, color);
 	}
 
-	void Renderer2D::createQuad(const glm::vec3 &position, float rotation, const glm::vec2 *texCoords, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::createQuad(const glm::vec3& position, float rotation, const glm::vec2* texCoords, float textureIndex, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		ensureBatch();
 
@@ -306,18 +305,18 @@ namespace gbc
 
 	// Non-rotated scaled quad
 
-	void Renderer2D::drawQuad(const glm::vec3 &position, const glm::vec2 &scale, const glm::vec4 &color)
+	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& scale, const glm::vec4& color)
 	{
 		createQuad(position, scale, data.whiteTexCoords, 0.0f, { 0.0f, 0.0f }, color);
 	}
 
-	void Renderer2D::drawQuad(const glm::vec3 &position, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& scale, const Ref<Texture2D>& texture, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
 		_drawQuad(position, scale, texture, texCoords, tilingFactor, color);
 	}
 
-	void Renderer2D::drawQuad(const glm::vec3 &position, const glm::vec2 &scale, const Ref<SubTexture2D> &subtexture, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& scale, const Ref<SubTexture2D>& subtexture, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		// TODO: doesn't use tiling factor correctly
 		// because it's a subtexture the tiling factor will
@@ -325,12 +324,12 @@ namespace gbc
 		// around back to the beginning of the subtexture
 		// how do I fix this? it's the same way for all
 		// four of these drawQuad functions.
-		const glm::vec2 *texCoords = subtexture->getTextureCoords();
+		const glm::vec2* texCoords = subtexture->getTextureCoords();
 		const Ref<Texture2D> texture = subtexture->getTexture();
 		_drawQuad(position, scale, texture, texCoords, tilingFactor, color);
 	}
 
-	void Renderer2D::_drawQuad(const glm::vec3 &position, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec2 *texCoords, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::_drawQuad(const glm::vec3& position, const glm::vec2& scale, const Ref<Texture2D>& texture, const glm::vec2* texCoords, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		float textureIndex = 0.0f;
 
@@ -352,7 +351,7 @@ namespace gbc
 		createQuad(position, scale, texCoords, textureIndex, tilingFactor, color);
 	}
 
-	void Renderer2D::createQuad(const glm::vec3 &position, const glm::vec2 &scale, const glm::vec2 *texCoords, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::createQuad(const glm::vec3& position, const glm::vec2& scale, const glm::vec2* texCoords, float textureIndex, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		ensureBatch();
 
@@ -376,18 +375,18 @@ namespace gbc
 
 	// Rotated scaled quad
 
-	void Renderer2D::drawQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, const glm::vec4 &color)
+	void Renderer2D::drawQuad(const glm::vec3& position, float rotation, const glm::vec2& scale, const glm::vec4& color)
 	{
 		createQuad(position, rotation, scale, data.whiteTexCoords, 0.0f, { 0.0f, 0.0f }, color);
 	}
 
-	void Renderer2D::drawQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::drawQuad(const glm::vec3& position, float rotation, const glm::vec2& scale, const Ref<Texture2D>& texture, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
 		_drawQuad(position, rotation, scale, texture, texCoords, tilingFactor, color);
 	}
 
-	void Renderer2D::drawQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, const Ref<SubTexture2D> &subtexture, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::drawQuad(const glm::vec3& position, float rotation, const glm::vec2& scale, const Ref<SubTexture2D>& subtexture, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		// TODO: doesn't use tiling factor correctly
 		// because it's a subtexture the tiling factor will
@@ -395,12 +394,12 @@ namespace gbc
 		// around back to the beginning of the subtexture
 		// how do I fix this? it's the same way for all
 		// four of these drawQuad functions.
-		const glm::vec2 *texCoords = subtexture->getTextureCoords();
+		const glm::vec2* texCoords = subtexture->getTextureCoords();
 		const Ref<Texture2D> texture = subtexture->getTexture();
 		_drawQuad(position, rotation, scale, texture, texCoords, tilingFactor, color);
 	}
 
-	void Renderer2D::_drawQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, const Ref<Texture2D> &texture, const glm::vec2 *texCoords, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::_drawQuad(const glm::vec3& position, float rotation, const glm::vec2& scale, const Ref<Texture2D>& texture, const glm::vec2* texCoords, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		float textureIndex = 0.0f;
 
@@ -422,7 +421,7 @@ namespace gbc
 		createQuad(position, rotation, scale, texCoords, textureIndex, tilingFactor, color);
 	}
 
-	void Renderer2D::createQuad(const glm::vec3 &position, float rotation, const glm::vec2 &scale, const glm::vec2 *texCoords, float textureIndex, const glm::vec2 &tilingFactor, const glm::vec4 &color)
+	void Renderer2D::createQuad(const glm::vec3& position, float rotation, const glm::vec2& scale, const glm::vec2* texCoords, float textureIndex, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		ensureBatch();
 

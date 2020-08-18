@@ -11,7 +11,7 @@ namespace gbc
 		void setProjection(float left = -1.0f, float right = 1.0f, float bottom = -1.0f, float top = 1.0f);
 
 		inline const glm::vec3& getPosition() const { return position; }
-		inline void setPosition(const glm::vec3 &position) { this->position = position; calculate(); }
+		inline void setPosition(const glm::vec3& position) { this->position = position; calculate(); }
 
 		inline float getRotation() const { return rotation; }
 		inline void setRotation(float rotation) { this->rotation = rotation; calculate(); }

@@ -32,7 +32,7 @@ namespace gbc
 		virtual unsigned int getWidth() const = 0;
 		virtual unsigned int getHeight() const = 0;
 
-		virtual void setEventCallback(const EventCallbackFunc &callback) = 0;
+		virtual void setEventCallback(const EventCallbackFunc& callback) = 0;
 
 		virtual void setFullscreen(bool enabled) = 0;
 		virtual bool getFullscreen() const = 0;
@@ -47,6 +47,6 @@ namespace gbc
 		inline void toggleCursorEnabled() { setCursorEnabled(!getCursorEnabled()); };
 
 		virtual void* getNativeWindow() const = 0;
-		static Scope<Window> create(const WindowProps &props = WindowProps());
+		static Scope<Window> create(const WindowProps& props = WindowProps());
 	};
 }

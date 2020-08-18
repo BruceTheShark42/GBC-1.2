@@ -9,7 +9,7 @@ namespace gbc
 	class WindowsWindow : public Window
 	{
 	public:
-		WindowsWindow(const WindowProps &props);
+		WindowsWindow(const WindowProps& props);
 		virtual ~WindowsWindow();
 
 		void onUpdate() override;
@@ -17,7 +17,7 @@ namespace gbc
 		inline unsigned int getWidth() const override { return data.width; }
 		inline unsigned int getHeight() const override { return data.height; }
 
-		inline virtual void setEventCallback(const EventCallbackFunc &callback) override { data.callback = callback; };
+		inline virtual void setEventCallback(const EventCallbackFunc& callback) override { data.callback = callback; };
 
 		virtual void setFullscreen(bool enabled) override;
 		inline virtual bool getFullscreen() const override { return data.fullscreen; }
@@ -30,10 +30,10 @@ namespace gbc
 
 		inline virtual void* getNativeWindow() const override { return window; };
 	private:
-		GLFWwindow *window;
-		GLFWmonitor *monitor;
-		const GLFWvidmode *videoMode;
-		GraphicsContext *context;
+		GLFWwindow* window;
+		GLFWmonitor* monitor;
+		const GLFWvidmode* videoMode;
+		GraphicsContext* context;
 
 		struct WindowData
 		{

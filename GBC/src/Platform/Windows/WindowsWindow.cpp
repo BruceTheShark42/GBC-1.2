@@ -12,17 +12,17 @@ namespace gbc
 {
 	static bool GLFWinitialized = false;
 
-	static void GLFWErrorCallback(int error, const char *description)
+	static void GLFWErrorCallback(int error, const char* description)
 	{
 		GBC_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
 	}
 
-	Scope<Window> Window::create(const WindowProps &props)
+	Scope<Window> Window::create(const WindowProps& props)
 	{
 		return createScope<WindowsWindow>(props);
 	}
 
-	WindowsWindow::WindowsWindow(const WindowProps &props)
+	WindowsWindow::WindowsWindow(const WindowProps& props)
 	{
 		GBC_CORE_INFO("Creating Window - title = \"{0}\" | width = {1} | height = {2} | resizable = {3} | fullscreen = {4} | vSync = {5} | cursorEnabled = {6}", props.title, props.width, props.height, props.resizable, props.fullscreen, props.vsync, props.cursorEnabled);
 
@@ -76,52 +76,52 @@ namespace gbc
 		setCursorEnabled(props.cursorEnabled);
 
 		// Set callbacks
-		glfwSetWindowCloseCallback(window, [](GLFWwindow *window)
+		glfwSetWindowCloseCallback(window, [](GLFWwindow* window)
 		{
-			WindowData &data = *(WindowData*)glfwGetWindowUserPointer(window);
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			data.callback(WindowClosedEvent());
 		});
-		glfwSetWindowSizeCallback(window, [](GLFWwindow *window, int width, int height)
+		glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int width, int height)
 		{
-			WindowData &data = *(WindowData*)glfwGetWindowUserPointer(window);
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			data.width = width;
 			data.height = height;
 			data.callback(WindowResizedEvent(width, height));
 		});
-		glfwSetWindowPosCallback(window, [](GLFWwindow *window, int x, int y)
+		glfwSetWindowPosCallback(window, [](GLFWwindow* window, int x, int y)
 		{
-			WindowData &data = *(WindowData*)glfwGetWindowUserPointer(window);
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			data.x = x;
 			data.y = y;
 			data.callback(WindowMovedEvent(x, y));
 		});
-		glfwSetWindowFocusCallback(window, [](GLFWwindow *window, int focused)
+		glfwSetWindowFocusCallback(window, [](GLFWwindow* window, int focused)
 		{
-			WindowData &data = *(WindowData*)glfwGetWindowUserPointer(window);
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			if (focused == GLFW_TRUE)
 				data.callback(WindowGainedFocusEvent());
 			else
 				data.callback(WindowLostFocusEvent());
 		});
-		glfwSetWindowIconifyCallback(window, [](GLFWwindow *window, int iconified)
+		glfwSetWindowIconifyCallback(window, [](GLFWwindow* window, int iconified)
 		{
-			WindowData &data = *(WindowData*)glfwGetWindowUserPointer(window);
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			if (iconified == GLFW_TRUE)
 				data.callback(WindowMinimizedEvent());
 			else
 				data.callback(WindowUnminimizedEvent());
 		});
-		glfwSetWindowMaximizeCallback(window, [](GLFWwindow *window, int maximized)
+		glfwSetWindowMaximizeCallback(window, [](GLFWwindow* window, int maximized)
 		{
-			WindowData &data = *(WindowData*)glfwGetWindowUserPointer(window);
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			if (maximized == GLFW_TRUE)
 				data.callback(WindowMaximizedEvent());
 			else
 				data.callback(WindowUnmaximizedEvent());
 		});
-		glfwSetKeyCallback(window, [](GLFWwindow *window, int keyCode, int scancode, int action, int mods)
+		glfwSetKeyCallback(window, [](GLFWwindow* window, int keyCode, int scancode, int action, int mods)
 		{
-			WindowData &data = *(WindowData*)glfwGetWindowUserPointer(window);
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			if (keyCode != GLFW_KEY_UNKNOWN)
 			{
 				switch (action)
@@ -138,32 +138,32 @@ namespace gbc
 				}
 			}
 		});
-		glfwSetCharCallback(window, [](GLFWwindow *window, unsigned int charCode)
+		glfwSetCharCallback(window, [](GLFWwindow* window, unsigned int charCode)
 		{
-			WindowData &data = *(WindowData*)glfwGetWindowUserPointer(window);
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			data.callback(KeyTypedEvent(charCode));
 		});
-		glfwSetMouseButtonCallback(window, [](GLFWwindow *window, int button, int action, int mods)
+		glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int mods)
 		{
-			WindowData &data = *(WindowData*)glfwGetWindowUserPointer(window);
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			if (action == GLFW_PRESS)
 				data.callback(MouseButtonPressedEvent(static_cast<MouseCode>(button)));
 			else
 				data.callback(MouseButtonReleasedEvent(static_cast<MouseCode>(button)));
 		});
-		glfwSetCursorPosCallback(window, [](GLFWwindow *window, double x, double y)
+		glfwSetCursorPosCallback(window, [](GLFWwindow* window, double x, double y)
 		{
-			WindowData &data = *(WindowData*)glfwGetWindowUserPointer(window);
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			data.callback(MouseMovedEvent((float)x, (float)y));
 		});
-		glfwSetScrollCallback(window, [](GLFWwindow *window, double xOff, double yOff)
+		glfwSetScrollCallback(window, [](GLFWwindow* window, double xOff, double yOff)
 		{
-			WindowData &data = *(WindowData*)glfwGetWindowUserPointer(window);
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			data.callback(MouseScrolledEvent((float)xOff, (float)yOff));
 		});
-		glfwSetCursorEnterCallback(window, [](GLFWwindow *window, int entered)
+		glfwSetCursorEnterCallback(window, [](GLFWwindow* window, int entered)
 		{
-			WindowData &data = *(WindowData*)glfwGetWindowUserPointer(window);
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			if (entered == GLFW_TRUE)
 				data.callback(MouseEnteredEvent());
 			else

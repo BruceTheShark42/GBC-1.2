@@ -8,7 +8,7 @@ namespace gbc
 	class OpenGLTexture2D : public Texture2D
 	{
 	public:
-		OpenGLTexture2D(const std::string &path);
+		OpenGLTexture2D(const std::string& path);
 		OpenGLTexture2D(unsigned int width, unsigned int height);
 		virtual ~OpenGLTexture2D();
 
@@ -16,11 +16,11 @@ namespace gbc
 		inline virtual unsigned int getHeight() const override { return height; }
 		inline virtual unsigned int getRendererID() const override { return rendererID; }
 
-		virtual void setData(void *data, unsigned int size) override;
+		virtual void setData(void* data, unsigned int size) override;
 
 		virtual void bind(unsigned int slot = 0) const override;
 
-		virtual bool operator==(const Texture &texture) override { return rendererID == ((OpenGLTexture2D&)texture).rendererID; }
+		virtual bool operator==(const Texture& texture) override { return rendererID == ((OpenGLTexture2D&)texture).rendererID; }
 	private:
 #ifdef GBC_DEBUG
 		std::string path;

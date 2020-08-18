@@ -5,7 +5,7 @@
 
 namespace gbc
 {
-	Renderer::SceneData *Renderer::sceneData = new Renderer::SceneData();
+	Renderer::SceneData* Renderer::sceneData = new Renderer::SceneData();
 
 	void Renderer::init()
 	{
@@ -18,7 +18,7 @@ namespace gbc
 		RenderCommand::setViewport(0, 0, width, height);
 	}
 
-	void Renderer::beginScene(const OrthographicCamera &camera)
+	void Renderer::beginScene(const OrthographicCamera& camera)
 	{
 		sceneData->projectionView = camera.getProjectionView();
 	}
@@ -28,7 +28,7 @@ namespace gbc
 
 	}
 
-	void Renderer::submit(const Ref<VertexArray> &vertexArray, const Ref<Shader> &shader, const glm::mat4 &transform)
+	void Renderer::submit(const Ref<VertexArray>& vertexArray, const Ref<Shader>& shader, const glm::mat4& transform)
 	{
 		shader->bind();
 		shader->setMat4("projectionView", sceneData->projectionView);

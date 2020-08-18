@@ -73,13 +73,13 @@ namespace gbc
 #endif
 	}
 
-	void EditorLayer::onEvent(Event &e)
+	void EditorLayer::onEvent(Event& e)
 	{
 		cameraController.onEvent(e);
 
 		if (e.getType() == EventType::KeyPressed)
 		{
-			const KeyPressedEvent &kpe = (KeyPressedEvent&)e;
+			const KeyPressedEvent& kpe = (KeyPressedEvent&)e;
 			switch (kpe.getKeyCode())
 			{
 				case KeyCode::F9:
@@ -114,7 +114,7 @@ namespace gbc
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
 		if (opt_fullscreen)
 		{
-			ImGuiViewport *viewport = ImGui::GetMainViewport();
+			ImGuiViewport* viewport = ImGui::GetMainViewport();
 			ImGui::SetNextWindowPos(viewport->Pos);
 			ImGui::SetNextWindowSize(viewport->Size);
 			ImGui::SetNextWindowViewport(viewport->ID);
@@ -141,7 +141,7 @@ namespace gbc
 			ImGui::PopStyleVar(2);
 
 		// DockSpace
-		ImGuiIO &io = ImGui::GetIO();
+		ImGuiIO& io = ImGui::GetIO();
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 		{
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");

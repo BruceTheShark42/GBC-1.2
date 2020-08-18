@@ -5,7 +5,7 @@
 
 namespace gbc
 {
-	Application *Application::instance = nullptr;
+	Application* Application::instance = nullptr;
 
 	Application::Application()
 		: running(true), minimized(false), lastFrameTime(0.0f)
@@ -29,7 +29,7 @@ namespace gbc
 		
 	}
 
-	void Application::onEvent(Event &e)
+	void Application::onEvent(Event& e)
 	{
 		GBC_CORE_TRACE(e);
 
@@ -67,13 +67,13 @@ namespace gbc
 		running = false;
 	}
 
-	bool Application::onWindowClosed(WindowClosedEvent &e)
+	bool Application::onWindowClosed(WindowClosedEvent& e)
 	{
 		terminate();
 		return true;
 	}
 
-	bool Application::onWindowResized(WindowResizedEvent &e)
+	bool Application::onWindowResized(WindowResizedEvent& e)
 	{
 		if (e.getWidth() == 0 || e.getHeight() == 0)
 		{
@@ -86,12 +86,12 @@ namespace gbc
 		return false;
 	}
 
-	void Application::pushLayer(Layer *layer)
+	void Application::pushLayer(Layer* layer)
 	{
 		layerStack.pushLayer(layer);
 	}
 
-	void Application::pushOverlay(Layer *overlay)
+	void Application::pushOverlay(Layer* overlay)
 	{
 		layerStack.pushOverlay(overlay);
 	}

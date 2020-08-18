@@ -5,7 +5,7 @@
 
 namespace gbc
 {
-	static GLenum shaderTypeFromString(const std::string &type)
+	static GLenum shaderTypeFromString(const std::string& type)
 	{
 		if (type == "vertex") return GL_VERTEX_SHADER;
 		if (type == "geometry") return GL_GEOMETRY_SHADER;
@@ -15,7 +15,7 @@ namespace gbc
 		return 0;
 	}
 
-	OpenGLShader::OpenGLShader(const std::string &path)
+	OpenGLShader::OpenGLShader(const std::string& path)
 	{
 		compile(preProcess(readFile(path)));
 
@@ -26,7 +26,7 @@ namespace gbc
 		name = path.substr(lastSlash, count);
 	}
 
-	std::string OpenGLShader::readFile(const std::string &path)
+	std::string OpenGLShader::readFile(const std::string& path)
 	{
 		std::string shaders;
 		std::ifstream file(path, std::ios::in | std::ios::binary);
@@ -43,11 +43,11 @@ namespace gbc
 		return shaders;
 	}
 
-	std::unordered_map<GLenum, std::string> OpenGLShader::preProcess(const std::string &source)
+	std::unordered_map<GLenum, std::string> OpenGLShader::preProcess(const std::string& source)
 	{
 		std::unordered_map<GLenum, std::string> sources;
 
-		const char *typeToken = "#type";
+		const char* typeToken = "#type";
 		size_t typeTokenLength = std::strlen(typeToken);
 		size_t pos = source.find(typeToken);
 		
@@ -67,20 +67,20 @@ namespace gbc
 		return sources;
 	}
 
-	void OpenGLShader::compile(const std::unordered_map<GLenum, std::string> &shaderSources)
+	void OpenGLShader::compile(const std::unordered_map<GLenum, std::string>& shaderSources)
 	{
 		rendererID = glCreateProgram();
 		std::vector<GLenum> shaderIDs;
 		shaderIDs.reserve(shaderSources.size());
 
-		for (auto &kv : shaderSources)
+		for (auto& kv : shaderSources)
 		{
 			const GLenum type = kv.first;
-			const std::string &src = kv.second;
+			const std::string& src = kv.second;
 
 			GLuint shader = glCreateShader(type);
 
-			const GLchar *source = (const GLchar*)src.c_str();
+			const GLchar* source = (const GLchar*)src.c_str();
 			glShaderSource(shader, 1, &source, 0);
 
 			glCompileShader(shader);
@@ -147,52 +147,52 @@ namespace gbc
 		glUseProgram(0);
 	}
 
-	int OpenGLShader::getUniformLocation(const std::string &name)
+	int OpenGLShader::getUniformLocation(const std::string& name)
 	{
 		return glGetUniformLocation(rendererID, name.c_str());
 	}
 
-	void OpenGLShader::setBool(const std::string &name, bool value)
+	void OpenGLShader::setBool(const std::string& name, bool value)
 	{
 		glUniform1i(getUniformLocation(name), (int)value);
 	}
 
-	void OpenGLShader::setInt(const std::string &name, int value)
+	void OpenGLShader::setInt(const std::string& name, int value)
 	{
 		glUniform1i(getUniformLocation(name), value);
 	}
 
-	void OpenGLShader::setIntArray(const std::string &name, int* values, unsigned int count)
+	void OpenGLShader::setIntArray(const std::string& name, int* values, unsigned int count)
 	{
 		glUniform1iv(getUniformLocation(name), count, values);
 	}
 
-	void OpenGLShader::setFloat(const std::string &name, float value)
+	void OpenGLShader::setFloat(const std::string& name, float value)
 	{
 		glUniform1f(getUniformLocation(name), value);
 	}
 
-	void OpenGLShader::setFloat2(const std::string &name, const glm::vec2 &value)
+	void OpenGLShader::setFloat2(const std::string& name, const glm::vec2& value)
 	{
 		glUniform2fv(getUniformLocation(name), 1, glm::value_ptr(value));
 	}
 
-	void OpenGLShader::setFloat3(const std::string &name, const glm::vec3 &value)
+	void OpenGLShader::setFloat3(const std::string& name, const glm::vec3& value)
 	{
 		glUniform3fv(getUniformLocation(name), 1, glm::value_ptr(value));
 	}
 
-	void OpenGLShader::setFloat4(const std::string &name, const glm::vec4 &value)
+	void OpenGLShader::setFloat4(const std::string& name, const glm::vec4& value)
 	{
 		glUniform4fv(getUniformLocation(name), 1, glm::value_ptr(value));
 	}
 
-	void OpenGLShader::setMat3(const std::string &name, const glm::mat3 &value)
+	void OpenGLShader::setMat3(const std::string& name, const glm::mat3& value)
 	{
 		glUniformMatrix3fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 	}
 
-	void OpenGLShader::setMat4(const std::string &name, const glm::mat4 &value)
+	void OpenGLShader::setMat4(const std::string& name, const glm::mat4& value)
 	{
 		glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 	}

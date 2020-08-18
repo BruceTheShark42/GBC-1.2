@@ -5,7 +5,7 @@
 
 namespace gbc
 {
-	OrthographicCameraController::OrthographicCameraController(float aspectRatio, float zoomLevel, const glm::vec3 &position, float rotation)
+	OrthographicCameraController::OrthographicCameraController(float aspectRatio, float zoomLevel, const glm::vec3& position, float rotation)
 		: aspectRatio(aspectRatio), zoomLevel(zoomLevel), zoomSpeed(0.5f),
 		camera(-aspectRatio * zoomLevel, aspectRatio * zoomLevel, -zoomLevel, zoomLevel),
 		position(position), rotation(rotation), movementSpeed(5.0f), rotationSpeed(180.0f) {}
@@ -42,7 +42,7 @@ namespace gbc
 		camera.setRotation(rotation);
 	}
 
-	void OrthographicCameraController::onEvent(Event &e)
+	void OrthographicCameraController::onEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<MouseScrolledEvent>(GBC_BIND_FUNC(OrthographicCameraController::onMouseScrolled));
@@ -66,7 +66,7 @@ namespace gbc
 		camera.setProjection(-aspectRatio * zoomLevel, aspectRatio * zoomLevel, -zoomLevel, zoomLevel);
 	}
 
-	bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent &e)
+	bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent& e)
 	{
 		zoomLevel -= e.getY() * zoomSpeed;
 		if (zoomLevel < zoomSpeed)
@@ -75,7 +75,7 @@ namespace gbc
 		return false;
 	}
 
-	bool OrthographicCameraController::onWindowResized(WindowResizedEvent &e)
+	bool OrthographicCameraController::onWindowResized(WindowResizedEvent& e)
 	{
 		resize((float)e.getWidth(), (float)e.getHeight());
 		return false;

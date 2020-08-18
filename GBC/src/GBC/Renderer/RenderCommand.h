@@ -22,16 +22,16 @@ namespace gbc
 			api->clear();
 		}
 
-		inline static void setClearColor(const glm::vec4 &color)
+		inline static void setClearColor(const glm::vec4& color)
 		{
 			api->setClearColor(color);
 		}
 
-		inline static void drawIndexed(const Ref<VertexArray> &vertexArray, unsigned int count = 0)
+		inline static void drawIndexed(const Ref<VertexArray>& vertexArray, unsigned int count = 0)
 		{
 			api->drawIndexed(vertexArray, count);
 		}
 	private:
-		static RendererAPI *api;
+		static RendererAPI* api;
 	};
 }

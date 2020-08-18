@@ -19,7 +19,7 @@ namespace gbc
 		MBMiddle  = MB3
 	};
 
-	inline std::ostream& operator<<(std::ostream &ostr, MouseCode button)
+	inline std::ostream& operator<<(std::ostream& ostr, MouseCode button)
 	{
 		return ostr << static_cast<unsigned short>(button);
 	}

@@ -18,12 +18,12 @@ namespace gbc
 		void run();
 		void terminate();
 
-		void onEvent(Event &e);
-		bool onWindowClosed(WindowClosedEvent &e);
-		bool onWindowResized(WindowResizedEvent &e);
+		void onEvent(Event& e);
+		bool onWindowClosed(WindowClosedEvent& e);
+		bool onWindowResized(WindowResizedEvent& e);
 		
-		void pushLayer(Layer *layer);
-		void pushOverlay(Layer *overlay);
+		void pushLayer(Layer* layer);
+		void pushOverlay(Layer* overlay);
 
 #ifdef GBC_ENABLE_IMGUI
 		ImGuiLayer* getImGuiLayer() const { return imguiLayer; }
@@ -34,12 +34,12 @@ namespace gbc
 		Scope<Window> window;
 		LayerStack layerStack;
 #ifdef GBC_ENABLE_IMGUI
-		ImGuiLayer *imguiLayer;
+		ImGuiLayer* imguiLayer;
 #endif
 
 		float lastFrameTime;
 		bool running, minimized;
-		static Application *instance;
+		static Application* instance;
 	};
 
 	Application* createApplication();

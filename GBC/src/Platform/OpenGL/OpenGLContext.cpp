@@ -5,7 +5,7 @@
 
 namespace gbc
 {
-	OpenGLContext::OpenGLContext(GLFWwindow *window)
+	OpenGLContext::OpenGLContext(GLFWwindow* window)
 		: window(window)
 	{
 		GBC_CORE_ASSERT(window != nullptr, "Context creation: window is nullptr!");

@@ -4,7 +4,7 @@
 
 namespace gbc
 {
-	OpenGLVertexBuffer::OpenGLVertexBuffer(float *vertices, unsigned int size)
+	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, unsigned int size)
 	{
 		glCreateBuffers(1, &rendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
@@ -33,14 +33,14 @@ namespace gbc
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	void OpenGLVertexBuffer::setData(const void *data, unsigned int size)
+	void OpenGLVertexBuffer::setData(const void* data, unsigned int size)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 	}
 
 
-	OpenGLIndexBuffer::OpenGLIndexBuffer(unsigned int *indices, unsigned int count)
+	OpenGLIndexBuffer::OpenGLIndexBuffer(unsigned int* indices, unsigned int count)
 		: count(count)
 	{
 		glCreateBuffers(1, &rendererID);

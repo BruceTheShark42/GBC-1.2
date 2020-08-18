@@ -5,7 +5,7 @@
 
 namespace gbc
 {
-	Ref<VertexBuffer> VertexBuffer::create(float *vertices, unsigned int size)
+	Ref<VertexBuffer> VertexBuffer::create(float* vertices, unsigned int size)
 	{
 		switch (Renderer::getAPI())
 		{
@@ -27,7 +27,7 @@ namespace gbc
 		return nullptr;
 	}
 
-	Ref<IndexBuffer> IndexBuffer::create(unsigned int *indices, unsigned int count)
+	Ref<IndexBuffer> IndexBuffer::create(unsigned int* indices, unsigned int count)
 	{
 		switch (Renderer::getAPI())
 		{

@@ -21,12 +21,12 @@ namespace gbc
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	void OpenGLRendererAPI::setClearColor(const glm::vec4 &color)
+	void OpenGLRendererAPI::setClearColor(const glm::vec4& color)
 	{
 		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
-	void OpenGLRendererAPI::drawIndexed(const Ref<VertexArray> &vertexArray, unsigned int count)
+	void OpenGLRendererAPI::drawIndexed(const Ref<VertexArray>& vertexArray, unsigned int count)
 	{
 		unsigned int indexCount = count ? vertexArray->getIndexBuffer()->getCount() : count;
 		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);

@@ -15,14 +15,14 @@ namespace gbc
 	{
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
-		ImGuiIO &io = ImGui::GetIO();
+		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
 		ImGui::StyleColorsDark();
 
-		ImGuiStyle &style = ImGui::GetStyle();
+		ImGuiStyle& style = ImGui::GetStyle();
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
 			style.WindowRounding = 0.0f;
@@ -49,8 +49,8 @@ namespace gbc
 
 	void ImGuiLayer::end()
 	{
-		ImGuiIO &io = ImGui::GetIO();
-		Application &application = Application::getInstance();
+		ImGuiIO& io = ImGui::GetIO();
+		Application& application = Application::getInstance();
 		io.DisplaySize = ImVec2((float)application.getWindow().getWidth(), (float)application.getWindow().getHeight());
 
 		ImGui::Render();
@@ -58,7 +58,7 @@ namespace gbc
 
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
-			GLFWwindow *window = glfwGetCurrentContext();
+			GLFWwindow* window = glfwGetCurrentContext();
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
 			glfwMakeContextCurrent(window);
@@ -70,13 +70,13 @@ namespace gbc
 		
 	}
 
-	void ImGuiLayer::onEvent(Event &e)
+	void ImGuiLayer::onEvent(Event& e)
 	{
 		if (blockEvents)
 		{
-			ImGuiIO &io = ImGui::GetIO();
-			e.setHandled(e.isHandled() || (e.isInCategory(EventCategoryMouse) & io.WantCaptureMouse)
-									   || (e.isInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard));
+			ImGuiIO& io = ImGui::GetIO();
+			e.setHandled(e.isHandled() || (e.isInCategory(EventCategoryMouse)&  io.WantCaptureMouse)
+									   || (e.isInCategory(EventCategoryKeyboard)&  io.WantCaptureKeyboard));
 		}
 	}
 }

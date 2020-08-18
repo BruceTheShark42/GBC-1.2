@@ -4,5 +4,5 @@
 
 namespace gbc
 {
-	RendererAPI *RenderCommand::api = new OpenGLRendererAPI();
+	RendererAPI* RenderCommand::api = new OpenGLRendererAPI();
 }

@@ -17,9 +17,9 @@ namespace gbc
 		virtual void setViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height) = 0;
 
 		virtual void clear() = 0;
-		virtual void setClearColor(const glm::vec4 &color) = 0;
+		virtual void setClearColor(const glm::vec4& color) = 0;
 
-		virtual void drawIndexed(const Ref<VertexArray> &vertexArray, unsigned int count = 0) = 0;
+		virtual void drawIndexed(const Ref<VertexArray>& vertexArray, unsigned int count = 0) = 0;
 
 		inline static API getAPI() { return api; }
 	private:

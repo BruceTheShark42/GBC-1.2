@@ -8,23 +8,23 @@ namespace gbc
 
 	LayerStack::~LayerStack()
 	{
-		for (Layer *layer : layers)
+		for (Layer* layer : layers)
 			delete layer;
 	}
 
-	void LayerStack::pushLayer(Layer *layer)
+	void LayerStack::pushLayer(Layer* layer)
 	{
 		layers.emplace(layers.begin() + layerInsertIndex++, layer);
 		layer->onAttach();
 	}
 
-	void LayerStack::pushOverlay(Layer *overlay)
+	void LayerStack::pushOverlay(Layer* overlay)
 	{
 		layers.emplace_back(overlay);
 		overlay->onAttach();
 	}
 
-	void LayerStack::popLayer(Layer *layer)
+	void LayerStack::popLayer(Layer* layer)
 	{
 		auto it = std::find(layers.begin(), layers.end(), layer);
 		if (it != layers.end())
@@ -35,7 +35,7 @@ namespace gbc
 		}
 	}
 
-	void LayerStack::popOverlay(Layer *overlay)
+	void LayerStack::popOverlay(Layer* overlay)
 	{
 		auto it = std::find(layers.begin(), layers.end(), overlay);
 		if (it != layers.end())
@@ -47,11 +47,11 @@ namespace gbc
 
 	void LayerStack::onUpdate(TimeStep ts)
 	{
-		for (Layer *layer : layers)
+		for (Layer* layer : layers)
 			layer->onUpdate(ts);
 	}
 
-	bool LayerStack::onEvent(Event &e)
+	bool LayerStack::onEvent(Event& e)
 	{
 		for (auto it = layers.end(); it != layers.begin();)
 		{
@@ -65,7 +65,7 @@ namespace gbc
 #ifdef GBC_ENABLE_IMGUI
 	void LayerStack::onImGuiRender()
 	{
-		for (Layer *layer : layers)
+		for (Layer* layer : layers)
 			layer->onImGuiRender();
 	}
 #endif

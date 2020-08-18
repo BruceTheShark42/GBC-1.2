@@ -39,7 +39,7 @@ namespace gbc
 		unsigned int size, offset;
 		bool normalized;
 
-		BufferElement(ShaderDataType type, const std::string &name, bool normalized = false)
+		BufferElement(ShaderDataType type, const std::string& name, bool normalized = false)
 			: type(type), name(name), size(shaderDataTypeSize(type)), offset(0), normalized(normalized) {}
 
 		unsigned int getComponentCount() const
@@ -71,7 +71,7 @@ namespace gbc
 		BufferLayout(const std::initializer_list<BufferElement>& elements)
 			: elements(elements), stride(0)
 		{
-			for (auto &element : this->elements)
+			for (auto& element : this->elements)
 			{
 				element.offset = stride;
 				stride += element.size;
@@ -99,11 +99,11 @@ namespace gbc
 		virtual void unbind() const = 0;
 
 		virtual const BufferLayout& getLayout() const = 0;
-		virtual void setLayout(const BufferLayout &layout) = 0;
+		virtual void setLayout(const BufferLayout& layout) = 0;
 
-		virtual void setData(const void *data, unsigned int size) = 0;
+		virtual void setData(const void* data, unsigned int size) = 0;
 		
-		static Ref<VertexBuffer> create(float *vertices, unsigned int size);
+		static Ref<VertexBuffer> create(float* vertices, unsigned int size);
 		static Ref<VertexBuffer> create(unsigned int size);
 	};
 

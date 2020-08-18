@@ -13,8 +13,8 @@ namespace gbc
 		virtual void bind() const override;
 		virtual void unbind() const override;
 
-		virtual void addVertexBuffer(const Ref<VertexBuffer> &vertexBuffer) override;
-		virtual void setIndexBuffer(const Ref<IndexBuffer> &indexBuffer) override;
+		virtual void addVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) override;
+		virtual void setIndexBuffer(const Ref<IndexBuffer>& indexBuffer) override;
 
 		inline virtual const std::vector<Ref<VertexBuffer>>& getVertexBuffers() const override { return vertexBuffers; }
 		inline virtual const Ref<IndexBuffer>& getIndexBuffer() const override { return indexBuffer; }

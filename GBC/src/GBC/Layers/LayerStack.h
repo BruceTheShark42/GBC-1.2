@@ -12,13 +12,13 @@ namespace gbc
 		LayerStack();
 		~LayerStack();
 		
-		void pushLayer(Layer *layer);
-		void pushOverlay(Layer *overlay);
-		void popLayer(Layer *layer);
-		void popOverlay(Layer *overlay);
+		void pushLayer(Layer* layer);
+		void pushOverlay(Layer* overlay);
+		void popLayer(Layer* layer);
+		void popOverlay(Layer* overlay);
 
 		void onUpdate(TimeStep ts);
-		bool onEvent(Event &e);
+		bool onEvent(Event& e);
 #ifdef GBC_ENABLE_IMGUI
 		void onImGuiRender();
 #endif

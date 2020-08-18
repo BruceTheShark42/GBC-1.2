@@ -7,7 +7,7 @@ namespace gbc
 	class OpenGLFrameBuffer : public FrameBuffer
 	{
 	public:
-		OpenGLFrameBuffer(const FrameBufferSpecs &specs);
+		OpenGLFrameBuffer(const FrameBufferSpecs& specs);
 		virtual ~OpenGLFrameBuffer();
 
 		void invalidate();

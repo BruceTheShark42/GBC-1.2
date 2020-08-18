@@ -12,10 +12,10 @@ namespace gbc
 		static void init();
 		static void onWindowResized(unsigned int width, unsigned int height);
 
-		static void beginScene(const OrthographicCamera &camera);
+		static void beginScene(const OrthographicCamera& camera);
 		static void endScene();
 
-		static void submit(const Ref<VertexArray> &vertexArray, const Ref<Shader> &shader, const glm::mat4 &transform = glm::mat4(1.0f));
+		static void submit(const Ref<VertexArray>& vertexArray, const Ref<Shader>& shader, const glm::mat4& transform = glm::mat4(1.0f));
 
 		inline static RendererAPI::API getAPI() { return RendererAPI::getAPI(); }
 	private:
@@ -23,6 +23,6 @@ namespace gbc
 		{
 			glm::mat4 projectionView;
 		};
-		static SceneData *sceneData;
+		static SceneData* sceneData;
 	};
 }

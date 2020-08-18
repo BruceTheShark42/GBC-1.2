@@ -5,7 +5,7 @@
 
 namespace gbc
 {
-	Ref<FrameBuffer> FrameBuffer::create(const FrameBufferSpecs &specs)
+	Ref<FrameBuffer> FrameBuffer::create(const FrameBufferSpecs& specs)
 	{
 		switch (Renderer::getAPI())
 		{

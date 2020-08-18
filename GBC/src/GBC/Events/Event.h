@@ -33,7 +33,7 @@ namespace gbc
 	public:
 		virtual EventType getType() const = 0;
 		virtual int getCategoryFlags() const = 0;
-		inline bool isInCategory(EventCategory category) const { return getCategoryFlags() & category; }
+		inline bool isInCategory(EventCategory category) const { return getCategoryFlags()&  category; }
 		inline bool isHandled() const { return handled; }
 		inline void setHandled(bool handled) { this->handled = handled; }
 #ifdef GBC_DEBUG
@@ -47,7 +47,7 @@ namespace gbc
 	class EventDispatcher
 	{
 	public:
-		EventDispatcher(Event &e)
+		EventDispatcher(Event& e)
 			: e(e) {}
 
 		template<typename T>
@@ -62,10 +62,10 @@ namespace gbc
 			return false;
 		}
 	private:
-		Event &e;
+		Event& e;
 	};
 
-	inline std::ostream& operator<<(std::ostream &ostr, const Event &e)
+	inline std::ostream& operator<<(std::ostream& ostr, const Event& e)
 	{
 #ifdef GBC_DEBUG
 		return ostr << e.toString();

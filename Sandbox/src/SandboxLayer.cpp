@@ -51,13 +51,13 @@ void SandboxLayer::onUpdate(gbc::TimeStep ts)
 	gbc::Renderer2D::endScene();
 }
 
-void SandboxLayer::onEvent(gbc::Event &e)
+void SandboxLayer::onEvent(gbc::Event& e)
 {
 	cameraController.onEvent(e);
 
 	if (e.getType() == gbc::EventType::KeyPressed)
 	{
-		const gbc::KeyPressedEvent &kpe = (gbc::KeyPressedEvent&)e;
+		const gbc::KeyPressedEvent& kpe = (gbc::KeyPressedEvent&)e;
 		switch (kpe.getKeyCode())
 		{
 			case gbc::KeyCode::F9:

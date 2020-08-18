@@ -4,14 +4,14 @@
 
 namespace gbc
 {
-	OpenGLTexture2D::OpenGLTexture2D(const std::string &path)
+	OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
 #ifdef GBC_DEBUG
 		: path(path)
 #endif
 	{
 		int width, height, channels;
 		stbi_set_flip_vertically_on_load(1);
-		stbi_uc *data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+		stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 		GBC_CORE_ASSERT(data != nullptr, "Failed to load texture!");
 		this->width = (unsigned int)width;
 		this->height = (unsigned int)height;
@@ -58,7 +58,7 @@ namespace gbc
 		glDeleteTextures(1, &rendererID);
 	}
 
-	void OpenGLTexture2D::setData(void *data, unsigned int size)
+	void OpenGLTexture2D::setData(void* data, unsigned int size)
 	{
 		unsigned int bpp = dataFormat == GL_RGBA ? 4 : 3;
 		GBC_CORE_ASSERT(size == width * height * bpp, "Data size is too big or too small!");

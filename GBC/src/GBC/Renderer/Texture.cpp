@@ -5,7 +5,7 @@
 
 namespace gbc
 {
-	Ref<Texture2D> Texture2D::create(const std::string &path)
+	Ref<Texture2D> Texture2D::create(const std::string& path)
 	{
 		switch (Renderer::getAPI())
 		{

@@ -11,7 +11,7 @@ public:
 	virtual void onAttach() override;
 	virtual void onDetach() override;
 	virtual void onUpdate(gbc::TimeStep ts) override;
-	virtual void onEvent(gbc::Event &e) override;
+	virtual void onEvent(gbc::Event& e) override;
 #ifdef GBC_ENABLE_IMGUI
 	virtual void onImGuiRender();
 #endif

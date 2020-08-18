@@ -45,7 +45,7 @@ namespace gbc
 		glBindVertexArray(0);
 	}
 
-	void OpenGLVertexArray::addVertexBuffer(const Ref<VertexBuffer> &vertexBuffer)
+	void OpenGLVertexArray::addVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 	{
 		GBC_CORE_ASSERT(vertexBuffer->getLayout().getElements().size() != 0, "Vertex buffer has no layout!");
 
@@ -53,9 +53,9 @@ namespace gbc
 		vertexBuffer->bind();
 		vertexBuffers.push_back(vertexBuffer);
 
-		const BufferLayout &layout = vertexBuffer->getLayout();
+		const BufferLayout& layout = vertexBuffer->getLayout();
 		unsigned int index = 0;
-		for (auto &element : layout)
+		for (auto& element : layout)
 		{
 			glEnableVertexAttribArray(index);
 			glVertexAttribPointer(index++, element.getComponentCount(), shaderToOpenGL(element.type), 
@@ -63,7 +63,7 @@ namespace gbc
 		}
 	}
 
-	void OpenGLVertexArray::setIndexBuffer(const Ref<IndexBuffer> &indexBuffer)
+	void OpenGLVertexArray::setIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
 	{
 		glBindVertexArray(rendererID);
 		indexBuffer->bind();

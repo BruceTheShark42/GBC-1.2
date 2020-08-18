@@ -139,7 +139,7 @@ namespace gbc
 		Menu             = 348
 	};
 
-	inline std::ostream& operator<<(std::ostream &ostr, KeyCode keyCode)
+	inline std::ostream& operator<<(std::ostream& ostr, KeyCode keyCode)
 	{
 		return ostr << static_cast<unsigned short>(keyCode);
 	}

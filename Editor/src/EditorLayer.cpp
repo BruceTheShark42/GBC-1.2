@@ -30,11 +30,37 @@ namespace gbc
 		squareEntity = scene->createEntity("Square");
 		squareEntity.add<SpriteRendererComponent>(glm::vec4(0.870588f, 0.270588f, 0.270588f, 1.0f));
 
-		cameraEntity = scene->createEntity("Camera");
-		cameraEntity.add<CameraComponent>();
+		primaryCamera = scene->createEntity("Primary Camera");
+		primaryCamera.add<CameraComponent>();
 
 		secondCamera = scene->createEntity("Second Camera");
 		secondCamera.add<CameraComponent>().primary = false;
+
+		class CameraController : public ScriptableEntity
+		{
+		public:
+			void OnCreate()
+			{
+				
+			}
+
+			void OnDestroy()
+			{
+				// TODO: doesn't get called
+			}
+
+			void OnUpdate(TimeStep ts)
+			{
+				float speed = 5.0f * ts;
+				auto& transform = GetComponent<TransformComponent>().transform;
+
+				if (Input::isKeyPressed(KeyCode::A)) transform[3][0] -= speed;
+				if (Input::isKeyPressed(KeyCode::D)) transform[3][0] += speed;
+				if (Input::isKeyPressed(KeyCode::W)) transform[3][1] += speed;
+				if (Input::isKeyPressed(KeyCode::S)) transform[3][1] -= speed;
+			}
+		};
+		primaryCamera.add<NativeScriptComponent>().bind<CameraController>();
 	}
 
 	void EditorLayer::onDetach()
@@ -46,24 +72,20 @@ namespace gbc
 	{
 		millis = ts.millis();
 
-		// This is just c++ that I didn't know about?????
+		// TODO: this fails in Dist because the fbo is not being used
 		if (const FrameBufferSpecs& specs = fbo->getSpecs();
-			sceneSize.x > 0.0f && sceneSize.y > 0.0f &&
-			(specs.width != sceneSize.x || specs.height != sceneSize.y))
+			(specs.width != viewportSize.x || specs.height != viewportSize.y) &&
+			viewportSize.x > 0.0f && viewportSize.y > 0.0f)
 		{
-			fbo->resize((unsigned int)sceneSize.x, (unsigned int)sceneSize.y);
-			cameraController.resize(sceneSize.x, sceneSize.y);
-			scene->onViewportResize((unsigned int)sceneSize.x, (unsigned int)sceneSize.y);
+			fbo->resize((unsigned int)viewportSize.x, (unsigned int)viewportSize.y);
+			cameraController.resize(viewportSize.x, viewportSize.y);
+			scene->onViewportResize((unsigned int)viewportSize.x, (unsigned int)viewportSize.y);
 		}
 
 #ifdef GBC_ENABLE_IMGUI
 		if (sceneFocused)
-		{
 #endif
 			cameraController.onUpdate(ts);
-#ifdef GBC_ENABLE_IMGUI
-		}
-#endif
 
 		// Render
 #ifdef GBC_ENABLE_STATS
@@ -187,12 +209,12 @@ namespace gbc
 		}
 
 		ImGui::Separator();
-		ImGui::DragFloat3("Camera Transform", glm::value_ptr(cameraEntity.get<TransformComponent>().transform[3]));
+		ImGui::DragFloat2("Camera Transform", glm::value_ptr(primaryCamera.get<TransformComponent>().transform[3]));
 		
-		if (ImGui::Checkbox("Camera A", &primaryCamera))
+		if (ImGui::Checkbox("Use Primary Camera", &usePrimaryCamera))
 		{
-			cameraEntity.get<CameraComponent>().primary = primaryCamera;
-			secondCamera.get<CameraComponent>().primary = !primaryCamera;
+			primaryCamera.get<CameraComponent>().primary = usePrimaryCamera;
+			secondCamera.get<CameraComponent>().primary = !usePrimaryCamera;
 		}
 
 		ImGui::End();
@@ -214,10 +236,10 @@ namespace gbc
 		sceneHovered = ImGui::IsWindowHovered();
 		Application::getInstance().getImGuiLayer()->setBlockEvents(/*!sceneFocused || */!sceneHovered);
 
-		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-		sceneSize = { viewportSize.x, viewportSize.y };
+		ImVec2 size = ImGui::GetContentRegionAvail();
+		viewportSize = { size.x, size.y };
 
-		ImGui::Image((void*)fbo->getColorAttachment(), viewportSize, { 0.0f, 1.0f }, { 1.0f, 0.0f });
+		ImGui::Image((void*)fbo->getColorAttachment(), size, { 0.0f, 1.0f }, { 1.0f, 0.0f });
 		ImGui::End();
 		ImGui::PopStyleVar();
 	}

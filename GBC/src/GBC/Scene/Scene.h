@@ -19,7 +19,7 @@ namespace gbc
 		Entity createEntity(const std::string& name = std::string());
 	private:
 		entt::registry registry;
-		unsigned int viewportWidth = 0, viewportHeight;
+		unsigned int viewportWidth = 0, viewportHeight = 0;
 
 		friend class Entity;
 	};

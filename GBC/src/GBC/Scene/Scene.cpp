@@ -18,6 +18,25 @@ namespace gbc
 
 	void Scene::onUpdate(TimeStep ts)
 	{
+		// Update Scripts
+		{
+			auto view = registry.view<NativeScriptComponent>();
+			for (auto entity : view)
+			{
+				auto& component = view.get<NativeScriptComponent>(entity);
+
+				if (!component.instance)
+				{
+					component.instantiateFunc();
+					// component.instance is not nullptr after component.instantiateFunc() is called
+					component.instance->entity = { entity, this };
+					component.onCreateFunc(component.instance);
+				}
+
+				component.onUpdateFunc(component.instance, ts);
+			}
+		}
+
 		// Get the primary camera
 		Camera* primaryCamera = nullptr;
 		glm::mat4* primaryTransform = nullptr;

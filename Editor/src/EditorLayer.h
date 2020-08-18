@@ -29,11 +29,10 @@ namespace gbc
 
 		Ref<Scene> scene;
 		Entity squareEntity;
-		Entity cameraEntity;
-		Entity secondCamera;
-		bool primaryCamera = true;
+		Entity primaryCamera, secondCamera;
+		bool usePrimaryCamera = true;
 
-		glm::vec2 sceneSize = { 0.0f, 0.0f };
+		glm::vec2 viewportSize = { 0.0f, 0.0f };
 		bool sceneFocused = false, sceneHovered = false;
 
 		// TODO: Should be moved into Renderer2D::Statistics

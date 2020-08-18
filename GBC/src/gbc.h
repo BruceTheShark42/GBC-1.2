@@ -31,6 +31,7 @@
 // Scene
 #include "GBC/Scene/Scene.h"
 #include "GBC/Scene/Entity.h"
+#include "GBC/Scene/ScriptableEntity.h"
 #include "GBC/Scene/Components.h"
 
 // TODO: this should be the default 2D camera controller

@@ -442,4 +442,59 @@ namespace gbc
 		++data.stats.quadCount;
 #endif
 	}
+
+	// Transformed quad
+
+	void Renderer2D::drawQuad(const glm::mat4& transform, const glm::vec4& color)
+	{
+		createQuad(transform, data.whiteTexCoords, 0.0f, { 0.0f, 0.0f }, color);
+	}
+
+	void Renderer2D::drawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, const glm::vec2& tilingFactor, const glm::vec4& color)
+	{
+		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
+		_drawQuad(transform, texture, texCoords, tilingFactor, color);
+	}
+
+	void Renderer2D::_drawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, const glm::vec2* texCoords, const glm::vec2& tilingFactor, const glm::vec4& color)
+	{
+		float textureIndex = 0.0f;
+
+		for (unsigned int i = 1; i < data.textureSlotIndex; ++i)
+		{
+			if (*data.textureSlots[i].get() == *texture.get())
+			{
+				textureIndex = (float)i;
+				break;
+			}
+		}
+
+		if (textureIndex == 0.0f)
+		{
+			textureIndex = (float)data.textureSlotIndex;
+			data.textureSlots[data.textureSlotIndex++] = texture;
+		}
+
+		createQuad(transform, texCoords, textureIndex, tilingFactor, color);
+	}
+
+	void Renderer2D::createQuad(const glm::mat4& transform, const glm::vec2* texCoords, float textureIndex, const glm::vec2& tilingFactor, const glm::vec4& color)
+	{
+		ensureBatch();
+
+		for (unsigned char i = 0; i < 4; ++i)
+		{
+			data.quadBufferPtr->position = transform * data.quadVertexPositions[i];
+			data.quadBufferPtr->color = color;
+			data.quadBufferPtr->texCoord = texCoords[i];
+			data.quadBufferPtr->texIndex = textureIndex;
+			++data.quadBufferPtr;
+		}
+
+		data.quadIndexCount += 6;
+
+#ifdef GBC_ENABLE_STATS
+		++data.stats.quadCount;
+#endif
+	}
 }

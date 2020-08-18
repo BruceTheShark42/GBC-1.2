@@ -15,6 +15,7 @@ includedir["Glad"] = "GBC/vendor/Glad/include"
 includedir["ImGui"] = "GBC/vendor/ImGui"
 includedir["glm"] = "GBC/vendor/glm"
 includedir["stb_image"] = "GBC/vendor/stb_image"
+includedir["entt"] = "GBC/vendor/entt/include"
 
 group "Dependencies"
 	include "GBC/vendor/GLFW"
@@ -55,7 +56,8 @@ project "GBC"
 		"%{includedir.Glad}",
 		"%{includedir.ImGui}",
 		"%{includedir.glm}",
-		"%{includedir.stb_image}"
+		"%{includedir.stb_image}",
+		"%{includedir.entt}"
 	}
 
 	links {
@@ -108,7 +110,8 @@ project "Sandbox"
 		"GBC/vendor/spdlog/include",
 		"GBC/src",
 		"GBC/vendor",
-		"%{includedir.glm}"
+		"%{includedir.glm}",
+		"%{includedir.entt}"
 	}
 
 	links {
@@ -156,7 +159,8 @@ project "Editor"
 		"GBC/vendor/spdlog/include",
 		"GBC/src",
 		"GBC/vendor",
-		"%{includedir.glm}"
+		"%{includedir.glm}",
+		"%{includedir.entt}"
 	}
 
 	links {

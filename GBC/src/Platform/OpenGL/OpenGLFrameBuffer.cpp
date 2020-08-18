@@ -4,9 +4,6 @@
 
 namespace gbc
 {
-	// TODO: query driver
-	static const unsigned int MAX_FRAME_BUFFER_SIZE = 8192;
-
 	OpenGLFrameBuffer::OpenGLFrameBuffer(const FrameBufferSpecs& specs)
 		: specs(specs)
 	{

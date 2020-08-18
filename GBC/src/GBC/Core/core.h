@@ -32,7 +32,7 @@
 
 #define BIT(b) (1 << b)
 
-#define GBC_BIND_FUNC(func) std::bind(&func, this, std::placeholders::_1)
+#define GBC_BIND_FUNC(func) [this](auto&&... args) -> decltype(auto) { return this->func(std::forward<decltype(args)>(args)...); }
 
 namespace gbc
 {

@@ -24,6 +24,11 @@ namespace gbc
 		FrameBufferSpecs specs = { 1280, 720 };
 		fbo = FrameBuffer::create(specs);
 #endif
+
+		scene = createRef<Scene>();
+
+		squareEntity = scene->createEntity("Square");
+		squareEntity.add<SpriteRendererComponent>(glm::vec4(0.870588f, 0.270588f, 0.270588f, 1.0f));
 	}
 
 	void EditorLayer::onDetach()
@@ -33,9 +38,7 @@ namespace gbc
 
 	void EditorLayer::onUpdate(TimeStep ts)
 	{
-		// Update
 		millis = ts.millis();
-		rotation += 90.0f * ts;
 
 #ifdef GBC_ENABLE_IMGUI
 		if (sceneFocused)
@@ -47,25 +50,18 @@ namespace gbc
 #endif
 
 		// Render
-#ifdef GBC_ENABLE_IMGUI
-		fbo->bind();
-#endif
-		RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
-		RenderCommand::clear();
 #ifdef GBC_ENABLE_STATS
 		Renderer2D::resetStats();
 #endif
+#ifdef GBC_ENABLE_IMGUI
+		fbo->bind();
+#endif
+
+		RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
+		RenderCommand::clear();
 
 		Renderer2D::beginScene(cameraController.getCamera());
-		Renderer2D::drawQuad(position, glm::radians(rotation), scale, texture, { 2.0f, 4.0f }, color);
-		Renderer2D::drawQuad({ -1.0f, 0.5f, 0.2f }, { 1.0f, 1.0f }, { 0.5f, 0.7f, 0.8f, 1.0f });
-		Renderer2D::drawQuad({ 0.0f, 0.0f, -0.1f }, { 16.0f, 16.0f }, texture, { 16.0f, 16.0f });
-
-		for (float y = -5.0f; y <= 5.0f; y += 0.5f)
-			for (float x = -5.0f; x <= 5.0f; x += 0.5f)
-				Renderer2D::drawQuad({ x, y, 0.1f }, { 0.45f, 0.45f }, { (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.5f });
-
-		Renderer2D::drawQuad({ 0.0f, 0.0f, 0.3f }, { 1.0f, 2.0f }, stairs);
+		scene->onUpdate(ts);
 		Renderer2D::endScene();
 
 #ifdef GBC_ENABLE_IMGUI
@@ -160,11 +156,20 @@ namespace gbc
 		}
 		ImGui::End();
 
-		ImGui::Begin("Settings");
-		ImGui::DragFloat2("Position", glm::value_ptr(position));
-		ImGui::DragFloat("Rotation", &rotation);
-		ImGui::DragFloat2("Scale", glm::value_ptr(scale));
-		ImGui::ColorEdit4("Color", glm::value_ptr(color));
+		ImGui::Begin("Selected Entity");
+		if (squareEntity)
+		{
+			ImGui::DragFloat2("Position", glm::value_ptr(position));
+			ImGui::DragFloat("Rotation", &rotation);
+			ImGui::DragFloat2("Scale", glm::value_ptr(scale));
+			squareEntity.get<TransformComponent>().transform = glm::scale(glm::rotate(glm::translate(glm::mat4(1.0f), position), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f)), scale);
+
+			auto& tag = squareEntity.get<TagComponent>().tag;
+			ImGui::Text("%s", tag.c_str());
+
+			auto& squareColor = squareEntity.get<SpriteRendererComponent>();
+			ImGui::ColorEdit4("Color", glm::value_ptr(squareColor.color));
+		}
 		ImGui::End();
 
 		const Renderer2D::Statistics stats = Renderer2D::getStats();

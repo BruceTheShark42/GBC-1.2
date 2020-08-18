@@ -1,4 +1,6 @@
 // For use by Clients
+
+// Core
 #include "GBC/Core/Application.h"
 #include "GBC/Core/Log.h"
 #include "GBC/Core/TimeStep.h"
@@ -6,6 +8,7 @@
 #include "GBC/Core/keyCodes.h"
 #include "GBC/Core/mouseButtons.h"
 
+// Events
 #include "GBC/Events/KeyEvent.h"
 #include "GBC/Events/MouseEvent.h"
 #include "GBC/Events/WindowEvent.h"
@@ -13,6 +16,7 @@
 #include "GBC/ImGui/ImGuiLayer.h"
 #include "GBC/Layers/Layer.h"
 
+// Renderer
 #include "GBC/Renderer/Renderer.h"
 #include "GBC/Renderer/Renderer2D.h"
 #include "GBC/Renderer/RenderCommand.h"
@@ -24,4 +28,11 @@
 #include "GBC/Renderer/SubTexture2D.h"
 #include "GBC/Renderer/FrameBuffer.h"
 
+// Scene
+#include "GBC/Scene/Scene.h"
+#include "GBC/Scene/Entity.h"
+#include "GBC/Scene/Components.h"
+
+// TODO: this should be the default 2D camera controller
+// (an equivalent to the unity camera that I don't like the controlls for)
 #include "GBC/OrthographicCameraController.h"

@@ -29,6 +29,12 @@ namespace gbc
 
 		squareEntity = scene->createEntity("Square");
 		squareEntity.add<SpriteRendererComponent>(glm::vec4(0.870588f, 0.270588f, 0.270588f, 1.0f));
+
+		cameraEntity = scene->createEntity("Camera");
+		cameraEntity.add<CameraComponent>();
+
+		secondCamera = scene->createEntity("Second Camera");
+		secondCamera.add<CameraComponent>().primary = false;
 	}
 
 	void EditorLayer::onDetach()
@@ -39,6 +45,16 @@ namespace gbc
 	void EditorLayer::onUpdate(TimeStep ts)
 	{
 		millis = ts.millis();
+
+		// This is just c++ that I didn't know about?????
+		if (const FrameBufferSpecs& specs = fbo->getSpecs();
+			sceneSize.x > 0.0f && sceneSize.y > 0.0f &&
+			(specs.width != sceneSize.x || specs.height != sceneSize.y))
+		{
+			fbo->resize((unsigned int)sceneSize.x, (unsigned int)sceneSize.y);
+			cameraController.resize(sceneSize.x, sceneSize.y);
+			scene->onViewportResize((unsigned int)sceneSize.x, (unsigned int)sceneSize.y);
+		}
 
 #ifdef GBC_ENABLE_IMGUI
 		if (sceneFocused)
@@ -60,9 +76,8 @@ namespace gbc
 		RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 		RenderCommand::clear();
 
-		Renderer2D::beginScene(cameraController.getCamera());
+		// Update Scene
 		scene->onUpdate(ts);
-		Renderer2D::endScene();
 
 #ifdef GBC_ENABLE_IMGUI
 		fbo->unbind();
@@ -170,9 +185,19 @@ namespace gbc
 			auto& squareColor = squareEntity.get<SpriteRendererComponent>();
 			ImGui::ColorEdit4("Color", glm::value_ptr(squareColor.color));
 		}
+
+		ImGui::Separator();
+		ImGui::DragFloat3("Camera Transform", glm::value_ptr(cameraEntity.get<TransformComponent>().transform[3]));
+		
+		if (ImGui::Checkbox("Camera A", &primaryCamera))
+		{
+			cameraEntity.get<CameraComponent>().primary = primaryCamera;
+			secondCamera.get<CameraComponent>().primary = !primaryCamera;
+		}
+
 		ImGui::End();
 
-		const Renderer2D::Statistics stats = Renderer2D::getStats();
+		const Renderer2D::Statistics& stats = Renderer2D::getStats();
 		ImGui::Begin("Statistics");
 		ImGui::Text("Millis Per Frame: %f", millis);
 		ImGui::Text("Draw Calls: %d", stats.drawCalls);
@@ -184,19 +209,13 @@ namespace gbc
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
 		ImGui::Begin("Scene");
-		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
 
 		sceneFocused = ImGui::IsWindowFocused();
 		sceneHovered = ImGui::IsWindowHovered();
-
 		Application::getInstance().getImGuiLayer()->setBlockEvents(/*!sceneFocused || */!sceneHovered);
 
-		if (sceneSize != *((glm::vec2*)&viewportSize) && viewportSize.x > 0.0f && viewportSize.y > 0.0f)
-		{
-			fbo->resize((unsigned int)viewportSize.x, (unsigned int)viewportSize.y);
-			sceneSize = { viewportSize.x, viewportSize.y };
-			cameraController.resize(viewportSize.x, viewportSize.y);
-		}
+		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+		sceneSize = { viewportSize.x, viewportSize.y };
 
 		ImGui::Image((void*)fbo->getColorAttachment(), viewportSize, { 0.0f, 1.0f }, { 1.0f, 0.0f });
 		ImGui::End();

@@ -18,11 +18,51 @@ namespace gbc
 
 	void Scene::onUpdate(TimeStep ts)
 	{
-		auto group = registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-		for (auto entity : group)
+		// Get the primary camera
+		Camera* primaryCamera = nullptr;
+		glm::mat4* primaryTransform = nullptr;
 		{
-			auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-			Renderer2D::drawQuad(transform, sprite.color);
+			auto view = registry.view<TransformComponent, CameraComponent>();
+			for (auto entity : view)
+			{
+				auto& [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
+				if (camera.primary)
+				{
+					primaryCamera = &camera.camera;
+					primaryTransform = &transform.transform;
+					break;
+				}
+			}
+		}
+
+		if (primaryCamera)
+		{
+			// Render 2D
+			Renderer2D::beginScene(*primaryCamera, *primaryTransform);
+
+			auto group = registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+			for (auto entity : group)
+			{
+				auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+				Renderer2D::drawQuad(transform, sprite.color);
+			}
+
+			Renderer2D::endScene();
+		}
+	}
+
+	void Scene::onViewportResize(unsigned int width, unsigned int height)
+	{
+		viewportWidth = width;
+		viewportHeight = height;
+
+		// Resize the non-fixedAspectRatio cameras
+		auto view = registry.view<CameraComponent>();
+		for (auto entity : view)
+		{
+			auto& camera = view.get<CameraComponent>(entity);
+			if (!camera.fixedAspectRatio)
+				camera.camera.setViewportSize(width, height);
 		}
 	}
 

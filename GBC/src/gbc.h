@@ -35,4 +35,4 @@
 
 // TODO: this should be the default 2D camera controller
 // (an equivalent to the unity camera that I don't like the controlls for)
-#include "GBC/OrthographicCameraController.h"
+#include "GBC/Renderer/OrthographicCameraController.h"

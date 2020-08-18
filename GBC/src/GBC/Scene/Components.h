@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include "SceneCamera.h"
 
 namespace gbc
 {
@@ -35,5 +36,15 @@ namespace gbc
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
 		SpriteRendererComponent(const glm::vec4& color)
 			: color(color) {}
+	};
+
+	struct CameraComponent
+	{
+		SceneCamera camera;
+		bool primary = true; // TODO: move to scene
+		bool fixedAspectRatio = false;
+
+		CameraComponent() = default;
+		CameraComponent(const CameraComponent&) = default;
 	};
 }

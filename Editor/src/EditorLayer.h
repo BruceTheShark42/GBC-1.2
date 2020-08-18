@@ -29,6 +29,9 @@ namespace gbc
 
 		Ref<Scene> scene;
 		Entity squareEntity;
+		Entity cameraEntity;
+		Entity secondCamera;
+		bool primaryCamera = true;
 
 		glm::vec2 sceneSize = { 0.0f, 0.0f };
 		bool sceneFocused = false, sceneHovered = false;

@@ -14,10 +14,13 @@ namespace gbc
 		~Scene();
 	public:
 		void onUpdate(TimeStep ts);
+		void onViewportResize(unsigned int width, unsigned int height);
 	public:
 		Entity createEntity(const std::string& name = std::string());
 	private:
 		entt::registry registry;
+		unsigned int viewportWidth = 0, viewportHeight;
+
 		friend class Entity;
 	};
 }

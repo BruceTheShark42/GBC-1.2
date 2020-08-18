@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GBC/Renderer/Camera.h"
+#include "OrthographicCamera.h"
 #include "GBC/Core/TimeStep.h"
 #include "GBC/Events/KeyEvent.h"
 #include "GBC/Events/MouseEvent.h"

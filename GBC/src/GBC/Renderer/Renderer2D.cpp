@@ -115,6 +115,18 @@ namespace gbc
 		data.textureSlotIndex = 1;
 	}
 
+	void Renderer2D::beginScene(const Camera& camera, const glm::mat4& transform)
+	{
+		glm::mat4 projectionView = camera.getProjection() * glm::inverse(transform);
+
+		data.quadShader->bind();
+		data.quadShader->setMat4("projectionView", projectionView);
+
+		data.quadIndexCount = 0;
+		data.quadBufferPtr = data.quadBufferBase;
+		data.textureSlotIndex = 1;
+	}
+
 	void Renderer2D::endScene()
 	{
 		unsigned int dataSize = (unsigned int)((unsigned char*)data.quadBufferPtr - (unsigned char*)data.quadBufferBase);

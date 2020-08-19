@@ -53,22 +53,14 @@ namespace gbc
 	{
 		ScriptableEntity* instance = nullptr;
 
-		std::function<void()> instantiateFunc;
-		std::function<void()> destroyInstanceFunc;
-
-		std::function<void(ScriptableEntity*)> onCreateFunc;
-		std::function<void(ScriptableEntity*)> onDestroyFunc;
-		std::function<void(ScriptableEntity*, TimeStep)> onUpdateFunc;
+		ScriptableEntity* (*instantiateScript)();
+		void (*destroyScript)(NativeScriptComponent*);
 
 		template<typename T>
 		void bind()
 		{
-			instantiateFunc = [&]() { instance = new T(); };
-			destroyInstanceFunc = [&]() { delete (T*)instance; instance = nullptr; };
-
-			onCreateFunc = [](ScriptableEntity* instance) { ((T*)instance)->OnCreate(); };
-			onDestroyFunc = [](ScriptableEntity* instance) { ((T*)instance)->OnDestroy(); };
-			onUpdateFunc = [](ScriptableEntity* instance, TimeStep ts) { ((T*)instance)->OnUpdate(ts); };
+			instantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
+			destroyScript = [](NativeScriptComponent* nsc) { delete nsc->instance; nsc->instance = nullptr; };
 		}
 	};
 }

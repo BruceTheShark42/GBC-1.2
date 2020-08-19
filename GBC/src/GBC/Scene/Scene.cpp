@@ -20,21 +20,19 @@ namespace gbc
 	{
 		// Update Scripts
 		{
-			auto view = registry.view<NativeScriptComponent>();
-			for (auto entity : view)
+			registry.view<NativeScriptComponent>().each([=](entt::entity entity, NativeScriptComponent& nsc)
 			{
-				auto& component = view.get<NativeScriptComponent>(entity);
-
-				if (!component.instance)
+				// TODO: move to Scene::onScenePlay
+				if (!nsc.instance)
 				{
-					component.instantiateFunc();
-					// component.instance is not nullptr after component.instantiateFunc() is called
-					component.instance->entity = { entity, this };
-					component.onCreateFunc(component.instance);
+					nsc.instance = nsc.instantiateScript();
+					nsc.instance->entity = Entity{ entity, this };
+					nsc.instance->OnCreate();
 				}
 
-				component.onUpdateFunc(component.instance, ts);
-			}
+				nsc.instance->OnUpdate(ts);
+				// TODO: add "nsc.instance->OnDestroy();" to Scene::onSceneStop
+			});
 		}
 
 		// Get the primary camera
@@ -44,7 +42,7 @@ namespace gbc
 			auto view = registry.view<TransformComponent, CameraComponent>();
 			for (auto entity : view)
 			{
-				auto& [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
+				auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
 				if (camera.primary)
 				{
 					primaryCamera = &camera.camera;
@@ -62,7 +60,7 @@ namespace gbc
 			auto group = registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 			for (auto entity : group)
 			{
-				auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+				auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 				Renderer2D::drawQuad(transform, sprite.color);
 			}
 

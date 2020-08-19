@@ -29,7 +29,7 @@ namespace gbc
 
 		Ref<Scene> scene;
 		Entity squareEntity;
-		Entity primaryCamera, secondCamera;
+		Entity primaryCamera, secondaryCamera;
 		bool usePrimaryCamera = true;
 
 		glm::vec2 viewportSize = { 0.0f, 0.0f };

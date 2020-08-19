@@ -33,21 +33,21 @@ namespace gbc
 		primaryCamera = scene->createEntity("Primary Camera");
 		primaryCamera.add<CameraComponent>();
 
-		secondCamera = scene->createEntity("Second Camera");
-		secondCamera.add<CameraComponent>().primary = false;
+		secondaryCamera = scene->createEntity("Second Camera");
+		secondaryCamera.add<CameraComponent>().primary = false;
 
 		class CameraController : public ScriptableEntity
 		{
 		public:
-			void OnCreate()
-			{
-				
-			}
+			//void OnCreate()
+			//{
+			//	
+			//}
 
-			void OnDestroy()
-			{
-				// TODO: doesn't get called
-			}
+			//void OnDestroy()
+			//{
+			//	// TODO: doesn't get called
+			//}
 
 			void OnUpdate(TimeStep ts)
 			{
@@ -214,7 +214,7 @@ namespace gbc
 		if (ImGui::Checkbox("Use Primary Camera", &usePrimaryCamera))
 		{
 			primaryCamera.get<CameraComponent>().primary = usePrimaryCamera;
-			secondCamera.get<CameraComponent>().primary = !usePrimaryCamera;
+			secondaryCamera.get<CameraComponent>().primary = !usePrimaryCamera;
 		}
 
 		ImGui::End();

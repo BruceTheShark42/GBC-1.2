@@ -96,7 +96,7 @@ namespace gbc
 		data.quadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
 
 #ifdef GBC_ENABLE_STATS
-		resetStats();
+		resetStatistics();
 #endif
 	}
 
@@ -161,12 +161,12 @@ namespace gbc
 
 	// Stats
 #ifdef GBC_ENABLE_STATS
-	const Renderer2D::Statistics& Renderer2D::getStats()
+	const Renderer2D::Statistics& Renderer2D::getStatistics()
 	{
 		return data.stats;
 	}
 
-	void Renderer2D::resetStats()
+	void Renderer2D::resetStatistics()
 	{
 		data.stats.drawCalls = 0;
 		data.stats.quadCount = 0;
@@ -179,13 +179,15 @@ namespace gbc
 
 	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec4& color)
 	{
-		createQuad(position, data.whiteTexCoords, 0.0f, { 0.0f, 0.0f }, color);
+		const glm::mat4 transform = glm::translate(glm::mat4(1.0f), position);
+		createQuad(transform, data.whiteTexCoords, 0.0f, { 0.0f, 0.0f }, color);
 	}
 
 	void Renderer2D::drawQuad(const glm::vec3& position, const Ref<Texture2D>& texture, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
-		_drawQuad(position, texture, texCoords, tilingFactor, color);
+		const glm::mat4 transform = glm::translate(glm::mat4(1.0f), position);
+		_drawQuad(transform, texture, texCoords, tilingFactor, color);
 	}
 
 	void Renderer2D::drawQuad(const glm::vec3& position, const Ref<SubTexture2D>& subtexture, const glm::vec2& tilingFactor, const glm::vec4& color)
@@ -198,64 +200,23 @@ namespace gbc
 		// four of these drawQuad functions.
 		const glm::vec2* texCoords = subtexture->getTextureCoords();
 		const Ref<Texture2D> texture = subtexture->getTexture();
-		_drawQuad(position, texture, texCoords, tilingFactor, color);
-	}
-
-	void Renderer2D::_drawQuad(const glm::vec3& position, const Ref<Texture2D>& texture, const glm::vec2* texCoords, const glm::vec2& tilingFactor, const glm::vec4& color)
-	{
-		float textureIndex = 0.0f;
-
-		for (unsigned int i = 1; i < data.textureSlotIndex; ++i)
-		{
-			if (*data.textureSlots[i].get() == *texture.get())
-			{
-				textureIndex = (float)i;
-				break;
-			}
-		}
-
-		if (textureIndex == 0.0f)
-		{
-			textureIndex = (float)data.textureSlotIndex;
-			data.textureSlots[data.textureSlotIndex++] = texture;
-		}
-
-		createQuad(position, texCoords, textureIndex, tilingFactor, color);
-	}
-
-	void Renderer2D::createQuad(const glm::vec3& position, const glm::vec2* texCoords, float textureIndex, const glm::vec2& tilingFactor, const glm::vec4& color)
-	{
-		ensureBatch();
-
 		const glm::mat4 transform = glm::translate(glm::mat4(1.0f), position);
-
-		for (unsigned char i = 0; i < 4; ++i)
-		{
-			data.quadBufferPtr->position = transform * data.quadVertexPositions[i];
-			data.quadBufferPtr->color = color;
-			data.quadBufferPtr->texCoord = texCoords[i];
-			data.quadBufferPtr->texIndex = textureIndex;
-			++data.quadBufferPtr;
-		}
-
-		data.quadIndexCount += 6;
-
-#ifdef GBC_ENABLE_STATS
-		++data.stats.quadCount;
-#endif
+		_drawQuad(transform, texture, texCoords, tilingFactor, color);
 	}
 
 	// Rotated non-scaled quad
 
 	void Renderer2D::drawQuad(const glm::vec3& position, float rotation, const glm::vec4& color)
 	{
-		createQuad(position, rotation, data.whiteTexCoords, 0.0f, { 0.0f, 0.0f }, color);
+		const glm::mat4 transform = glm::rotate(glm::translate(glm::mat4(1.0f), position), rotation, { 0.0f, 0.0f, 1.0f });
+		createQuad(transform, data.whiteTexCoords, 0.0f, { 0.0f, 0.0f }, color);
 	}
 
 	void Renderer2D::drawQuad(const glm::vec3& position, float rotation, const Ref<Texture2D>& texture, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
-		_drawQuad(position, rotation, texture, texCoords, tilingFactor, color);
+		const glm::mat4 transform = glm::rotate(glm::translate(glm::mat4(1.0f), position), rotation, { 0.0f, 0.0f, 1.0f });
+		_drawQuad(transform, texture, texCoords, tilingFactor, color);
 	}
 
 	void Renderer2D::drawQuad(const glm::vec3& position, float rotation, const Ref<SubTexture2D>& subtexture, const glm::vec2& tilingFactor, const glm::vec4& color)
@@ -268,64 +229,23 @@ namespace gbc
 		// four of these drawQuad functions.
 		const glm::vec2* texCoords = subtexture->getTextureCoords();
 		const Ref<Texture2D> texture = subtexture->getTexture();
-		_drawQuad(position, rotation, texture, texCoords, tilingFactor, color);
-	}
-
-	void Renderer2D::_drawQuad(const glm::vec3& position, float rotation, const Ref<Texture2D>& texture, const glm::vec2* texCoords, const glm::vec2& tilingFactor, const glm::vec4& color)
-	{
-		float textureIndex = 0.0f;
-
-		for (unsigned int i = 1; i < data.textureSlotIndex; ++i)
-		{
-			if (*data.textureSlots[i].get() == *texture.get())
-			{
-				textureIndex = (float)i;
-				break;
-			}
-		}
-
-		if (textureIndex == 0.0f)
-		{
-			textureIndex = (float)data.textureSlotIndex;
-			data.textureSlots[data.textureSlotIndex++] = texture;
-		}
-
-		createQuad(position, rotation, texCoords, textureIndex, tilingFactor, color);
-	}
-
-	void Renderer2D::createQuad(const glm::vec3& position, float rotation, const glm::vec2* texCoords, float textureIndex, const glm::vec2& tilingFactor, const glm::vec4& color)
-	{
-		ensureBatch();
-
 		const glm::mat4 transform = glm::rotate(glm::translate(glm::mat4(1.0f), position), rotation, { 0.0f, 0.0f, 1.0f });
-
-		for (unsigned char i = 0; i < 4; ++i)
-		{
-			data.quadBufferPtr->position = transform * data.quadVertexPositions[i];
-			data.quadBufferPtr->color = color;
-			data.quadBufferPtr->texCoord = texCoords[i];
-			data.quadBufferPtr->texIndex = textureIndex;
-			++data.quadBufferPtr;
-		}
-
-		data.quadIndexCount += 6;
-
-#ifdef GBC_ENABLE_STATS
-		++data.stats.quadCount;
-#endif
+		_drawQuad(transform, texture, texCoords, tilingFactor, color);
 	}
 
 	// Non-rotated scaled quad
 
 	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& scale, const glm::vec4& color)
 	{
-		createQuad(position, scale, data.whiteTexCoords, 0.0f, { 0.0f, 0.0f }, color);
+		const glm::mat4 transform = glm::scale(glm::translate(glm::mat4(1.0f), position), { scale, 1.0f });
+		createQuad(transform, data.whiteTexCoords, 0.0f, { 0.0f, 0.0f }, color);
 	}
 
 	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& scale, const Ref<Texture2D>& texture, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
-		_drawQuad(position, scale, texture, texCoords, tilingFactor, color);
+		const glm::mat4 transform = glm::scale(glm::translate(glm::mat4(1.0f), position), { scale, 1.0f });
+		_drawQuad(transform, texture, texCoords, tilingFactor, color);
 	}
 
 	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& scale, const Ref<SubTexture2D>& subtexture, const glm::vec2& tilingFactor, const glm::vec4& color)
@@ -338,64 +258,23 @@ namespace gbc
 		// four of these drawQuad functions.
 		const glm::vec2* texCoords = subtexture->getTextureCoords();
 		const Ref<Texture2D> texture = subtexture->getTexture();
-		_drawQuad(position, scale, texture, texCoords, tilingFactor, color);
-	}
-
-	void Renderer2D::_drawQuad(const glm::vec3& position, const glm::vec2& scale, const Ref<Texture2D>& texture, const glm::vec2* texCoords, const glm::vec2& tilingFactor, const glm::vec4& color)
-	{
-		float textureIndex = 0.0f;
-
-		for (unsigned int i = 1; i < data.textureSlotIndex; ++i)
-		{
-			if (*data.textureSlots[i].get() == *texture.get())
-			{
-				textureIndex = (float)i;
-				break;
-			}
-		}
-
-		if (textureIndex == 0.0f)
-		{
-			textureIndex = (float)data.textureSlotIndex;
-			data.textureSlots[data.textureSlotIndex++] = texture;
-		}
-
-		createQuad(position, scale, texCoords, textureIndex, tilingFactor, color);
-	}
-
-	void Renderer2D::createQuad(const glm::vec3& position, const glm::vec2& scale, const glm::vec2* texCoords, float textureIndex, const glm::vec2& tilingFactor, const glm::vec4& color)
-	{
-		ensureBatch();
-
 		const glm::mat4 transform = glm::scale(glm::translate(glm::mat4(1.0f), position), { scale, 1.0f });
-
-		for (unsigned char i = 0; i < 4; ++i)
-		{
-			data.quadBufferPtr->position = transform * data.quadVertexPositions[i];
-			data.quadBufferPtr->color = color;
-			data.quadBufferPtr->texCoord = texCoords[i];
-			data.quadBufferPtr->texIndex = textureIndex;
-			++data.quadBufferPtr;
-		}
-
-		data.quadIndexCount += 6;
-
-#ifdef GBC_ENABLE_STATS
-		++data.stats.quadCount;
-#endif
+		_drawQuad(transform, texture, texCoords, tilingFactor, color);
 	}
 
 	// Rotated scaled quad
 
 	void Renderer2D::drawQuad(const glm::vec3& position, float rotation, const glm::vec2& scale, const glm::vec4& color)
 	{
-		createQuad(position, rotation, scale, data.whiteTexCoords, 0.0f, { 0.0f, 0.0f }, color);
+		const glm::mat4 transform = glm::scale(glm::rotate(glm::translate(glm::mat4(1.0f), position), rotation, { 0.0f, 0.0f, 1.0f }), { scale, 1.0f });
+		createQuad(transform, data.whiteTexCoords, 0.0f, { 0.0f, 0.0f }, color);
 	}
 
 	void Renderer2D::drawQuad(const glm::vec3& position, float rotation, const glm::vec2& scale, const Ref<Texture2D>& texture, const glm::vec2& tilingFactor, const glm::vec4& color)
 	{
 		const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { tilingFactor.x, 0.0f }, { tilingFactor.x, tilingFactor.y }, { 0.0f, tilingFactor.y } };
-		_drawQuad(position, rotation, scale, texture, texCoords, tilingFactor, color);
+		const glm::mat4 transform = glm::scale(glm::rotate(glm::translate(glm::mat4(1.0f), position), rotation, { 0.0f, 0.0f, 1.0f }), { scale, 1.0f });
+		_drawQuad(transform, texture, texCoords, tilingFactor, color);
 	}
 
 	void Renderer2D::drawQuad(const glm::vec3& position, float rotation, const glm::vec2& scale, const Ref<SubTexture2D>& subtexture, const glm::vec2& tilingFactor, const glm::vec4& color)
@@ -408,51 +287,8 @@ namespace gbc
 		// four of these drawQuad functions.
 		const glm::vec2* texCoords = subtexture->getTextureCoords();
 		const Ref<Texture2D> texture = subtexture->getTexture();
-		_drawQuad(position, rotation, scale, texture, texCoords, tilingFactor, color);
-	}
-
-	void Renderer2D::_drawQuad(const glm::vec3& position, float rotation, const glm::vec2& scale, const Ref<Texture2D>& texture, const glm::vec2* texCoords, const glm::vec2& tilingFactor, const glm::vec4& color)
-	{
-		float textureIndex = 0.0f;
-
-		for (unsigned int i = 1; i < data.textureSlotIndex; ++i)
-		{
-			if (*data.textureSlots[i].get() == *texture.get())
-			{
-				textureIndex = (float)i;
-				break;
-			}
-		}
-
-		if (textureIndex == 0.0f)
-		{
-			textureIndex = (float)data.textureSlotIndex;
-			data.textureSlots[data.textureSlotIndex++] = texture;
-		}
-
-		createQuad(position, rotation, scale, texCoords, textureIndex, tilingFactor, color);
-	}
-
-	void Renderer2D::createQuad(const glm::vec3& position, float rotation, const glm::vec2& scale, const glm::vec2* texCoords, float textureIndex, const glm::vec2& tilingFactor, const glm::vec4& color)
-	{
-		ensureBatch();
-
 		const glm::mat4 transform = glm::scale(glm::rotate(glm::translate(glm::mat4(1.0f), position), rotation, { 0.0f, 0.0f, 1.0f }), { scale, 1.0f });
-
-		for (unsigned char i = 0; i < 4; ++i)
-		{
-			data.quadBufferPtr->position = transform * data.quadVertexPositions[i];
-			data.quadBufferPtr->color = color;
-			data.quadBufferPtr->texCoord = texCoords[i];
-			data.quadBufferPtr->texIndex = textureIndex;
-			++data.quadBufferPtr;
-		}
-
-		data.quadIndexCount += 6;
-
-#ifdef GBC_ENABLE_STATS
-		++data.stats.quadCount;
-#endif
+		_drawQuad(transform, texture, texCoords, tilingFactor, color);
 	}
 
 	// Transformed quad

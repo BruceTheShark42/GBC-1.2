@@ -30,8 +30,8 @@ namespace gbc
 			unsigned int getIndexCount() const { return quadCount * 6; }
 		};
 
-		static const Statistics& getStats();
-		static void resetStats();
+		static const Statistics& getStatistics();
+		static void resetStatistics();
 #endif
 
 	// Non-rotated non-scaled quad
@@ -47,9 +47,6 @@ namespace gbc
 		static void drawQuad(const glm::vec3& position, const Ref<SubTexture2D>& subtexture, const glm::vec2& tilingFactor = glm::vec2(1.0f), const glm::vec4& color = glm::vec4(1.0f));
 		inline static void drawQuad(const glm::vec2& position, const Ref<SubTexture2D>& subtexture, const glm::vec2& tilingFactor = glm::vec2(1.0f), const glm::vec4& color = glm::vec4(1.0f))
 		{ drawQuad(glm::vec3(position, 0.0f), subtexture, tilingFactor, color); }
-	private:
-		static void _drawQuad(const glm::vec3& position, const Ref<Texture2D>& texture, const glm::vec2* texCoords, const glm::vec2& tilingFactor, const glm::vec4& color);
-		static void createQuad(const glm::vec3& position, const glm::vec2* texCoords, float textureIndex, const glm::vec2& tilingFactor, const glm::vec4& color);
 
 	// Rotated non-scaled quad
 	public:
@@ -64,9 +61,6 @@ namespace gbc
 		static void drawQuad(const glm::vec3& position, float rotation, const Ref<SubTexture2D>& subtexture, const glm::vec2& tilingFactor = glm::vec2(1.0f), const glm::vec4& color = glm::vec4(1.0f));
 		inline static void drawQuad(const glm::vec2& position, float rotation, const Ref<SubTexture2D>& subtexture, const glm::vec2& tilingFactor = glm::vec2(1.0f), const glm::vec4& color = glm::vec4(1.0f))
 		{ drawQuad(glm::vec3(position, 0.0f), rotation, subtexture, tilingFactor, color); }
-	private:
-		static void _drawQuad(const glm::vec3& position, float rotation, const Ref<Texture2D>& texture, const glm::vec2* texCoords, const glm::vec2& tilingFactor, const glm::vec4& color);
-		static void createQuad(const glm::vec3& position, float rotation, const glm::vec2* texCoords, float textureIndex, const glm::vec2& tilingFactor, const glm::vec4& color);
 
 	// Non-rotated scaled quad
 	public:
@@ -81,9 +75,6 @@ namespace gbc
 		static void drawQuad(const glm::vec3& position, const glm::vec2& scale, const Ref<SubTexture2D>& subtexture, const glm::vec2& tilingFactor = glm::vec2(1.0f), const glm::vec4& color = glm::vec4(1.0f));
 		inline static void drawQuad(const glm::vec2& position, const glm::vec2& scale, const Ref<SubTexture2D>& subtexture, const glm::vec2& tilingFactor = glm::vec2(1.0f), const glm::vec4& color = glm::vec4(1.0f))
 		{ drawQuad(glm::vec3(position, 0.0f), scale, subtexture, tilingFactor, color); }
-	private:
-		static void _drawQuad(const glm::vec3& position, const glm::vec2& scale, const Ref<Texture2D>& texture, const glm::vec2* texCoords, const glm::vec2& tilingFactor, const glm::vec4& color);
-		static void createQuad(const glm::vec3& position, const glm::vec2& scale, const glm::vec2* texCoords, float textureIndex, const glm::vec2& tilingFactor, const glm::vec4& color);
 
 	// Rotated scaled quad
 	public:
@@ -98,9 +89,6 @@ namespace gbc
 		static void drawQuad(const glm::vec3& position, float rotation, const glm::vec2& scale, const Ref<SubTexture2D>& subtexture, const glm::vec2& tilingFactor = glm::vec2(1.0f), const glm::vec4& color = glm::vec4(1.0f));
 		inline static void drawQuad(const glm::vec2& position, float rotation, const glm::vec2& scale, const Ref<SubTexture2D>& subtexture, const glm::vec2& tilingFactor = glm::vec2(1.0f), const glm::vec4& color = glm::vec4(1.0f))
 		{ drawQuad(glm::vec3(position, 0.0f), rotation, scale, subtexture, tilingFactor, color); }
-	private:
-		static void _drawQuad(const glm::vec3& position, float rotation, const glm::vec2& scale, const Ref<Texture2D>& texture, const glm::vec2* texCoords, const glm::vec2& tilingFactor, const glm::vec4& color);
-		static void createQuad(const glm::vec3& position, float rotation, const glm::vec2& scale, const glm::vec2* texCoords, float textureIndex, const glm::vec2& tilingFactor, const glm::vec4& color);
 
 	// Transformed quad
 	public:

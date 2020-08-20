@@ -89,7 +89,7 @@ namespace gbc
 
 		// Render
 #ifdef GBC_ENABLE_STATS
-		Renderer2D::resetStats();
+		Renderer2D::resetStatistics();
 #endif
 #ifdef GBC_ENABLE_IMGUI
 		fbo->bind();
@@ -219,7 +219,7 @@ namespace gbc
 
 		ImGui::End();
 
-		const Renderer2D::Statistics& stats = Renderer2D::getStats();
+		const Renderer2D::Statistics& stats = Renderer2D::getStatistics();
 		ImGui::Begin("Statistics");
 		ImGui::Text("Millis Per Frame: %f", millis);
 		ImGui::Text("Draw Calls: %d", stats.drawCalls);

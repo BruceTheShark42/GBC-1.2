@@ -39,7 +39,10 @@ namespace gbc
 			return scene->registry.has<T>(handle);
 		}
 	public:
-		operator bool() const { return handle != entt::null; }
+		inline operator bool() const { return handle != entt::null; }
+		inline operator uint32_t() const { return static_cast<uint32_t>(handle); }
+		bool operator==(const Entity& entity) const { return handle == entity.handle && scene == entity.scene; }
+		bool operator!=(const Entity& entity) const { return !(*this == entity); }
 	private:
 		entt::entity handle{ entt::null };
 		Scene* scene = nullptr;

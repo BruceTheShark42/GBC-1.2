@@ -61,6 +61,8 @@ namespace gbc
 			}
 		};
 		primaryCamera.add<NativeScriptComponent>().bind<CameraController>();
+
+		sceneHierarchyPanel.setContext(scene);
 	}
 
 	void EditorLayer::onDetach()
@@ -192,6 +194,8 @@ namespace gbc
 			ImGui::EndMenuBar();
 		}
 		ImGui::End();
+
+		sceneHierarchyPanel.onImGuiRender();
 
 		ImGui::Begin("Selected Entity");
 		if (squareEntity)

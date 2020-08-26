@@ -22,5 +22,6 @@ namespace gbc
 		unsigned int viewportWidth = 0, viewportHeight = 0;
 
 		friend class Entity;
+		friend class SceneHierarchyPanel;
 	};
 }

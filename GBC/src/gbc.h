@@ -1,6 +1,7 @@
 // For use by Clients
 
 // Core
+#include "GBC/Core/core.h"
 #include "GBC/Core/Application.h"
 #include "GBC/Core/Log.h"
 #include "GBC/Core/TimeStep.h"

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gbc.h>
+#include "Panels/SceneHierarchyPanel.h"
 
 namespace gbc
 {
@@ -37,5 +38,8 @@ namespace gbc
 
 		// TODO: Should be moved into Renderer2D::Statistics
 		float millis = 0.0f;
+
+		// Panels
+		SceneHierarchyPanel sceneHierarchyPanel;
 	};
 }

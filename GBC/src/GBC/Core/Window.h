@@ -7,17 +7,24 @@ namespace gbc
 {
 	struct WindowProps
 	{
-		std::string title;
-		unsigned int width, height;
-		bool resizable, fullscreen, vsync, cursorEnabled;
+		WindowProps(unsigned int width = 1280, unsigned int height = 720, const char* title = "GB4 Engine",
+					bool vsync = true, bool captureMouse = false, bool resizable = true,
+					bool fullscreen = false, bool adaptiveSize = true)
+			: width(width), height(height), title(title), vsync(vsync), captureMouse(captureMouse),
+			  resizable(resizable), fullscreen(fullscreen), adaptiveSize(adaptiveSize) {}
+		WindowProps(const WindowProps& props)
+			: width(props.width), height(props.height), title(props.title), vsync(props.vsync),
+			  captureMouse(props.captureMouse), resizable(props.resizable), fullscreen(props.fullscreen),
+			  adaptiveSize(props.adaptiveSize) {}
 
-		WindowProps(std::string title = "GBC Engine",
-			unsigned int width = 1280, unsigned int height = 720,
-			bool resizable = true, bool fullscreen = false,
-			bool vsync = true, bool cursorEnabled = true)
-			: title(title), width(width), height(height),
-			resizable(resizable), fullscreen(fullscreen),
-			vsync(vsync), cursorEnabled(cursorEnabled) {}
+		unsigned int width;
+		unsigned int height;
+		const char* title;
+		bool vsync;
+		bool captureMouse;
+		bool resizable;
+		bool fullscreen;
+		bool adaptiveSize;
 	};
 
 	class Window
@@ -25,27 +32,34 @@ namespace gbc
 	public:
 		using EventCallbackFunc = std::function<void(Event&)>;
 
-		virtual ~Window() {}
+		virtual ~Window() = default;
 
 		virtual void onUpdate() = 0;
+		virtual float getElapsedTime() const = 0;
 
-		virtual unsigned int getWidth() const = 0;
-		virtual unsigned int getHeight() const = 0;
+		virtual int getWidth() const = 0;
+		virtual int getHeight() const = 0;
+
+		virtual const char* getTitle() const = 0;
+		virtual void setTitle(const char* title) = 0;
+
+		virtual bool getVSync() const = 0;
+		virtual void setVSync(bool enabled) = 0;
+		inline void toggleVSync() { setVSync(!getVSync()); }
+
+		virtual bool getCaptureMouse() const = 0;
+		virtual void setCaptureMouse(bool enabled) = 0;
+		inline void toggleCaptureMouse() { setCaptureMouse(!getCaptureMouse()); }
+
+		virtual bool getResizable() const = 0;
+		virtual void setResizable(bool enabled) = 0;
+		inline void toggleResizable() { setResizable(!getResizable()); }
+
+		virtual bool getFullscreen() const = 0;
+		virtual void setFullscreen(bool enabled) = 0;
+		inline void toggleFullscreen() { setFullscreen(!getFullscreen()); }
 
 		virtual void setEventCallback(const EventCallbackFunc& callback) = 0;
-
-		virtual void setFullscreen(bool enabled) = 0;
-		virtual bool getFullscreen() const = 0;
-		inline void toggleFullscreen() { setFullscreen(!getFullscreen()); };
-
-		virtual void setVSync(bool enabled) = 0;
-		virtual bool getVSync() const = 0;
-		inline void toggleVSync() { setVSync(!getVSync()); };
-
-		virtual void setCursorEnabled(bool enabled) = 0;
-		virtual bool getCursorEnabled() const = 0;
-		inline void toggleCursorEnabled() { setCursorEnabled(!getCursorEnabled()); };
-
 		virtual void* getNativeWindow() const = 0;
 		static Scope<Window> create(const WindowProps& props = WindowProps());
 	};

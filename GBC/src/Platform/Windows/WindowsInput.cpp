@@ -41,13 +41,11 @@ namespace gbc
 
 	float Input::getMousePosX()
 	{
-		auto [x, y] = getMousePos();
-		return x;
+		return getMousePos().first;
 	}
 
 	float Input::getMousePosY()
 	{
-		auto [x, y] = getMousePos();
-		return y;
+		return getMousePos().second;
 	}
 }

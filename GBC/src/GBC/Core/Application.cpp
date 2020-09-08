@@ -1,15 +1,17 @@
 #include "gbcpch.h"
 #include "Application.h"
 #include "GBC/Renderer/Renderer.h"
-#include <GLFW/glfw3.h>
 
 namespace gbc
 {
 	Application* Application::instance = nullptr;
 
 	Application::Application()
-		: running(true), minimized(false), lastFrameTime(0.0f)
 	{
+		// TODO: this is the best place for this I can think of as of right now
+		// but it is not set in stone.
+		Log::init();
+
 		GBC_CORE_ASSERT(instance == nullptr, "Attempted to recreate Application!");
 		instance = this;
 
@@ -45,9 +47,7 @@ namespace gbc
 	{
 		while (running)
 		{
-			float time = (float)glfwGetTime();
-			TimeStep ts = time - lastFrameTime;
-			lastFrameTime = time;
+			TimeStep ts = window->getElapsedTime();
 
 			if (!minimized)
 				layerStack.onUpdate(ts);

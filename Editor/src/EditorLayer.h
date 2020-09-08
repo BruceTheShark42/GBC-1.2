@@ -14,7 +14,7 @@ namespace gbc
 		virtual void onAttach() override;
 		virtual void onDetach() override;
 		virtual void onUpdate(TimeStep ts) override;
-		virtual void onEvent(Event& e) override;
+		virtual void onEvent(Event& event) override;
 #ifdef GBC_ENABLE_IMGUI
 		virtual void onImGuiRender();
 #endif

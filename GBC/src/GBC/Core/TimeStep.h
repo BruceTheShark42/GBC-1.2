@@ -16,6 +16,7 @@ namespace gbc
 		inline float nanos() const { return time * 1000000000.0f; }
 
 		inline TimeStep operator-(TimeStep step) { return time - step.time; }
+		inline TimeStep operator+(TimeStep step) { return time + step.time; }
 	private:
 		float time;
 	};

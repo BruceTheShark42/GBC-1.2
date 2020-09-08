@@ -22,20 +22,23 @@ namespace gbc
 #ifdef GBC_ENABLE_LOGGING
 	// Core log macros
 	#define GBC_CORE_TRACE(...) gbc::Log::getCoreLogger()->trace(__VA_ARGS__)
-	#define GBC_CORE_INFO(...) gbc::Log::getCoreLogger()->info(__VA_ARGS__)
-	#define GBC_CORE_WARN(...) gbc::Log::getCoreLogger()->warn(__VA_ARGS__)
+	#define GBC_CORE_DEBUG(...) gbc::Log::getCoreLogger()->debug(__VA_ARGS__)
+	#define GBC_CORE_INFO(...)  gbc::Log::getCoreLogger()->info(__VA_ARGS__)
+	#define GBC_CORE_WARN(...)  gbc::Log::getCoreLogger()->warn(__VA_ARGS__)
 	#define GBC_CORE_ERROR(...) gbc::Log::getCoreLogger()->error(__VA_ARGS__)
-	#define GBC_CORE_FATAL(...) gbc::Log::getCoreLogger()->fatal(__VA_ARGS__)
+	#define GBC_CORE_FATAL(...) gbc::Log::getCoreLogger()->critical(__VA_ARGS__)
 
 	// Client log macros
 	#define GBC_TRACE(...) gbc::Log::getClientLogger()->trace(__VA_ARGS__)
-	#define GBC_INFO(...) gbc::Log::getClientLogger()->info(__VA_ARGS__)
-	#define GBC_WARN(...) gbc::Log::getClientLogger()->warn(__VA_ARGS__)
+	#define GBC_DEBUG(...) gbc::Log::getClientLogger()->debug(__VA_ARGS__)
+	#define GBC_INFO(...)  gbc::Log::getClientLogger()->info(__VA_ARGS__)
+	#define GBC_WARN(...)  gbc::Log::getClientLogger()->warn(__VA_ARGS__)
 	#define GBC_ERROR(...) gbc::Log::getClientLogger()->error(__VA_ARGS__)
-	#define GBC_FATAL(...) gbc::Log::getClientLogger()->fatal(__VA_ARGS__)
+	#define GBC_FATAL(...) gbc::Log::getClientLogger()->critical(__VA_ARGS__)
 #else
 	// Core log macros
 	#define GBC_CORE_TRACE(...)
+	#define GBC_CORE_DEBUG(...)
 	#define GBC_CORE_INFO(...)
 	#define GBC_CORE_WARN(...)
 	#define GBC_CORE_ERROR(...)
@@ -43,6 +46,7 @@ namespace gbc
 
 	// Client log macros
 	#define GBC_TRACE(...)
+	#define GBC_DEBUG(...)
 	#define GBC_INFO(...)
 	#define GBC_WARN(...)
 	#define GBC_ERROR(...)

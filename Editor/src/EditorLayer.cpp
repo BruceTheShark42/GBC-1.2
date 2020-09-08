@@ -101,20 +101,25 @@ namespace gbc
 		RenderCommand::clear();
 
 		// Update Scene
-		scene->onUpdate(ts);
+		// TODO: this is bad dumb code
+#ifdef GBC_ENABLE_IMGUI
+		scene->onUpdate(sceneFocused ? ts : 0.0f);
+#else
+			scene->onUpdate(ts);
+#endif
 
 #ifdef GBC_ENABLE_IMGUI
 		fbo->unbind();
 #endif
 	}
 
-	void EditorLayer::onEvent(Event& e)
+	void EditorLayer::onEvent(Event& event)
 	{
-		cameraController.onEvent(e);
+		cameraController.onEvent(event);
 
-		if (e.getType() == EventType::KeyPressed)
+		if (event.getType() == EventType::KeyPressed)
 		{
-			const KeyPressedEvent& kpe = (KeyPressedEvent&)e;
+			const KeyPressedEvent& kpe = (KeyPressedEvent&)event;
 			switch (kpe.getKeyCode())
 			{
 				case KeyCode::F9:
@@ -123,7 +128,7 @@ namespace gbc
 					break;
 				case KeyCode::F10:
 					if (!kpe.hasRepeated())
-						Application::getInstance().getWindow().toggleCursorEnabled();
+						Application::getInstance().getWindow().toggleCaptureMouse();
 					break;
 				case KeyCode::F11:
 					if (!kpe.hasRepeated())

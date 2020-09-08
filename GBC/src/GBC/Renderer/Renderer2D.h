@@ -26,8 +26,8 @@ namespace gbc
 		{
 			unsigned int drawCalls, quadCount;
 
-			unsigned int getVertexCount() const { return quadCount * 4; }
-			unsigned int getIndexCount() const { return quadCount * 6; }
+			inline unsigned int getVertexCount() const { return quadCount * 4; }
+			inline unsigned int getIndexCount() const { return quadCount * 6; }
 		};
 
 		static const Statistics& getStatistics();

@@ -23,8 +23,8 @@
 #endif
 
 #ifdef GBC_ENABLE_ASSERTS
-	#define GBC_CORE_ASSERT(condition, ...) { if (!(condition)) { GBC_CORE_ERROR(__VA_ARGS__); __debugbreak(); } }
-	#define GBC_ASSERT(condition, ...) { if (!(condition)) { GBC_ERROR(__VA_ARGS__); __debugbreak(); } }
+	#define GBC_CORE_ASSERT(condition, ...) if (!(condition)) { GBC_CORE_ERROR(__VA_ARGS__); __debugbreak(); }
+	#define GBC_ASSERT(condition, ...) if (!(condition)) { GBC_ERROR(__VA_ARGS__); __debugbreak(); }
 #else
 	#define GBC_CORE_ASSERT(condition, ...)
 	#define GBC_ASSERT(condition, ...)

@@ -34,11 +34,10 @@ namespace gbc
 		Scope<Window> window;
 		LayerStack layerStack;
 #ifdef GBC_ENABLE_IMGUI
-		ImGuiLayer* imguiLayer;
+		ImGuiLayer* imguiLayer = nullptr;
 #endif
 
-		float lastFrameTime;
-		bool running, minimized;
+		bool running = true, minimized = false;
 		static Application* instance;
 	};
 

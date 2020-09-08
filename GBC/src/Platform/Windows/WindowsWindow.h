@@ -13,35 +13,54 @@ namespace gbc
 		virtual ~WindowsWindow();
 
 		void onUpdate() override;
+		virtual float getElapsedTime() const override;
 
-		inline unsigned int getWidth() const override { return data.width; }
-		inline unsigned int getHeight() const override { return data.height; }
+		inline int getWidth() const override { return state.current.width; }
+		inline int getHeight() const override { return state.current.height; }
 
-		inline virtual void setEventCallback(const EventCallbackFunc& callback) override { data.callback = callback; };
+		virtual const char* getTitle() const override { return state.title; }
+		virtual void setTitle(const char* title) override;
 
-		virtual void setFullscreen(bool enabled) override;
-		inline virtual bool getFullscreen() const override { return data.fullscreen; }
-
+		inline virtual bool getVSync() const override { return state.vsync; }
 		virtual void setVSync(bool enabled) override;
-		inline virtual bool getVSync() const override { return data.vsync; }
 
-		virtual void setCursorEnabled(bool enabled) override;
-		inline virtual bool getCursorEnabled() const override { return data.cursorEnabled; }
+		inline virtual bool getCaptureMouse() const override { return state.captureMouse; }
+		virtual void setCaptureMouse(bool enabled) override;
 
+		inline virtual bool getResizable() const override { return state.resizable; }
+		virtual void setResizable(bool enabled) override;
+
+		inline virtual bool getFullscreen() const override { return state.fullscreen; }
+		virtual void setFullscreen(bool enabled) override;
+		
+		inline virtual void setEventCallback(const EventCallbackFunc& callback) override { state.callback = callback; }
 		inline virtual void* getNativeWindow() const override { return window; };
 	private:
+		void saveDimensions();
+
 		GLFWwindow* window;
-		GLFWmonitor* monitor;
-		const GLFWvidmode* videoMode;
 		GraphicsContext* context;
 
-		struct WindowData
+		struct WindowState
 		{
-			std::string title;
-			int x, y, pX, pY;
-			unsigned int width, height, pWidth, pHeight;
-			bool resizable, fullscreen, vsync, cursorEnabled;
+			struct
+			{
+				int x = 0;
+				int y = 0;
+				int width = 0;
+				int height = 0;
+			} current, previous;
+
+			const char* title = nullptr;
+			bool vsync = false;
+			bool captureMouse = false;
+			bool resizable = true;
+			bool fullscreen = false;
+			bool adaptiveSize = false;
+
 			EventCallbackFunc callback;
-		} data;
+		} state;
+
+		mutable float lastTime = 0.0f;
 	};
 }

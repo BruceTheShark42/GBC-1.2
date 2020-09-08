@@ -19,6 +19,7 @@ namespace gbc
 	void Scene::onUpdate(TimeStep ts)
 	{
 		// Update Scripts
+		if (ts > 0.0f)
 		{
 			registry.view<NativeScriptComponent>().each([=](entt::entity entity, NativeScriptComponent& nsc)
 			{

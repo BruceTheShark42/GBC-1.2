@@ -1,4 +1,4 @@
-workspace "GBC 1.2"
+workspace "GBC-1.2"
 	architecture "x64"
 	startproject "Sandbox"
 	configurations {

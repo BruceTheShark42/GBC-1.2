@@ -35,7 +35,7 @@ void SandboxLayer::onUpdate(gbc::TimeStep ts)
 	gbc::RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 	gbc::RenderCommand::clear();
 #ifdef GBC_ENABLE_STATS
-	gbc::Renderer2D::resetStats();
+	gbc::Renderer2D::resetStatistics();
 #endif
 
 	gbc::Renderer2D::beginScene(cameraController.getCamera());
@@ -89,7 +89,7 @@ void SandboxLayer::onImGuiRender()
 	ImGui::ColorEdit4("Color", glm::value_ptr(color));
 	ImGui::End();
 
-	const gbc::Renderer2D::Statistics stats = gbc::Renderer2D::getStats();
+	const gbc::Renderer2D::Statistics stats = gbc::Renderer2D::getStatistics();
 	ImGui::Begin("Statistics");
 	ImGui::Text("Millis Per Frame: %f", millis);
 	ImGui::Text("Draw Calls: %d", stats.drawCalls);

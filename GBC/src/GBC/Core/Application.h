@@ -12,15 +12,15 @@ namespace gbc
 	class Application
 	{
 	public:
-		Application();
+		Application(const WindowProps& windowProps = WindowProps());
 		virtual ~Application();
 
 		void run();
 		void terminate();
 
 		void onEvent(Event& e);
-		bool onWindowClosed(WindowClosedEvent& e);
-		bool onWindowResized(WindowResizedEvent& e);
+		bool onWindowClose(WindowCloseEvent& e);
+		bool onWindowResize(WindowResizeEvent& e);
 		
 		void pushLayer(Layer* layer);
 		void pushOverlay(Layer* overlay);
@@ -28,7 +28,7 @@ namespace gbc
 #ifdef GBC_ENABLE_IMGUI
 		ImGuiLayer* getImGuiLayer() const { return imguiLayer; }
 #endif // GBC_IMGUI_ENABLE
-		inline static Application& getInstance() { return *instance; }
+		inline static Application& get() { return *instance; }
 		inline Window& getWindow() const { return *window; }
 	private:
 		Scope<Window> window;

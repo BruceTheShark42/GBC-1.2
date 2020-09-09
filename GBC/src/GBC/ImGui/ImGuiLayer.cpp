@@ -29,7 +29,7 @@ namespace gbc
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
 
-		ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(Application::getInstance().getWindow().getNativeWindow()), true);
+		ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(Application::get().getWindow().getNativeWindow()), true);
 		ImGui_ImplOpenGL3_Init("#version 460");
 	}
 
@@ -50,18 +50,18 @@ namespace gbc
 	void ImGuiLayer::end()
 	{
 		ImGuiIO& io = ImGui::GetIO();
-		Application& application = Application::getInstance();
-		io.DisplaySize = ImVec2((float)application.getWindow().getWidth(), (float)application.getWindow().getHeight());
+		Window& window = Application::get().getWindow();
+		io.DisplaySize = ImVec2((float)window.getWidth(), (float)window.getHeight());
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
-			GLFWwindow* window = glfwGetCurrentContext();
+			GLFWwindow* windowHandle = glfwGetCurrentContext();
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
-			glfwMakeContextCurrent(window);
+			glfwMakeContextCurrent(windowHandle);
 		}
 	}
 
@@ -75,8 +75,8 @@ namespace gbc
 		if (blockEvents)
 		{
 			ImGuiIO& io = ImGui::GetIO();
-			e.setHandled(e.isHandled() || (e.isInCategory(EventCategoryMouse)&  io.WantCaptureMouse)
-									   || (e.isInCategory(EventCategoryKeyboard)&  io.WantCaptureKeyboard));
+			e.handled = e.handled || (e.isInCategory(EventCategory_Mouse) && io.WantCaptureMouse)
+								  || (e.isInCategory(EventCategory_Keyboard) && io.WantCaptureKeyboard);
 		}
 	}
 }

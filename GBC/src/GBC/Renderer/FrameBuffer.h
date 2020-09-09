@@ -6,8 +6,11 @@ namespace gbc
 {
 	struct FrameBufferSpecs
 	{
-		unsigned int width, height, samples = 1;
-		bool swapChainTarget = false;
+		FrameBufferSpecs(unsigned int width, unsigned int height, unsigned int samples = 1, bool swapChainTarget = false)
+			: width(width), height(height), samples(samples), swapChainTarget(swapChainTarget) {}
+
+		unsigned int width, height, samples;
+		bool swapChainTarget;
 	};
 
 	class FrameBuffer

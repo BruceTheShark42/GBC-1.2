@@ -56,7 +56,7 @@ namespace gbc
 		for (auto it = layers.end(); it != layers.begin();)
 		{
 			(*--it)->onEvent(e);
-			if (e.isHandled())
+			if (e.handled)
 				return true;
 		}
 		return false;

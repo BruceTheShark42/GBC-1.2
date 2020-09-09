@@ -17,17 +17,34 @@ namespace gbc
 		virtual void bind() const override;
 		virtual void unbind() const override;
 
-		inline virtual const std::string& getName() const override { return name; }
+		virtual void setUniform (const std::string& name, float              value) override;
+		virtual void setUniform (const std::string& name, const glm::vec2&   value) override;
+		virtual void setUniform (const std::string& name, const glm::vec3&   value) override;
+		virtual void setUniform (const std::string& name, const glm::vec4&   value) override;
+		virtual void setUniform (const std::string& name, int                value) override;
+		virtual void setUniform (const std::string& name, const glm::ivec2&  value) override;
+		virtual void setUniform (const std::string& name, const glm::ivec3&  value) override;
+		virtual void setUniform (const std::string& name, const glm::ivec4&  value) override;
+		virtual void setUniform (const std::string& name, unsigned int       value) override;
+		virtual void setUniform (const std::string& name, const glm::uvec2&  value) override;
+		virtual void setUniform (const std::string& name, const glm::uvec3&  value) override;
+		virtual void setUniform (const std::string& name, const glm::uvec4&  value) override;
+		virtual void setUniform (const std::string& name, bool               value) override;
+		virtual void setUniform (const std::string& name, const glm::bvec2&  value) override;
+		virtual void setUniform (const std::string& name, const glm::bvec3&  value) override;
+		virtual void setUniform (const std::string& name, const glm::bvec4&  value) override;
+		virtual void setUniform (const std::string& name, const glm::mat2x2& value) override;
+		virtual void setUniform (const std::string& name, const glm::mat2x3& value) override;
+		virtual void setUniform (const std::string& name, const glm::mat2x4& value) override;
+		virtual void setUniform (const std::string& name, const glm::mat3x2& value) override;
+		virtual void setUniform (const std::string& name, const glm::mat3x3& value) override;
+		virtual void setUniform (const std::string& name, const glm::mat3x4& value) override;
+		virtual void setUniform (const std::string& name, const glm::mat4x2& value) override;
+		virtual void setUniform (const std::string& name, const glm::mat4x3& value) override;
+		virtual void setUniform (const std::string& name, const glm::mat4x4& value) override;
+		virtual void setUniforms(const std::string& name, int*                 values, unsigned int count) override;
 
-		virtual void setBool(const std::string& name, bool value) override;
-		virtual void setInt(const std::string& name, int value) override;
-		virtual void setIntArray(const std::string& name, int* values, unsigned int count) override;
-		virtual void setFloat(const std::string& name, float value) override;
-		virtual void setFloat2(const std::string& name, const glm::vec2& value) override;
-		virtual void setFloat3(const std::string& name, const glm::vec3& value) override;
-		virtual void setFloat4(const std::string& name, const glm::vec4& value) override;
-		virtual void setMat3(const std::string& name, const glm::mat3& value) override;
-		virtual void setMat4(const std::string& name, const glm::mat4& value) override;
+		inline virtual const std::string& getName() const override { return name; }
 	protected:
 		int getUniformLocation(const std::string& name);
 
@@ -37,5 +54,6 @@ namespace gbc
 
 		unsigned int rendererID;
 		std::string name;
+		std::unordered_map<std::string, int> uniformLocations;
 	};
 }

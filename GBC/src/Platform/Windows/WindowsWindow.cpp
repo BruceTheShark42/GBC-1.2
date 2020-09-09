@@ -1,22 +1,30 @@
 #include "gbcpch.h"
 #include "WindowsWindow.h"
+
+#include <GLFW/glfw3.h>
+
 #include "GBC/Core/core.h"
+
 #include "GBC/Events/KeyEvent.h"
+#include "GBC/Events/MiscEvent.h"
 #include "GBC/Events/MouseEvent.h"
 #include "GBC/Events/WindowEvent.h"
+#include "GBC/Events/DeviceEvent.h"
+
 #include "GBC/Core/keyCodes.h"
 #include "GBC/Core/mouseButtons.h"
 #include "Platform/OpenGL/OpenGLContext.h"
 
+// TODO: The only reason why this is here is because I needed a way
+// to access the window handle from within glfw callbacks that don't
+// pass it due to the callbacks being for joysticks and monitors.
+// I needed access to the eventCallback so the rest of the engine
+// has access to the event.
+// If there is a better way to do this, I'm all ears.
+#include "GBC/Core/Application.h"
+
 namespace gbc
 {
-	static bool GLFWinitialized = false;
-
-	static void GLFWErrorCallback(int error, const char* description)
-	{
-		GBC_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
-	}
-
 	Scope<Window> Window::create(const WindowProps& props)
 	{
 		return createScope<WindowsWindow>(props);
@@ -24,22 +32,27 @@ namespace gbc
 
 	WindowsWindow::WindowsWindow(const WindowProps& props)
 	{
-		GBC_CORE_INFO("Creating Window - title=\"{0}\" width={1} height={2} resizable={3} fullscreen={4} vSync={5} cursorEnabled={6}", props.title, props.width, props.height, props.resizable, props.fullscreen, props.vsync, props.captureMouse);
+		GBC_CORE_INFO("Creating Window - width={0} height={1} title={2} vsync={3} captureMouse={4} resizable={5} fullscreen={6} adaptiveSize={7}", props.width, props.height, props.title, props.vsync, props.captureMouse, props.resizable, props.fullscreen, props.adaptiveSize);
 
 		state.title = props.title;
 		state.current.width = props.width;
 		state.current.height = props.height;
 		state.resizable = props.resizable;
 		state.fullscreen = props.fullscreen;
+		state.adaptiveSize = props.adaptiveSize;
 
-		if (!GLFWinitialized)
+		static bool glfwInitialized = false;
+		if (!glfwInitialized)
 		{
 			int success = glfwInit();
 			GBC_CORE_ASSERT(success, "Couldn't initialize GLFW!");
-			glfwSetErrorCallback(GLFWErrorCallback);
-			GLFWinitialized = true;
+			glfwSetErrorCallback([](int error, const char* description)
+			{
+				GBC_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
+			});
+			glfwInitialized = true;
 		}
-
+		
 		// Set GLFW window hints
 		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -59,6 +72,9 @@ namespace gbc
 			saveDimensions();
 			state.current.x = 0;
 			state.current.y = 0;
+			auto [width, height] = getFullscreenSize(videoMode);
+			state.current.width = width;
+			state.current.height = height;
 		}
 
 		window = glfwCreateWindow(state.current.width, state.current.height, state.title, state.fullscreen ? primaryMonitor : nullptr, nullptr);
@@ -72,6 +88,9 @@ namespace gbc
 
 		setVSync(props.vsync);
 		setCaptureMouse(props.captureMouse);
+
+		// Important things
+		glfwSetInputMode(window, GLFW_LOCK_KEY_MODS, GLFW_TRUE);
 		
 		// To access data in a callback, use user pointers
 		glfwSetWindowUserPointer(window, &state);
@@ -80,45 +99,36 @@ namespace gbc
 		glfwSetWindowCloseCallback(window, [](GLFWwindow* window)
 		{
 			auto& state = *static_cast<WindowState*>(glfwGetWindowUserPointer(window));
-			state.callback(WindowClosedEvent());
+			state.eventCallback(WindowCloseEvent());
 		});
 		glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int width, int height)
 		{
 			auto& state = *static_cast<WindowState*>(glfwGetWindowUserPointer(window));
 			state.current.width = width;
 			state.current.height = height;
-			state.callback(WindowResizedEvent(width, height));
+			state.eventCallback(WindowResizeEvent(width, height));
 		});
 		glfwSetWindowPosCallback(window, [](GLFWwindow* window, int x, int y)
 		{
 			auto& state = *static_cast<WindowState*>(glfwGetWindowUserPointer(window));
 			state.current.x = x;
 			state.current.y = y;
-			state.callback(WindowMovedEvent(x, y));
+			state.eventCallback(WindowMoveEvent(x, y));
 		});
 		glfwSetWindowFocusCallback(window, [](GLFWwindow* window, int focused)
 		{
 			auto& state = *static_cast<WindowState*>(glfwGetWindowUserPointer(window));
-			if (focused == GLFW_TRUE)
-				state.callback(WindowGainedFocusEvent());
-			else
-				state.callback(WindowLostFocusEvent());
+			state.eventCallback(WindowFocusEvent(focused == GLFW_TRUE));
 		});
 		glfwSetWindowIconifyCallback(window, [](GLFWwindow* window, int iconified)
 		{
 			auto& state = *static_cast<WindowState*>(glfwGetWindowUserPointer(window));
-			if (iconified == GLFW_TRUE)
-				state.callback(WindowMinimizedEvent());
-			else
-				state.callback(WindowUnminimizedEvent());
+			state.eventCallback(WindowMinimizeEvent(iconified == GLFW_TRUE));
 		});
 		glfwSetWindowMaximizeCallback(window, [](GLFWwindow* window, int maximized)
 		{
 			auto& state = *static_cast<WindowState*>(glfwGetWindowUserPointer(window));
-			if (maximized == GLFW_TRUE)
-				state.callback(WindowMaximizedEvent());
-			else
-				state.callback(WindowUnmaximizedEvent());
+			state.eventCallback(WindowMaximizeEvent(maximized == GLFW_TRUE));
 		});
 		glfwSetKeyCallback(window, [](GLFWwindow* window, int keyCode, int scancode, int action, int mods)
 		{
@@ -127,66 +137,57 @@ namespace gbc
 			{
 				switch (action)
 				{
-					case GLFW_PRESS:
-						state.callback(KeyPressedEvent(static_cast<KeyCode>(keyCode), false));
-						break;
-					case GLFW_REPEAT:
-						state.callback(KeyPressedEvent(static_cast<KeyCode>(keyCode), true));
-						break;
-					case GLFW_RELEASE:
-						state.callback(KeyReleasedEvent(static_cast<KeyCode>(keyCode)));
-						break;
+					case GLFW_PRESS: state.eventCallback(KeyPressEvent(static_cast<KeyCode>(keyCode), false)); break;
+					case GLFW_REPEAT: state.eventCallback(KeyPressEvent(static_cast<KeyCode>(keyCode), true)); break;
+					case GLFW_RELEASE: state.eventCallback(KeyReleaseEvent(static_cast<KeyCode>(keyCode))); break;
 				}
 			}
 		});
-		glfwSetCharCallback(window, [](GLFWwindow* window, unsigned int charCode)
+		// GLFW has a bug where this doesn't get called when ctrl is pressed
+		glfwSetCharCallback(window, [](GLFWwindow* window, unsigned int codepoint)
 		{
 			auto& state = *static_cast<WindowState*>(glfwGetWindowUserPointer(window));
-			state.callback(KeyTypedEvent(charCode));
+			state.eventCallback(KeyCharEvent(codepoint));
 		});
 		glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int mods)
 		{
 			auto& state = *static_cast<WindowState*>(glfwGetWindowUserPointer(window));
 			if (action == GLFW_PRESS)
-				state.callback(MouseButtonPressedEvent(static_cast<MouseCode>(button)));
+				state.eventCallback(MouseButtonPressEvent(static_cast<MouseCode>(button)));
 			else
-				state.callback(MouseButtonReleasedEvent(static_cast<MouseCode>(button)));
+				state.eventCallback(MouseButtonReleaseEvent(static_cast<MouseCode>(button)));
 		});
 		glfwSetCursorPosCallback(window, [](GLFWwindow* window, double x, double y)
 		{
 			auto& state = *static_cast<WindowState*>(glfwGetWindowUserPointer(window));
-			state.callback(MouseMovedEvent((float)x, (float)y));
+			state.eventCallback(MouseMoveEvent((float)x, (float)y));
 		});
 		glfwSetScrollCallback(window, [](GLFWwindow* window, double xOff, double yOff)
 		{
 			auto& state = *static_cast<WindowState*>(glfwGetWindowUserPointer(window));
-			state.callback(MouseScrolledEvent((float)xOff, (float)yOff));
+			state.eventCallback(MouseScrollEvent((float)xOff, (float)yOff));
 		});
 		glfwSetCursorEnterCallback(window, [](GLFWwindow* window, int entered)
 		{
 			auto& state = *static_cast<WindowState*>(glfwGetWindowUserPointer(window));
-			if (entered == GLFW_TRUE)
-				state.callback(MouseEnteredEvent());
-			else
-				state.callback(MouseExitedEvent());
+			state.eventCallback(MouseEnterEvent(entered == GLFW_TRUE));
 		});
 		
 		// The following callbacks I have not used before but I would like to account for every callback
-		// TODO: implement events for each one of these
-		// TODO: Merge GBC-1.2's shaders with GB4's
-
+		
 		// This is CharCallback but better in every way, so use this instead
+		// GLFW has a bug where this doesn't get called when ctrl is pressed
 		glfwSetCharModsCallback(window, [](GLFWwindow* window, unsigned int codepoint, int mods)
 		{
 			auto& state = *static_cast<WindowState*>(glfwGetWindowUserPointer(window));
-			GBC_CORE_DEBUG("Char Mod Event - Codepoint={0} Mods={1}", codepoint, mods);
+			state.eventCallback(KeyCharModsEvent(codepoint, mods));
 		});
 
 		// This is where you drag and drop a file or multiple files onto the window
 		glfwSetDropCallback(window, [](GLFWwindow* window, int pathCount, const char** paths)
 		{
 			auto& state = *static_cast<WindowState*>(glfwGetWindowUserPointer(window));
-			GBC_CORE_DEBUG("Path Drop Event - PathCount={0} FirstPath={1}", pathCount, paths[0]);
+			state.eventCallback(PathDropEvent(pathCount, paths));
 		});
 
 		// https://stackoverflow.com/questions/44719635/what-is-the-difference-between-glfwgetwindowsize-and-glfwgetframebuffersize/44720010
@@ -197,15 +198,19 @@ namespace gbc
 		glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height)
 		{
 			auto& state = *static_cast<WindowState*>(glfwGetWindowUserPointer(window));
-			GBC_CORE_DEBUG("Framebuffer Resize Event - Width={0} Height={1}", width, height);
+			state.eventCallback(WindowFramebufferResizeEvent(width, height));
 		});
 
 		// This is when a joystick is connected or disconnected
 		// See GLFWjoystickfun for more info
 		// For reference, there is glfwSetJoystickUserPointer
-		glfwSetJoystickCallback([](int id, int event)
+		glfwSetJoystickCallback([](int jid, int event)
 		{
-			GBC_CORE_DEBUG("Joystick Event - ID={0}, Connected={1}", id, event == GLFW_CONNECTED);
+			// Big brain hacks
+			auto window = static_cast<GLFWwindow*>(Application::get().getWindow().getNativeWindow());
+			auto& state = *static_cast<WindowState*>(glfwGetWindowUserPointer(window));
+
+			state.eventCallback(DeviceJoystickConnectEvent(event == GLFW_CONNECTED, jid));
 		});
 
 		// This is the same as glfwSetJoystickCallback except for monitors
@@ -213,14 +218,18 @@ namespace gbc
 		// There's also glfwSetMonitorUserPointer
 		glfwSetMonitorCallback([](GLFWmonitor* monitor, int event)
 		{
-			GBC_CORE_DEBUG("Monitor Event - Connected={0}", event == GLFW_CONNECTED);
+			// Big brain hacks
+			auto window = static_cast<GLFWwindow*>(Application::get().getWindow().getNativeWindow());
+			auto& state = *static_cast<WindowState*>(glfwGetWindowUserPointer(window));
+
+			state.eventCallback(DeviceMonitorConnectEvent(event == GLFW_CONNECTED, monitor));
 		});
 
 		// I think this is called when the dpi thing is changed for the window
-		glfwSetWindowContentScaleCallback(window, [](GLFWwindow* window, float xScale, float yScale)
+		glfwSetWindowContentScaleCallback(window, [](GLFWwindow* window, float scaleX, float scaleY)
 		{
 			auto& state = *static_cast<WindowState*>(glfwGetWindowUserPointer(window));
-			GBC_CORE_DEBUG("Window Content Scale Event - XScale={0} YScale={1}", xScale, yScale);
+			state.eventCallback(WindowContentScaleEvent(scaleX, scaleY));
 		});
 
 		// I think it's called when the window needs to refresh it's contents
@@ -231,7 +240,7 @@ namespace gbc
 		glfwSetWindowRefreshCallback(window, [](GLFWwindow* window)
 		{
 			auto& state = *static_cast<WindowState*>(glfwGetWindowUserPointer(window));
-			GBC_CORE_DEBUG("Window Refresh Event");
+			state.eventCallback(WindowRefreshEvent());
 		});
 
 		glfwShowWindow(window);
@@ -261,22 +270,23 @@ namespace gbc
 	{
 		glfwSetWindowTitle(window, title);
 		state.title = title;
+		GBC_CORE_INFO("Window Set title={0}", state.title);
 	}
 
 	void WindowsWindow::setVSync(bool vsync)
 	{
-		GBC_CORE_INFO("Window Set vsync={0}", state.vsync);
 		glfwSwapInterval((int)vsync);
 		state.vsync = vsync;
+		GBC_CORE_INFO("Window Set vsync={0}", state.vsync);
 	}
 
 	void WindowsWindow::setCaptureMouse(bool captureMouse)
 	{
 		if (state.captureMouse != captureMouse)
 		{
-			GBC_CORE_INFO("Window Set cursorEnabled={0}", state.captureMouse);
 			glfwSetInputMode(window, GLFW_CURSOR, captureMouse ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 			state.captureMouse = captureMouse;
+			GBC_CORE_INFO("Window Set cursorEnabled={0}", state.captureMouse);
 		}
 	}
 
@@ -284,80 +294,85 @@ namespace gbc
 	{
 		if (state.resizable != resizable)
 		{
-			GBC_CORE_INFO("Window Set resizable={0}", state.resizable);
 			glfwSetWindowAttrib(window, GLFW_RESIZABLE, (int)resizable);
 			state.resizable = resizable;
+			GBC_CORE_INFO("Window Set resizable={0}", state.resizable);
 		}
 	}
 
 	void WindowsWindow::setFullscreen(bool fullscreen)
 	{
-		if (state.fullscreen != fullscreen)
+		// TODO: should query refresh rate from wherever it is
+		int refreshRate = state.vsync ? 60 : 0;
+
+		if (fullscreen)
 		{
-			GBC_CORE_INFO("Window Set fullscreen={0}", state.fullscreen);
-
-			// TODO: should query refresh rate from wherever it is
-			int refreshRate = state.vsync ? 60 : 0;
-
-			if (fullscreen)
-			{
+			// Can change videomode while fullscreen
+			// Only cache this the first time
+			if (!state.fullscreen)
 				saveDimensions();
 
-				// https://stackoverflow.com/questions/21421074/how-to-create-a-full-screen-window-on-the-current-monitor-with-glfw
-				// Get the monitor that most of the window is on
-				int largestOverlap = INT_MIN;
-				GLFWmonitor* monitor = nullptr;
+			// Okay, so I've encountered what I believe to be a bug in GLFW.
+			// If I run this application, I can enable and disable fullscreen
+			// perfectly fine on my primary monitor, but when I plug in another
+			// monitor, it's as if the primary monitor's pointer becomes invalid
+			// somehow? When I enable fullscreen on the primary monitor, the
+			// window dissappears, and comes back normally when I disable
+			// fullscreen. I have checked and the pointers have the same values
+			// while the monitors are connected, as is to be expected. But even
+			// with the same pointer, enabling fullscreen on the primary monitor
+			// before the second monitor is connected is fine, and when the second
+			// one is connected, enabling fullscreen on the primary monitor craps out.
 
-				// Okay, so I've encountered what I believe to be a bug in GLFW.
-				// If I run this application, I can enable and disable fullscreen
-				// perfectly fine on my primary monitor, but when I plug in another
-				// monitor, it's as if the primary monitor's pointer becomes invalid
-				// somehow? When I enable fullscreen on the primary monitor, the
-				// window dissappears, and comes back normally when I disable
-				// fullscreen. I have checked and the pointers have the same values
-				// while the monitors are connected, as is to be expected. But even
-				// with the same pointer, enabling fullscreen on the primary monitor
-				// before the second monitor is connected is fine, and when the second
-				// one is connected, enabling fullscreen on the primary monitor craps out.
-				int monitorCount;
-				GLFWmonitor** monitors = glfwGetMonitors(&monitorCount);
+			// https://stackoverflow.com/questions/21421074/how-to-create-a-full-screen-window-on-the-current-monitor-with-glfw
+			// Get the monitor that most of the window is on
+			int largestOverlap = INT_MIN;
+			GLFWmonitor* monitor = nullptr;
 
-				for (int i = 0; i < monitorCount; i++)
-				{
-					//GB4_LOG_WARN("{0}", (void*)monitors[i]);
-					const GLFWvidmode* videoMode = glfwGetVideoMode(monitors[i]);
+			int monitorCount;
+			GLFWmonitor** monitors = glfwGetMonitors(&monitorCount);
+
+			for (int i = 0; i < monitorCount; i++)
+			{
+				//GB4_LOG_WARN("{0}", (void*)monitors[i]);
+				const GLFWvidmode* videoMode = glfwGetVideoMode(monitors[i]);
 					
-					int monitorX, monitorY;
-					glfwGetMonitorPos(monitors[i], &monitorX, &monitorY);
+				int monitorX, monitorY;
+				glfwGetMonitorPos(monitors[i], &monitorX, &monitorY);
 
-					int overlapX = std::max(0, std::min(state.current.x + state.current.width, monitorX + videoMode->width) - std::max(state.current.x, monitorX));
-					int overlapY = std::max(0, std::min(state.current.y + state.current.height, monitorY + videoMode->height) - std::max(state.current.y, monitorY));
-					int overlap = overlapX * overlapY;
+				int overlapX = std::max(0, std::min(state.current.x + state.current.width, monitorX + videoMode->width) - std::max(state.current.x, monitorX));
+				int overlapY = std::max(0, std::min(state.current.y + state.current.height, monitorY + videoMode->height) - std::max(state.current.y, monitorY));
+				int overlap = overlapX * overlapY;
 
-					if (overlap > largestOverlap)
-					{
-						largestOverlap = overlap;
-						monitor = monitors[i];
-					}
+				if (overlap > largestOverlap)
+				{
+					largestOverlap = overlap;
+					monitor = monitors[i];
 				}
-
-				const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);
-				glfwSetWindowMonitor(window, monitor, 0, 0, videoMode->width, videoMode->height, GLFW_DONT_CARE);
 			}
-			else
-				glfwSetWindowMonitor(window, nullptr, state.previous.x, state.previous.x, state.previous.width, state.previous.height, GLFW_DONT_CARE);
-
-			setVSync(getVSync());
-
-			state.fullscreen = fullscreen;
+			
+			const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);
+			auto [width, height] = getFullscreenSize(videoMode);
+			glfwSetWindowMonitor(window, monitor, 0, 0, width, height, videoMode->refreshRate);
 		}
+		else
+			glfwSetWindowMonitor(window, nullptr, state.preFullscreen.x, state.preFullscreen.y, state.preFullscreen.width, state.preFullscreen.height, GLFW_DONT_CARE);
+
+		state.fullscreen = fullscreen;
+		GBC_CORE_INFO("Window Set fullscreen={0}", state.fullscreen);
+	}
+
+	std::pair<int, int> WindowsWindow::getFullscreenSize(const GLFWvidmode* videoMode) const
+	{
+		if (state.adaptiveSize) return { videoMode->width, videoMode->height };
+		return { state.current.width, state.current.height };
 	}
 
 	void WindowsWindow::saveDimensions()
 	{
-		state.previous.x = state.current.x;
-		state.previous.y = state.current.y;
-		state.previous.width = state.current.width;
-		state.previous.height = state.current.height;
+		state.preFullscreen.x = state.current.x;
+		state.preFullscreen.y = state.current.y;
+		state.preFullscreen.width = state.current.width;
+		state.preFullscreen.height = state.current.height;
 	}
 }

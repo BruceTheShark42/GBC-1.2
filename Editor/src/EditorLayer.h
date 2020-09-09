@@ -19,7 +19,6 @@ namespace gbc
 		virtual void onImGuiRender();
 #endif
 	private:
-		OrthographicCameraController cameraController;
 		glm::vec3 position = { 0.0f, 0.0f, 0.2f };
 		float rotation = 0.0f;
 		glm::vec3 scale = { 1.0f, 1.0f, 1.0f };
@@ -36,10 +35,12 @@ namespace gbc
 		glm::vec2 viewportSize = { 0.0f, 0.0f };
 		bool sceneFocused = false, sceneHovered = false;
 
-		// TODO: Should be moved into Renderer2D::Statistics
-		float millis = 0.0f;
+		// TODO: There should be an easy way to get DeltaTime in onImGuiRender();
+		float ts = 0.0f;
 
+#ifdef GBC_ENABLE_IMGUI
 		// Panels
 		SceneHierarchyPanel sceneHierarchyPanel;
+#endif
 	};
 }

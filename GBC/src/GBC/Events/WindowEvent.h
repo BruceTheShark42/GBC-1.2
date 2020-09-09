@@ -4,135 +4,176 @@
 
 namespace gbc
 {
-	class WindowClosedEvent : public Event
+	class WindowCloseEvent : public Event
 	{
 	public:
-		EVENT_CATEGORY(EventCategoryWindow)
-		EVENT_TYPE(WindowClosed)
+		EVENT_CATEGORY(EventCategory_Window)
+		EVENT_TYPE(WindowClose)
 #ifdef GBC_DEBUG
 		std::string toString() const override
 		{
-			return "Window Closed Event";
+			return "Window Close Event";
 		}
 #endif
 	};
 
-	class WindowResizedEvent : public Event
+	class WindowResizeEvent : public Event
 	{
 	public:
-		WindowResizedEvent(unsigned int width, unsigned int height)
+		WindowResizeEvent(int width, int height)
 			: width(width), height(height) {}
-		EVENT_CATEGORY(EventCategoryWindow)
-		EVENT_TYPE(WindowResized)
-		inline unsigned int getWidth() const { return width; }
-		inline unsigned int getHeight() const { return height; }
+		EVENT_CATEGORY(EventCategory_Window)
+		EVENT_TYPE(WindowResize)
 #ifdef GBC_DEBUG
 		std::string toString() const override
 		{
 			std::stringstream ss;
-			ss << "Window Resized Event: width=" << width << ", height=" << height;
+			ss << "Window Resize Event: width=" << width << " height=" << height;
 			return ss.str();
 		}
 #endif
+		inline int getWidth() const { return width; }
+		inline int getHeight() const { return height; }
 	private:
-		unsigned int width, height;
+		int width;
+		int height;
 	};
 
-	class WindowMovedEvent : public Event
+	class WindowMoveEvent : public Event
 	{
 	public:
-		WindowMovedEvent(int x, int y)
+		WindowMoveEvent(int x, int y)
 			: x(x), y(y) {}
-		EVENT_CATEGORY(EventCategoryWindow)
-		EVENT_TYPE(WindowMoved)
+		EVENT_CATEGORY(EventCategory_Window)
+		EVENT_TYPE(WindowMove)
+#ifdef GBC_DEBUG
+		std::string toString() const override
+		{
+			std::stringstream ss;
+			ss << "Window Move Event: x=" << x << " y=" << y;
+			return ss.str();
+		}
+#endif
 		inline int getX() const { return x; }
 		inline int getY() const { return y; }
+	private:
+		int x;
+		int y;
+	};
+
+	class WindowFocusEvent : public Event
+	{
+	public:
+		WindowFocusEvent(bool focus)
+			: focus(focus) {}
+		EVENT_CATEGORY(EventCategory_Window)
+		EVENT_TYPE(WindowFocus)
 #ifdef GBC_DEBUG
 		std::string toString() const override
 		{
 			std::stringstream ss;
-			ss << "Window Moved Event: x=" << x << ", y=" << y;
+			ss << "Window Focus Event: focus=" << focus;
 			return ss.str();
 		}
 #endif
+		bool isFocused() const { return focus; }
 	private:
-		int x, y;
+		bool focus;
 	};
 
-	class WindowGainedFocusEvent : public Event
+	class WindowMinimizeEvent : public Event
 	{
 	public:
-		EVENT_CATEGORY(EventCategoryWindow)
-		EVENT_TYPE(WindowGainedFocus)
+		WindowMinimizeEvent(bool minimize)
+			: minimize(minimize) {}
+		EVENT_CATEGORY(EventCategory_Window)
+		EVENT_TYPE(WindowMinimize)
 #ifdef GBC_DEBUG
 		std::string toString() const override
 		{
-			return "Window Gained Focus Event";
+			std::stringstream ss;
+			ss << "Window Minimize Event: minimize=" << minimize;
+			return ss.str();
 		}
 #endif
+		bool isMinimized() const { return minimize; }
+	private:
+		bool minimize;
 	};
 
-	class WindowLostFocusEvent : public Event
+	class WindowMaximizeEvent : public Event
 	{
 	public:
-		EVENT_CATEGORY(EventCategoryWindow)
-		EVENT_TYPE(WindowLostFocus)
+		WindowMaximizeEvent(bool maximize)
+			: maximize(maximize) {}
+		EVENT_CATEGORY(EventCategory_Window)
+		EVENT_TYPE(WindowMaximize)
 #ifdef GBC_DEBUG
 		std::string toString() const override
 		{
-			return "Window Lost Focus Event";
+			std::stringstream ss;
+			ss << "Window Maximized Event: maximize=" << maximize;
+			return ss.str();
 		}
 #endif
+		bool isMaximized() const { return maximize; }
+	private:
+		bool maximize;
 	};
 
-	class WindowMinimizedEvent : public Event
+	class WindowFramebufferResizeEvent : public Event
 	{
 	public:
-		EVENT_CATEGORY(EventCategoryWindow)
-		EVENT_TYPE(WindowMinimized)
+		WindowFramebufferResizeEvent(int width, int height)
+			: width(width), height(height) {}
+		EVENT_CATEGORY(EventCategory_Window)
+		EVENT_TYPE(WindowFramebufferResize)
 #ifdef GBC_DEBUG
 		std::string toString() const override
 		{
-			return "Window Minimized Event";
+			std::stringstream ss;
+			ss << "Window Framebuffer Resize Event: width=" << width << " height=" << height;
+			return ss.str();
 		}
 #endif
+		inline int getWidth() const { return width; }
+		inline int getHeight() const { return height; }
+	private:
+		int width;
+		int height;
 	};
 
-	class WindowUnminimizedEvent : public Event
+	class WindowContentScaleEvent : public Event
 	{
 	public:
-		EVENT_CATEGORY(EventCategoryWindow)
-		EVENT_TYPE(WindowUnminimized)
+		WindowContentScaleEvent(float scaleX, float scaleY)
+			: scaleX(scaleX), scaleY(scaleX) {}
+		EVENT_CATEGORY(EventCategory_Window)
+		EVENT_TYPE(WindowContentScale)
 #ifdef GBC_DEBUG
 		std::string toString() const override
 		{
-			return "Window Unminimized Event";
+			std::stringstream ss;
+			ss << "Window Content Scale Event: scaleX=" << scaleX << " scaleY=" << scaleY;
+			return ss.str();
 		}
 #endif
+		inline float getScaleX() const { return scaleX; }
+		inline float getScaleY() const { return scaleY; }
+	private:
+		float scaleX;
+		float scaleY;
 	};
 
-	class WindowMaximizedEvent : public Event
+	class WindowRefreshEvent : public Event
 	{
 	public:
-		EVENT_CATEGORY(EventCategoryWindow)
-		EVENT_TYPE(WindowMaximized)
+		EVENT_CATEGORY(EventCategory_Window)
+		EVENT_TYPE(WindowRefresh)
 #ifdef GBC_DEBUG
 		std::string toString() const override
 		{
-			return "Window Maximized Event";
-		}
-#endif
-	};
-
-	class WindowUnmaximizedEvent : public Event
-	{
-	public:
-		EVENT_CATEGORY(EventCategoryWindow)
-		EVENT_TYPE(WindowUnmaximized)
-#ifdef GBC_DEBUG
-		std::string toString() const override
-		{
-			return "Window Unmaximized Event";
+			return "Window Refresh Event";
 		}
 #endif
 	};

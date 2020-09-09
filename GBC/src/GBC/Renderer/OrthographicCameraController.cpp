@@ -45,8 +45,8 @@ namespace gbc
 	void OrthographicCameraController::onEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
-		dispatcher.dispatch<MouseScrolledEvent>(GBC_BIND_FUNC(OrthographicCameraController::onMouseScrolled));
-		dispatcher.dispatch<WindowResizedEvent>(GBC_BIND_FUNC(OrthographicCameraController::onWindowResized));
+		dispatcher.dispatch<MouseScrollEvent>(GBC_BIND_FUNC(OrthographicCameraController::onMouseScroll));
+		dispatcher.dispatch<WindowResizeEvent>(GBC_BIND_FUNC(OrthographicCameraController::onWindowResize));
 	}
 
 	void OrthographicCameraController::resize(float width, float height)
@@ -66,7 +66,7 @@ namespace gbc
 		camera.setProjection(-aspectRatio * zoomLevel, aspectRatio * zoomLevel, -zoomLevel, zoomLevel);
 	}
 
-	bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent& e)
+	bool OrthographicCameraController::onMouseScroll(MouseScrollEvent& e)
 	{
 		zoomLevel -= e.getY() * zoomSpeed;
 		if (zoomLevel < zoomSpeed)
@@ -75,7 +75,7 @@ namespace gbc
 		return false;
 	}
 
-	bool OrthographicCameraController::onWindowResized(WindowResizedEvent& e)
+	bool OrthographicCameraController::onWindowResize(WindowResizeEvent& e)
 	{
 		resize((float)e.getWidth(), (float)e.getHeight());
 		return false;

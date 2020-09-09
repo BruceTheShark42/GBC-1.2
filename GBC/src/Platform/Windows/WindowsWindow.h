@@ -1,8 +1,10 @@
 #pragma once
 
 #include "GBC/Core/Window.h"
-#include <GLFW/glfw3.h>
 #include "GBC/Renderer/GraphicsContext.h"
+
+struct GLFWwindow;
+struct GLFWvidmode;
 
 namespace gbc
 {
@@ -22,20 +24,24 @@ namespace gbc
 		virtual void setTitle(const char* title) override;
 
 		inline virtual bool getVSync() const override { return state.vsync; }
-		virtual void setVSync(bool enabled) override;
+		virtual void setVSync(bool vsync) override;
 
 		inline virtual bool getCaptureMouse() const override { return state.captureMouse; }
-		virtual void setCaptureMouse(bool enabled) override;
+		virtual void setCaptureMouse(bool captureMouse) override;
 
 		inline virtual bool getResizable() const override { return state.resizable; }
-		virtual void setResizable(bool enabled) override;
+		virtual void setResizable(bool resizable) override;
 
 		inline virtual bool getFullscreen() const override { return state.fullscreen; }
-		virtual void setFullscreen(bool enabled) override;
+		virtual void setFullscreen(bool fullscreen) override;
+
+		inline virtual bool getAdaptiveSize() const override { return state.adaptiveSize; }
+		inline virtual void setAdaptiveSize(bool adaptiveSize) override { state.adaptiveSize = adaptiveSize; }
 		
-		inline virtual void setEventCallback(const EventCallbackFunc& callback) override { state.callback = callback; }
+		inline virtual void setEventCallback(const EventCallbackFunc& callback) override { state.eventCallback = callback; }
 		inline virtual void* getNativeWindow() const override { return window; };
 	private:
+		std::pair<int, int> getFullscreenSize(const GLFWvidmode* videoMode) const;
 		void saveDimensions();
 
 		GLFWwindow* window;
@@ -49,7 +55,7 @@ namespace gbc
 				int y = 0;
 				int width = 0;
 				int height = 0;
-			} current, previous;
+			} current, preFullscreen;
 
 			const char* title = nullptr;
 			bool vsync = false;
@@ -58,7 +64,7 @@ namespace gbc
 			bool fullscreen = false;
 			bool adaptiveSize = false;
 
-			EventCallbackFunc callback;
+			EventCallbackFunc eventCallback;
 		} state;
 
 		mutable float lastTime = 0.0f;

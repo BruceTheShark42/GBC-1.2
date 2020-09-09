@@ -6,7 +6,7 @@ namespace gbc
 {
 	Application* Application::instance = nullptr;
 
-	Application::Application()
+	Application::Application(const WindowProps& windowProps)
 	{
 		// TODO: this is the best place for this I can think of as of right now
 		// but it is not set in stone.
@@ -15,7 +15,7 @@ namespace gbc
 		GBC_CORE_ASSERT(instance == nullptr, "Attempted to recreate Application!");
 		instance = this;
 
-		window = Window::create();
+		window = Window::create(windowProps);
 		window->setEventCallback(GBC_BIND_FUNC(Application::onEvent));
 
 		Renderer::init();
@@ -38,8 +38,8 @@ namespace gbc
 		if (!layerStack.onEvent(e))
 		{
 			EventDispatcher dispatcher(e);
-			dispatcher.dispatch<WindowClosedEvent>(GBC_BIND_FUNC(Application::onWindowClosed));
-			dispatcher.dispatch<WindowResizedEvent>(GBC_BIND_FUNC(Application::onWindowResized));
+			dispatcher.dispatch<WindowCloseEvent>(GBC_BIND_FUNC(Application::onWindowClose));
+			dispatcher.dispatch<WindowResizeEvent>(GBC_BIND_FUNC(Application::onWindowResize));
 		}
 	}
 
@@ -67,13 +67,13 @@ namespace gbc
 		running = false;
 	}
 
-	bool Application::onWindowClosed(WindowClosedEvent& e)
+	bool Application::onWindowClose(WindowCloseEvent& e)
 	{
 		terminate();
 		return true;
 	}
 
-	bool Application::onWindowResized(WindowResizedEvent& e)
+	bool Application::onWindowResize(WindowResizeEvent& e)
 	{
 		if (e.getWidth() == 0 || e.getHeight() == 0)
 		{

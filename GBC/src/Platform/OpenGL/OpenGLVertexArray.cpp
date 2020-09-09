@@ -59,7 +59,7 @@ namespace gbc
 		{
 			glEnableVertexAttribArray(index);
 			glVertexAttribPointer(index++, element.getComponentCount(), shaderToOpenGL(element.type), 
-				element.normalized ? GL_TRUE : GL_FALSE, layout.getStride(), (const void*)element.offset);
+				element.normalized ? GL_TRUE : GL_FALSE, layout.getStride(), (const void*)(unsigned long long)element.offset);
 		}
 	}
 

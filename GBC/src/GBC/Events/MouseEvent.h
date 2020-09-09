@@ -11,39 +11,39 @@ namespace gbc
 		MouseButtonEvent(MouseCode button)
 			: button(button) {}
 	public:
-		EVENT_CATEGORY(EventCategoryInput | EventCategoryMouse | EventCategoryMouseButton)
+		EVENT_CATEGORY(EventCategory_Input | EventCategory_Mouse | EventCategory_MouseButton)
 		inline MouseCode getButton() const { return button; }
 	protected:
 		MouseCode button;
 	};
 
-	class MouseButtonPressedEvent : public MouseButtonEvent
+	class MouseButtonPressEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonPressedEvent(MouseCode button)
+		MouseButtonPressEvent(MouseCode button)
 			: MouseButtonEvent(button) {}
-		EVENT_TYPE(MouseButtonPressed)
+		EVENT_TYPE(MouseButtonPress)
 #ifdef GBC_DEBUG
 		std::string toString() const override
 		{
 			std::stringstream ss;
-			ss << "Mouse Button Pressed Event: button=" << button;
+			ss << "Mouse Button Press Event: button=" << button;
 			return ss.str();
 		}
 #endif
 	};
 
-	class MouseButtonReleasedEvent : public MouseButtonEvent
+	class MouseButtonReleaseEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonReleasedEvent(MouseCode button)
+		MouseButtonReleaseEvent(MouseCode button)
 			: MouseButtonEvent(button) {}
-		EVENT_TYPE(MouseButtonReleased)
+		EVENT_TYPE(MouseButtonRelease)
 #ifdef GBC_DEBUG
 		std::string toString() const override
 		{
 			std::stringstream ss;
-			ss << "Mouse Button Released Event: button=" << button;
+			ss << "Mouse Button Release Event: button=" << button;
 			return ss.str();
 		}
 #endif
@@ -55,68 +55,62 @@ namespace gbc
 		MousePositionEvent(float x, float y)
 			: x(x), y(y) {}
 	public:
-		EVENT_CATEGORY(EventCategoryInput | EventCategoryMouse)
+		EVENT_CATEGORY(EventCategory_Input | EventCategory_Mouse)
 		inline float getX() const { return x; }
 		inline float getY() const { return y; }
 	protected:
 		float x, y;
 	};
 
-	class MouseMovedEvent : public MousePositionEvent
+	class MouseMoveEvent : public MousePositionEvent
 	{
 	public:
-		MouseMovedEvent(float x, float y)
+		MouseMoveEvent(float x, float y)
 			: MousePositionEvent(x, y) {}
-		EVENT_TYPE(MouseMoved)
+		EVENT_TYPE(MouseMove)
 #ifdef GBC_DEBUG
 		std::string toString() const override
 		{
 			std::stringstream ss;
-			ss << "Mouse Moved Event: x=" << x << ", y=" << y;
+			ss << "Mouse Move Event: x=" << x << " y=" << y;
 			return ss.str();
 		}
 #endif
 	};
 
-	class MouseScrolledEvent : public MousePositionEvent
+	class MouseScrollEvent : public MousePositionEvent
 	{
 	public:
-		MouseScrolledEvent(float x, float y)
+		MouseScrollEvent(float x, float y)
 			: MousePositionEvent(x, y) {}
-		EVENT_TYPE(MouseScrolled)
+		EVENT_TYPE(MouseScroll)
 #ifdef GBC_DEBUG
 		std::string toString() const override
 		{
 			std::stringstream ss;
-			ss << "Mouse Scrolled Event: x=" << x << ", y=" << y;
+			ss << "Mouse Scroll Event: xOff=" << x << " yOff=" << y;
 			return ss.str();
 		}
 #endif
 	};
 
-	class MouseEnteredEvent : public Event
+	class MouseEnterEvent : public Event
 	{
 	public:
-		EVENT_CATEGORY(EventCategoryWindow)
-		EVENT_TYPE(MouseEntered)
+		MouseEnterEvent(bool enter)
+			: enter(enter) {}
+		EVENT_CATEGORY(EventCategory_Window)
+		EVENT_TYPE(MouseEnter)
 #ifdef GBC_DEBUG
 		std::string toString() const override
 		{
-			return "Mouse Entered Event";
+			std::stringstream ss;
+			ss << "Mouse Enter Event: enter=" << enter;
+			return ss.str();
 		}
 #endif
-	};
-
-	class MouseExitedEvent : public Event
-	{
-	public:
-		EVENT_CATEGORY(EventCategoryWindow)
-		EVENT_TYPE(MouseExited)
-#ifdef GBC_DEBUG
-		std::string toString() const override
-		{
-			return "Mouse Exited Event";
-		}
-#endif
+		inline bool hasEntered() const { return enter; }
+	private:
+		bool enter;
 	};
 }

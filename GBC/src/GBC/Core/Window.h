@@ -44,23 +44,27 @@ namespace gbc
 		virtual void setTitle(const char* title) = 0;
 
 		virtual bool getVSync() const = 0;
-		virtual void setVSync(bool enabled) = 0;
+		virtual void setVSync(bool vsync) = 0;
 		inline void toggleVSync() { setVSync(!getVSync()); }
 
 		virtual bool getCaptureMouse() const = 0;
-		virtual void setCaptureMouse(bool enabled) = 0;
+		virtual void setCaptureMouse(bool captureMouse) = 0;
 		inline void toggleCaptureMouse() { setCaptureMouse(!getCaptureMouse()); }
 
 		virtual bool getResizable() const = 0;
-		virtual void setResizable(bool enabled) = 0;
+		virtual void setResizable(bool resizable) = 0;
 		inline void toggleResizable() { setResizable(!getResizable()); }
 
 		virtual bool getFullscreen() const = 0;
-		virtual void setFullscreen(bool enabled) = 0;
+		virtual void setFullscreen(bool fullscreen) = 0;
 		inline void toggleFullscreen() { setFullscreen(!getFullscreen()); }
+
+		virtual bool getAdaptiveSize() const = 0;
+		virtual void setAdaptiveSize(bool adaptiveSize) = 0;
+		inline void toggleAdaptiveSize() { setAdaptiveSize(!getAdaptiveSize()); }
 
 		virtual void setEventCallback(const EventCallbackFunc& callback) = 0;
 		virtual void* getNativeWindow() const = 0;
-		static Scope<Window> create(const WindowProps& props = WindowProps());
+		static Scope<Window> create(const WindowProps& props);
 	};
 }

@@ -8,20 +8,35 @@ namespace gbc
 	enum class EventType
 	{
 		None,
-		WindowClosed, WindowResized, WindowMoved, WindowGainedFocus, WindowLostFocus,
-			WindowMinimized, WindowUnminimized, WindowMaximized, WindowUnmaximized,
-		KeyPressed, KeyTyped, KeyReleased,
-		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled, MouseEntered, MouseExited
+		WindowClose, WindowResize, WindowMove, WindowFocus, WindowMinimize, WindowMaximize,
+			WindowFramebufferResize, WindowContentScale, WindowRefresh,
+		KeyPress, KeyRelease, KeyChar, KeyCharMods,
+		MouseButtonPress, MouseButtonRelease, MouseMove, MouseScroll, MouseEnter,
+		DeviceJoystickConnect, DeviceMonitorConnect,
+		PathDrop
 	};
 
 	enum EventCategory
 	{
-		EventCategoryNone,
-		EventCategoryWindow      = BIT(0),
-		EventCategoryInput       = BIT(1),
-		EventCategoryKeyboard    = BIT(2),
-		EventCategoryMouse       = BIT(3),
-		EventCategoryMouseButton = BIT(4)
+		EventCategory_None,
+		EventCategory_Window      = BIT(0),
+		EventCategory_Input       = BIT(1),
+		EventCategory_Keyboard    = BIT(2),
+		EventCategory_KeyChar     = BIT(3),
+		EventCategory_Mouse       = BIT(4),
+		EventCategory_MouseButton = BIT(5),
+		EventCategory_Device      = BIT(6)
+	};
+
+	enum EventKeyMods
+	{
+		EventKeyMods_None,
+		EventKeyMods_Shift    = BIT(0),
+		EventKeyMods_Ctrl     = BIT(1),
+		EventKeyMods_Alt      = BIT(2),
+		EventKeyMods_Super    = BIT(3),
+		EventKeyMods_CapsLock = BIT(4),
+		EventKeyMods_NumLock  = BIT(5),
 	};
 
 	#define EVENT_TYPE(type) static EventType getStaticType() { return EventType::type; }\
@@ -33,42 +48,40 @@ namespace gbc
 	public:
 		virtual EventType getType() const = 0;
 		virtual int getCategoryFlags() const = 0;
-		inline bool isInCategory(EventCategory category) const { return getCategoryFlags()&  category; }
-		inline bool isHandled() const { return handled; }
-		inline void setHandled(bool handled) { this->handled = handled; }
+		inline bool isInCategory(EventCategory category) const { return getCategoryFlags() & category; }
 #ifdef GBC_DEBUG
 		virtual std::string toString() const = 0;
 #endif
+		bool handled = false;
 	private:
 		friend class EventDispatcher;
-		bool handled = false;
 	};
 
 	class EventDispatcher
 	{
 	public:
-		EventDispatcher(Event& e)
-			: e(e) {}
+		EventDispatcher(Event& event)
+			: event(event) {}
 
 		template<typename T>
 		bool dispatch(std::function<bool(T&)> func)
 		{
-			if (!e.isHandled() && e.getType() == T::getStaticType())
+			if (!event.handled && event.getType() == T::getStaticType())
 			{
-				if (func(*(T*)&e))
-					e.handled = true;
+				if (func(*(T*)&event))
+					event.handled = true;
 				return true;
 			}
 			return false;
 		}
 	private:
-		Event& e;
+		Event& event;
 	};
 
-	inline std::ostream& operator<<(std::ostream& ostr, const Event& e)
+	inline std::ostream& operator<<(std::ostream& ostr, const Event& event)
 	{
 #ifdef GBC_DEBUG
-		return ostr << e.toString();
+		return ostr << event.toString();
 #else
 		return ostr;
 #endif

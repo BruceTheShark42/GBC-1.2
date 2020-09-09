@@ -86,7 +86,7 @@ namespace gbc
 
 		data.quadShader = Shader::create("assets/shaders/Renderer2D.glsl");
 		data.quadShader->bind();
-		data.quadShader->setIntArray("textures", samplers, data.MAX_TEXTURES);
+		data.quadShader->setUniforms("textures", samplers, data.MAX_TEXTURES);
 
 		data.textureSlots[0] = data.whiteTexture;
 
@@ -108,7 +108,7 @@ namespace gbc
 	void Renderer2D::beginScene(const OrthographicCamera& camera)
 	{
 		data.quadShader->bind();
-		data.quadShader->setMat4("projectionView", camera.getProjectionView());
+		data.quadShader->setUniform("projectionView", camera.getProjectionView());
 		
 		data.quadIndexCount = 0;
 		data.quadBufferPtr = data.quadBufferBase;
@@ -120,7 +120,7 @@ namespace gbc
 		glm::mat4 projectionView = camera.getProjection() * glm::inverse(transform);
 
 		data.quadShader->bind();
-		data.quadShader->setMat4("projectionView", projectionView);
+		data.quadShader->setUniform("projectionView", projectionView);
 
 		data.quadIndexCount = 0;
 		data.quadBufferPtr = data.quadBufferBase;

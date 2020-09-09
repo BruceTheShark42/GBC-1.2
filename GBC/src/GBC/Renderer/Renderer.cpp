@@ -31,8 +31,8 @@ namespace gbc
 	void Renderer::submit(const Ref<VertexArray>& vertexArray, const Ref<Shader>& shader, const glm::mat4& transform)
 	{
 		shader->bind();
-		shader->setMat4("projectionView", sceneData->projectionView);
-		shader->setMat4("transform", transform);
+		shader->setUniform("projectionView", sceneData->projectionView);
+		shader->setUniform("transform", transform);
 
 		vertexArray->bind();
 		RenderCommand::drawIndexed(vertexArray);

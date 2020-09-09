@@ -9,9 +9,8 @@
 namespace gbc
 {
 	EditorLayer::EditorLayer()
-		: cameraController(1280.0f / 720.0f)
 	{
-		cameraController.setZoomLevel(5.0f);
+
 	}
 
 	void EditorLayer::onAttach()
@@ -20,9 +19,10 @@ namespace gbc
 		spriteSheet = Texture2D::create("assets/textures/RPGpack_sheet_2X.png");
 		stairs = SubTexture2D::createFromCoords(spriteSheet, { 128.0f, 128.0f }, { 2.0f, 1.0f }, { 1.0f, 2.0f });
 
+		auto& window = Application::get().getWindow();
+
 #ifdef GBC_ENABLE_IMGUI
-		FrameBufferSpecs specs = { 1280, 720 };
-		fbo = FrameBuffer::create(specs);
+		fbo = FrameBuffer::create(FrameBufferSpecs(window.getWidth(), window.getHeight()));
 #endif
 
 		scene = createRef<Scene>();
@@ -33,7 +33,7 @@ namespace gbc
 		primaryCamera = scene->createEntity("Primary Camera");
 		primaryCamera.add<CameraComponent>();
 
-		secondaryCamera = scene->createEntity("Second Camera");
+		secondaryCamera = scene->createEntity("Secondary Camera");
 		secondaryCamera.add<CameraComponent>().primary = false;
 
 		class CameraController : public ScriptableEntity
@@ -62,32 +62,33 @@ namespace gbc
 		};
 		primaryCamera.add<NativeScriptComponent>().bind<CameraController>();
 
+#ifdef GBC_ENABLE_IMGUI
 		sceneHierarchyPanel.setContext(scene);
+#endif
+		scene->onViewportResize((unsigned int)window.getWidth(), (unsigned int)window.getHeight());
 	}
 
 	void EditorLayer::onDetach()
 	{
-
+		
 	}
 
 	void EditorLayer::onUpdate(TimeStep ts)
 	{
-		millis = ts.millis();
+		this->ts = ts;
 
 		// TODO: this fails in Dist because the fbo is not being used
+#ifdef GBC_ENABLE_IMGUI
 		if (const FrameBufferSpecs& specs = fbo->getSpecs();
 			(specs.width != viewportSize.x || specs.height != viewportSize.y) &&
 			viewportSize.x > 0.0f && viewportSize.y > 0.0f)
 		{
 			fbo->resize((unsigned int)viewportSize.x, (unsigned int)viewportSize.y);
-			cameraController.resize(viewportSize.x, viewportSize.y);
 			scene->onViewportResize((unsigned int)viewportSize.x, (unsigned int)viewportSize.y);
 		}
-
-#ifdef GBC_ENABLE_IMGUI
-		if (sceneFocused)
+#else
+		// Handle this in onEvent
 #endif
-			cameraController.onUpdate(ts);
 
 		// Render
 #ifdef GBC_ENABLE_STATS
@@ -102,10 +103,12 @@ namespace gbc
 
 		// Update Scene
 		// TODO: this is bad dumb code
+		// this is why rendering and updating should be separate,
+		// so you can disable one and not the other
 #ifdef GBC_ENABLE_IMGUI
 		scene->onUpdate(sceneFocused ? ts : 0.0f);
 #else
-			scene->onUpdate(ts);
+		scene->onUpdate(ts);
 #endif
 
 #ifdef GBC_ENABLE_IMGUI
@@ -115,30 +118,13 @@ namespace gbc
 
 	void EditorLayer::onEvent(Event& event)
 	{
-		cameraController.onEvent(event);
-
-		if (event.getType() == EventType::KeyPressed)
+#ifndef GBC_ENABLE_IMGUI
+		if (event.getType() == EventType::WindowResize)
 		{
-			const KeyPressedEvent& kpe = (KeyPressedEvent&)event;
-			switch (kpe.getKeyCode())
-			{
-				case KeyCode::F9:
-					if (!kpe.hasRepeated())
-						Application::getInstance().getWindow().toggleVSync();
-					break;
-				case KeyCode::F10:
-					if (!kpe.hasRepeated())
-						Application::getInstance().getWindow().toggleCaptureMouse();
-					break;
-				case KeyCode::F11:
-					if (!kpe.hasRepeated())
-						Application::getInstance().getWindow().toggleFullscreen();
-					break;
-				case KeyCode::Escape:
-					Application::getInstance().terminate();
-					break;
-			}
+			WindowResizeEvent& wre = (WindowResizeEvent&)event;
+			scene->onViewportResize((unsigned int)wre.getWidth(), (unsigned int)wre.getHeight());
 		}
+#endif
 	}
 
 #ifdef GBC_ENABLE_IMGUI
@@ -174,7 +160,7 @@ namespace gbc
 		// We cannot preserve the docking relationship between an active window and an inactive docking, otherwise 
 		// any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-		ImGui::Begin("DockSpace Demo", &show, window_flags);
+		ImGui::Begin("DockSpace", &show, window_flags);
 		ImGui::PopStyleVar();
 
 		if (opt_fullscreen)
@@ -193,9 +179,20 @@ namespace gbc
 			if (ImGui::BeginMenu("File"))
 			{
 				if (ImGui::MenuItem("Exit"))
-					Application::getInstance().terminate();
+					Application::get().terminate();
+
 				ImGui::EndMenu();
 			}
+
+			if (ImGui::BeginMenu("View"))
+			{
+				Window& window = Application::get().getWindow();
+				if (ImGui::MenuItem(window.getFullscreen() ? "Windowed" : "Fullscreen"))
+					window.toggleFullscreen();
+
+				ImGui::EndMenu();
+			}
+
 			ImGui::EndMenuBar();
 		}
 		ImGui::End();
@@ -205,9 +202,9 @@ namespace gbc
 		ImGui::Begin("Selected Entity");
 		if (squareEntity)
 		{
-			ImGui::DragFloat2("Position", glm::value_ptr(position));
+			ImGui::DragFloat2("Position", glm::value_ptr(position), 0.1f);
 			ImGui::DragFloat("Rotation", &rotation);
-			ImGui::DragFloat2("Scale", glm::value_ptr(scale));
+			ImGui::DragFloat2("Scale", glm::value_ptr(scale), 0.1f);
 			squareEntity.get<TransformComponent>().transform = glm::scale(glm::rotate(glm::translate(glm::mat4(1.0f), position), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f)), scale);
 
 			auto& tag = squareEntity.get<TagComponent>().tag;
@@ -230,7 +227,7 @@ namespace gbc
 
 		const Renderer2D::Statistics& stats = Renderer2D::getStatistics();
 		ImGui::Begin("Statistics");
-		ImGui::Text("Millis Per Frame: %f", millis);
+		ImGui::Text("FPS: %.0f", 1.0f / ts);
 		ImGui::Text("Draw Calls: %d", stats.drawCalls);
 		ImGui::Text("Quads");
 		ImGui::Text(" - Count: %d", stats.quadCount);
@@ -243,7 +240,7 @@ namespace gbc
 
 		sceneFocused = ImGui::IsWindowFocused();
 		sceneHovered = ImGui::IsWindowHovered();
-		Application::getInstance().getImGuiLayer()->setBlockEvents(/*!sceneFocused || */!sceneHovered);
+		Application::get().getImGuiLayer()->setBlockEvents(/*!sceneFocused || */!sceneHovered);
 
 		ImVec2 size = ImGui::GetContentRegionAvail();
 		viewportSize = { size.x, size.y };

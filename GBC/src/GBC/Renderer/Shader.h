@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include <glm/glm.hpp>
 
 namespace gbc
@@ -13,15 +12,32 @@ namespace gbc
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;
 
-		virtual void setBool(const std::string& name, bool value) = 0;
-		virtual void setInt(const std::string& name, int value) = 0;
-		virtual void setIntArray(const std::string& name, int* values, unsigned int count) = 0;
-		virtual void setFloat(const std::string& name, float value) = 0;
-		virtual void setFloat2(const std::string& name, const glm::vec2& value) = 0;
-		virtual void setFloat3(const std::string& name, const glm::vec3& value) = 0;
-		virtual void setFloat4(const std::string& name, const glm::vec4& value) = 0;
-		virtual void setMat3(const std::string& name, const glm::mat3& value) = 0;
-		virtual void setMat4(const std::string& name, const glm::mat4& value) = 0;
+		virtual void setUniform (const std::string& name, float              value) = 0;
+		virtual void setUniform (const std::string& name, const glm::vec2&   value) = 0;
+		virtual void setUniform (const std::string& name, const glm::vec3&   value) = 0;
+		virtual void setUniform (const std::string& name, const glm::vec4&   value) = 0;
+		virtual void setUniform (const std::string& name, int                value) = 0;
+		virtual void setUniform (const std::string& name, const glm::ivec2&  value) = 0;
+		virtual void setUniform (const std::string& name, const glm::ivec3&  value) = 0;
+		virtual void setUniform (const std::string& name, const glm::ivec4&  value) = 0;
+		virtual void setUniform (const std::string& name, unsigned int       value) = 0;
+		virtual void setUniform (const std::string& name, const glm::uvec2&  value) = 0;
+		virtual void setUniform (const std::string& name, const glm::uvec3&  value) = 0;
+		virtual void setUniform (const std::string& name, const glm::uvec4&  value) = 0;
+		virtual void setUniform (const std::string& name, bool               value) = 0;
+		virtual void setUniform (const std::string& name, const glm::bvec2&  value) = 0;
+		virtual void setUniform (const std::string& name, const glm::bvec3&  value) = 0;
+		virtual void setUniform (const std::string& name, const glm::bvec4&  value) = 0;
+		virtual void setUniform (const std::string& name, const glm::mat2x2& value) = 0;
+		virtual void setUniform (const std::string& name, const glm::mat2x3& value) = 0;
+		virtual void setUniform (const std::string& name, const glm::mat2x4& value) = 0;
+		virtual void setUniform (const std::string& name, const glm::mat3x2& value) = 0;
+		virtual void setUniform (const std::string& name, const glm::mat3x3& value) = 0;
+		virtual void setUniform (const std::string& name, const glm::mat3x4& value) = 0;
+		virtual void setUniform (const std::string& name, const glm::mat4x2& value) = 0;
+		virtual void setUniform (const std::string& name, const glm::mat4x3& value) = 0;
+		virtual void setUniform (const std::string& name, const glm::mat4x4& value) = 0;
+		virtual void setUniforms(const std::string& name, int*                 values, unsigned int count) = 0;
 
 		virtual const std::string& getName() const = 0;
 

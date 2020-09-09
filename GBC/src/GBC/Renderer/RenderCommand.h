@@ -8,29 +8,19 @@ namespace gbc
 	{
 	public:
 		inline static void init()
-		{
-			api->init();
-		}
+		{ api->init(); }
 		
 		inline static void setViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
-		{
-			api->setViewport(x, y, width, height);
-		}
+		{ api->setViewport(x, y, width, height); }
 
 		inline static void clear()
-		{
-			api->clear();
-		}
+		{ api->clear(); }
 
 		inline static void setClearColor(const glm::vec4& color)
-		{
-			api->setClearColor(color);
-		}
+		{ api->setClearColor(color); }
 
 		inline static void drawIndexed(const Ref<VertexArray>& vertexArray, unsigned int count = 0)
-		{
-			api->drawIndexed(vertexArray, count);
-		}
+		{ api->drawIndexed(vertexArray, count); }
 	private:
 		static RendererAPI* api;
 	};

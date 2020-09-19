@@ -13,6 +13,8 @@
 #include <sstream>
 #include <unordered_set>
 #include <unordered_map>
+#include <set>
+#include <map>
 #include <array>
 
 #include "GBC/Core/Log.h"

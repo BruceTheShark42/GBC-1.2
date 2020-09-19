@@ -19,12 +19,12 @@ namespace gbc
 		inline void setSceneFocused(bool* sceneFocused) { this->sceneFocused = sceneFocused; }
 		inline void setSceneHovered(bool* sceneHovered) { this->sceneHovered = sceneHovered; }
 		inline void setViewportSize(glm::vec2* viewportSize) { this->viewportSize = viewportSize; }
-		inline void setFBO(const Ref<FrameBuffer>& fbo) { this->fbo = fbo; }
+		inline void setFramebuffer(const Ref<Framebuffer>& fbo) { this->fbo = fbo; }
 	private:
 		bool* sceneFocused = nullptr;
 		bool* sceneHovered = nullptr;
 		glm::vec2* viewportSize = nullptr;
-		Ref<FrameBuffer> fbo;
+		Ref<Framebuffer> fbo;
 	};
 }
 

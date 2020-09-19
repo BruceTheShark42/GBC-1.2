@@ -1,29 +1,29 @@
 #pragma once
 
-#include "GBC/Renderer/FrameBuffer.h"
+#include "GBC/Renderer/Framebuffer.h"
 
 namespace gbc
 {
-	class OpenGLFrameBuffer : public FrameBuffer
+	class OpenGLFramebuffer : public Framebuffer
 	{
 	public:
-		OpenGLFrameBuffer(const FrameBufferSpecs& specs);
-		virtual ~OpenGLFrameBuffer();
+		OpenGLFramebuffer(const FramebufferSpecs& specs);
+		virtual ~OpenGLFramebuffer();
 
 		void invalidate();
 
-		inline virtual const FrameBufferSpecs& getSpecs() const override { return specs; }
+		inline virtual const FramebufferSpecs& getSpecs() const override { return specs; }
 		inline virtual unsigned int getColorAttachment() const override { return colorAttachment; }
 
 		virtual void bind() const override;
 		virtual void unbind() const override;
-		virtual void resize(unsigned int width, unsigned int height) override;
+		virtual void resize(int width, int height) override;
 	private:
 		unsigned int rendererID = 0;
 
 		// TODO: make this user defined
 		unsigned int colorAttachment = 0, depthAttachment = 0;
 
-		FrameBufferSpecs specs;
+		FramebufferSpecs specs;
 	};
 }

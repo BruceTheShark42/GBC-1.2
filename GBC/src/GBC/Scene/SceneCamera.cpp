@@ -18,7 +18,7 @@ namespace gbc
 		recalculateProjection();
 	}
 
-	void SceneCamera::setViewportSize(unsigned int width, unsigned int height)
+	void SceneCamera::setViewportSize(int width, int height)
 	{
 		aspectRatio = (float)width / (float)height;
 		recalculateProjection();

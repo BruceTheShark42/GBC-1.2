@@ -1,23 +1,23 @@
 #include "gbcpch.h"
-#include "OpenGLFrameBuffer.h"
+#include "OpenGLFramebuffer.h"
 #include <glad/glad.h>
 
 namespace gbc
 {
-	OpenGLFrameBuffer::OpenGLFrameBuffer(const FrameBufferSpecs& specs)
+	OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecs& specs)
 		: specs(specs)
 	{
 		invalidate();
 	}
 
-	OpenGLFrameBuffer::~OpenGLFrameBuffer()
+	OpenGLFramebuffer::~OpenGLFramebuffer()
 	{
 		glDeleteFramebuffers(1, &rendererID);
 		glDeleteTextures(1, &colorAttachment);
 		glDeleteTextures(1, &depthAttachment);
 	}
 
-	void OpenGLFrameBuffer::invalidate()
+	void OpenGLFramebuffer::invalidate()
 	{
 		if (rendererID)
 		{
@@ -41,23 +41,23 @@ namespace gbc
 		glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, specs.width, specs.height);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depthAttachment, 0);
 
-		GBC_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "FrameBuffer is incomplete!");
+		GBC_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void OpenGLFrameBuffer::bind() const
+	void OpenGLFramebuffer::bind() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, rendererID);
 		glViewport(0, 0, specs.width, specs.height);
 	}
 
-	void OpenGLFrameBuffer::unbind() const
+	void OpenGLFramebuffer::unbind() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void OpenGLFrameBuffer::resize(unsigned int width, unsigned int height)
+	void OpenGLFramebuffer::resize(int width, int height)
 	{
 		specs.width = width;
 		specs.height = height;

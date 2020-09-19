@@ -11,7 +11,7 @@ namespace gbc
 		virtual ~SceneCamera() = default;
 	public:
 		void setOrthographic(float size, float nearClip, float farClip);
-		void setViewportSize(unsigned int width, unsigned int height);
+		void setViewportSize(int width, int height);
 	private:
 		void recalculateProjection();
 	private:

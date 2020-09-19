@@ -7,19 +7,22 @@ namespace gbc
 {
 	void ScenePanel::onImGuiRender(TimeStep ts)
 	{
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
-		ImGui::Begin("Scene");
+		if (enabled)
+		{
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
+			ImGui::Begin("Scene", &enabled);
 
-		*sceneFocused = ImGui::IsWindowFocused();
-		*sceneHovered = ImGui::IsWindowHovered();
-		Application::get().getImGuiLayer()->setBlockEvents(/*!(*sceneFocused) || */!(*sceneHovered));
+			*sceneFocused = ImGui::IsWindowFocused();
+			*sceneHovered = ImGui::IsWindowHovered();
+			Application::get().getImGuiLayer()->setBlockEvents(/*!(*sceneFocused) || */!(*sceneHovered));
 
-		ImVec2 size = ImGui::GetContentRegionAvail();
-		*viewportSize = { size.x, size.y };
+			ImVec2 size = ImGui::GetContentRegionAvail();
+			*viewportSize = { size.x, size.y };
 
-		ImGui::Image((void*)fbo->getColorAttachment(), size, { 0.0f, 1.0f }, { 1.0f, 0.0f });
-		ImGui::End();
-		ImGui::PopStyleVar();
+			ImGui::Image((void*)(uint64_t)fbo->getColorAttachment(), size, { 0.0f, 1.0f }, { 1.0f, 0.0f });
+			ImGui::End();
+			ImGui::PopStyleVar();
+		}
 	}
 }
 

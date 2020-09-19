@@ -69,7 +69,7 @@ namespace gbc
 		}
 	}
 
-	void Scene::onViewportResize(unsigned int width, unsigned int height)
+	void Scene::onViewportResize(int width, int height)
 	{
 		viewportWidth = width;
 		viewportHeight = height;

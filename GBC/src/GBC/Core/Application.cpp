@@ -60,6 +60,8 @@ namespace gbc
 
 			window->onUpdate();
 		}
+
+
 	}
 
 	void Application::terminate()

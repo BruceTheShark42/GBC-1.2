@@ -8,15 +8,18 @@ namespace gbc
 {
 	void SceneHierarchyPanel::onImGuiRender(TimeStep ts)
 	{
-		ImGui::Begin("Scene Hierarchy");
-		context->registry.each([&](entt::entity entityID)
+		if (enabled)
 		{
-			drawEntityNode({ entityID, context.get() });
-		});
+			ImGui::Begin("Scene Hierarchy", &enabled);
+			context->registry.each([&](entt::entity entityID)
+			{
+				drawEntityNode({ entityID, context.get() });
+			});
 
-		if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
-			selectionContext = {};
-		ImGui::End();
+			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+				selectionContext = {};
+			ImGui::End();
+		}
 	}
 
 	void SceneHierarchyPanel::drawEntityNode(Entity entity)

@@ -4,28 +4,28 @@
 
 namespace gbc
 {
-	struct FrameBufferSpecs
+	struct FramebufferSpecs
 	{
-		FrameBufferSpecs(unsigned int width, unsigned int height, unsigned int samples = 1, bool swapChainTarget = false)
+		FramebufferSpecs(int width, int height, int samples = 1, bool swapChainTarget = false)
 			: width(width), height(height), samples(samples), swapChainTarget(swapChainTarget) {}
 
-		unsigned int width, height, samples;
+		int width, height, samples;
 		bool swapChainTarget;
 	};
 
-	class FrameBuffer
+	class Framebuffer
 	{
 	public:
-		virtual ~FrameBuffer() = default;
+		virtual ~Framebuffer() = default;
 
-		virtual const FrameBufferSpecs& getSpecs() const = 0;
+		virtual const FramebufferSpecs& getSpecs() const = 0;
 		virtual unsigned int getColorAttachment() const = 0;
 
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;
 
-		virtual void resize(unsigned int width, unsigned int height) = 0;
+		virtual void resize(int width, int height) = 0;
 
-		static Ref<FrameBuffer> create(const FrameBufferSpecs& specs);
+		static Ref<Framebuffer> create(const FramebufferSpecs& specs);
 	};
 }

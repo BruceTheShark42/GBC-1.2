@@ -1,8 +1,15 @@
 #include "EditorLayer.h"
 
 #ifdef GBC_ENABLE_IMGUI
-	#include <ImGui/imgui.h>
+#include <ImGui/imgui.h>
+
+// Panels
+#include "Panels/SceneHierarchyPanel.h"
+#include "Panels/StatisticsPanel.h"
+#include "Panels/PropertiesPanel.h"
+#include "Panels/ScenePanel.h"
 #endif
+
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -18,7 +25,7 @@ namespace gbc
 		auto& window = Application::get().getWindow();
 
 #ifdef GBC_ENABLE_IMGUI
-		fbo = FrameBuffer::create(FrameBufferSpecs(window.getWidth(), window.getHeight()));
+		framebuffer = Framebuffer::create({ window.getWidth(), window.getHeight() });
 #endif
 
 		scene = createRef<Scene>();
@@ -26,7 +33,7 @@ namespace gbc
 		squareEntity = scene->createEntity("Square");
 		squareEntity.add<SpriteRendererComponent>(glm::vec4(0.870588f, 0.270588f, 0.270588f, 1.0f));
 
-		primaryCamera = scene->createEntity("Primary Camera");
+		primaryCamera = scene->createEntity("Camera");
 		primaryCamera.add<CameraComponent>();
 
 		class CameraController : public ScriptableEntity
@@ -56,32 +63,41 @@ namespace gbc
 		primaryCamera.add<NativeScriptComponent>().bind<CameraController>();
 
 #ifdef GBC_ENABLE_IMGUI
-		sceneHierarchyPanel.setContext(scene);
-		propertiesPanel.setContext(scene);
-		propertiesPanel.setSceneHierarchyPanel(&sceneHierarchyPanel);
-		scenePanel.setContext(scene);
-		scenePanel.setSceneFocused(&sceneFocused);
-		scenePanel.setSceneHovered(&sceneHovered);
-		scenePanel.setViewportSize(&viewportSize);
-		scenePanel.setFBO(fbo);
+		StatisticsPanel* statisticsPanel = new StatisticsPanel();
+		SceneHierarchyPanel* sceneHierarchyPanel = new SceneHierarchyPanel(scene);
+		PropertiesPanel* propertiesPanel = new PropertiesPanel(scene, sceneHierarchyPanel);
+
+		ScenePanel* scenePanel = new ScenePanel(scene);
+		scenePanel->setSceneFocused(&sceneFocused);
+		scenePanel->setSceneHovered(&sceneHovered);
+		scenePanel->setViewportSize(&viewportSize);
+		scenePanel->setFramebuffer(framebuffer);
+
+		panels["Statistics Panel"] = statisticsPanel;
+		panels["Scene Hierarchy Panel"] = sceneHierarchyPanel;
+		panels["Properties Panel"] = propertiesPanel;
+		panels["Scene Panel"] = scenePanel;
 #endif
-		scene->onViewportResize((unsigned int)window.getWidth(), (unsigned int)window.getHeight());
+		scene->onViewportResize(window.getWidth(), window.getHeight());
 	}
 
 	void EditorLayer::onDetach()
 	{
-		
+#ifdef GBC_ENABLE_IMGUI
+		for (auto keyValuePair : panels)
+			delete keyValuePair.second;
+#endif
 	}
 
 	void EditorLayer::onUpdate(TimeStep ts)
 	{
 #ifdef GBC_ENABLE_IMGUI
-		if (const FrameBufferSpecs& specs = fbo->getSpecs();
+		if (const FramebufferSpecs& specs = framebuffer->getSpecs();
 			(specs.width != viewportSize.x || specs.height != viewportSize.y) &&
 			viewportSize.x > 0.0f && viewportSize.y > 0.0f)
 		{
-			fbo->resize((unsigned int)viewportSize.x, (unsigned int)viewportSize.y);
-			scene->onViewportResize((unsigned int)viewportSize.x, (unsigned int)viewportSize.y);
+			framebuffer->resize(viewportSize.x, viewportSize.y);
+			scene->onViewportResize(viewportSize.x, viewportSize.y);
 		}
 #else
 		// Handle this in onEvent
@@ -92,7 +108,7 @@ namespace gbc
 		Renderer2D::resetStatistics();
 #endif
 #ifdef GBC_ENABLE_IMGUI
-		fbo->bind();
+		framebuffer->bind();
 #endif
 
 		RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
@@ -101,15 +117,12 @@ namespace gbc
 		// Update Scene
 		// TODO: this is bad dumb code
 		// this is why rendering and updating should be separate,
-		// so you can disable one and not the other
+		// so you can disable one and not the other by simply not calling the function
 #ifdef GBC_ENABLE_IMGUI
 		scene->onUpdate(sceneFocused ? ts : 0.0f);
+		framebuffer->unbind();
 #else
 		scene->onUpdate(ts);
-#endif
-
-#ifdef GBC_ENABLE_IMGUI
-		fbo->unbind();
 #endif
 	}
 
@@ -119,7 +132,7 @@ namespace gbc
 		if (event.getType() == EventType::WindowResize)
 		{
 			WindowResizeEvent& wre = (WindowResizeEvent&)event;
-			scene->onViewportResize((unsigned int)wre.getWidth(), (unsigned int)wre.getHeight());
+			scene->onViewportResize(wre.getWidth(), wre.getHeight());
 		}
 #endif
 	}
@@ -143,8 +156,7 @@ namespace gbc
 			ImGui::SetNextWindowViewport(viewport->ID);
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-			window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-			window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+			window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 		}
 
 		// When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background and handle the pass-thru hole, so we ask Begin() to not render a background.
@@ -166,13 +178,11 @@ namespace gbc
 		// DockSpace
 		ImGuiIO& io = ImGui::GetIO();
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
-		{
-			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-		}
+			ImGui::DockSpace(ImGui::GetID("MyDockSpace"), ImVec2(0.0f, 0.0f), dockspace_flags);
 
 		if (ImGui::BeginMenuBar())
 		{
+			// Menus
 			if (ImGui::BeginMenu("File"))
 			{
 				if (ImGui::MenuItem("Exit"))
@@ -190,14 +200,24 @@ namespace gbc
 				ImGui::EndMenu();
 			}
 
+			if (ImGui::BeginMenu("Panels"))
+			{
+				// Add panel to list of currently active panels so it can be rendered
+				// If the panel already is in the list, however, just focus that panel
+				// TODO: These menus should be abstracted just like the panels
+
+				for (auto& [name, panel] : panels)
+					if (ImGui::MenuItem(name.c_str())) panel->toggleEnabled();
+
+				ImGui::EndMenu();
+			}
+
 			ImGui::EndMenuBar();
 		}
 		ImGui::End();
 
-		sceneHierarchyPanel.onImGuiRender(ts);
-		propertiesPanel.onImGuiRender(ts);
-		statisticsPanel.onImGuiRender(ts);
-		scenePanel.onImGuiRender(ts);
+		for (auto& keyValuePair : panels)
+			keyValuePair.second->onImGuiRender(ts);
 	}
 #endif
 }

@@ -8,10 +8,13 @@ namespace gbc
 {
 	void PropertiesPanel::onImGuiRender(TimeStep ts)
 	{
-		ImGui::Begin("Properties");
-		if (sceneHierarchyPanel->selectionContext)
-			drawComponents(sceneHierarchyPanel->selectionContext);
-		ImGui::End();
+		if (enabled)
+		{
+			ImGui::Begin("Properties", &enabled);
+			if (sceneHierarchyPanel->selectionContext)
+				drawComponents(sceneHierarchyPanel->selectionContext);
+			ImGui::End();
+		}
 	}
 
 	void PropertiesPanel::drawComponents(Entity entity)

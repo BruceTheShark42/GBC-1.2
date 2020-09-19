@@ -29,7 +29,7 @@
 #include "GBC/Renderer/Shader.h"
 #include "GBC/Renderer/Texture.h"
 #include "GBC/Renderer/SubTexture2D.h"
-#include "GBC/Renderer/FrameBuffer.h"
+#include "GBC/Renderer/Framebuffer.h"
 
 // Scene
 #include "GBC/Scene/Scene.h"

@@ -9,7 +9,7 @@ namespace gbc
 	{
 	public:
 		Editor()
-			: Application(WindowProps(1280, 720, "GBC-1.2 Editor", true, false, true, true, true))
+			: Application(WindowProps(1280, 720, "GBC-1.2 Editor", true, false, true, false, true))
 		{
 			pushLayer(new EditorLayer());
 		}

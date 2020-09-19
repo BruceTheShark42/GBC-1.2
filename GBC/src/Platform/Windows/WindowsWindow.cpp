@@ -302,9 +302,6 @@ namespace gbc
 
 	void WindowsWindow::setFullscreen(bool fullscreen)
 	{
-		// TODO: should query refresh rate from wherever it is
-		int refreshRate = state.vsync ? 60 : 0;
-
 		if (fullscreen)
 		{
 			// Can change videomode while fullscreen
@@ -353,7 +350,12 @@ namespace gbc
 			
 			const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);
 			auto [width, height] = getFullscreenSize(videoMode);
-			glfwSetWindowMonitor(window, monitor, 0, 0, width, height, videoMode->refreshRate);
+			glfwSetWindowMonitor(window, monitor, 0, 0, width, height, GLFW_DONT_CARE);
+
+			// Another GLFW bug? vsync state not saved when changing monitors
+			// probably not a bug and im just not understanding the documentation,
+			// but I don't like it
+			setVSync(getVSync());
 		}
 		else
 			glfwSetWindowMonitor(window, nullptr, state.preFullscreen.x, state.preFullscreen.y, state.preFullscreen.width, state.preFullscreen.height, GLFW_DONT_CARE);

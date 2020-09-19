@@ -18,7 +18,7 @@ namespace gbc
 		virtual void onUpdate(TimeStep ts) {}
 		virtual void onEvent(Event& e) {}
 #ifdef GBC_ENABLE_IMGUI
-		virtual void onImGuiRender() {}
+		virtual void onImGuiRender(TimeStep ts) {}
 #endif
 
 		const inline bool isEnabled() const { return enabled; }

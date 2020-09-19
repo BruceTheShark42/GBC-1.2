@@ -20,7 +20,7 @@ namespace gbc
 		void onUpdate(TimeStep ts);
 		bool onEvent(Event& e);
 #ifdef GBC_ENABLE_IMGUI
-		void onImGuiRender();
+		void onImGuiRender(TimeStep ts);
 #endif
 
 		std::vector<Layer*>::iterator begin() { return layers.begin(); }

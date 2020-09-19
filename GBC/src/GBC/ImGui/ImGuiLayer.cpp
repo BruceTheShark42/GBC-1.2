@@ -65,7 +65,7 @@ namespace gbc
 		}
 	}
 
-	void ImGuiLayer::onImGuiRender()
+	void ImGuiLayer::onImGuiRender(TimeStep ts)
 	{
 		
 	}

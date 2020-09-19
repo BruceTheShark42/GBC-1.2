@@ -15,10 +15,6 @@ namespace gbc
 
 	void EditorLayer::onAttach()
 	{
-		texture = Texture2D::create("assets/textures/checkerBoard.png");
-		spriteSheet = Texture2D::create("assets/textures/RPGpack_sheet_2X.png");
-		stairs = SubTexture2D::createFromCoords(spriteSheet, { 128.0f, 128.0f }, { 2.0f, 1.0f }, { 1.0f, 2.0f });
-
 		auto& window = Application::get().getWindow();
 
 #ifdef GBC_ENABLE_IMGUI
@@ -32,9 +28,6 @@ namespace gbc
 
 		primaryCamera = scene->createEntity("Primary Camera");
 		primaryCamera.add<CameraComponent>();
-
-		secondaryCamera = scene->createEntity("Secondary Camera");
-		secondaryCamera.add<CameraComponent>().primary = false;
 
 		class CameraController : public ScriptableEntity
 		{
@@ -64,6 +57,13 @@ namespace gbc
 
 #ifdef GBC_ENABLE_IMGUI
 		sceneHierarchyPanel.setContext(scene);
+		propertiesPanel.setContext(scene);
+		propertiesPanel.setSceneHierarchyPanel(&sceneHierarchyPanel);
+		scenePanel.setContext(scene);
+		scenePanel.setSceneFocused(&sceneFocused);
+		scenePanel.setSceneHovered(&sceneHovered);
+		scenePanel.setViewportSize(&viewportSize);
+		scenePanel.setFBO(fbo);
 #endif
 		scene->onViewportResize((unsigned int)window.getWidth(), (unsigned int)window.getHeight());
 	}
@@ -75,9 +75,6 @@ namespace gbc
 
 	void EditorLayer::onUpdate(TimeStep ts)
 	{
-		this->ts = ts;
-
-		// TODO: this fails in Dist because the fbo is not being used
 #ifdef GBC_ENABLE_IMGUI
 		if (const FrameBufferSpecs& specs = fbo->getSpecs();
 			(specs.width != viewportSize.x || specs.height != viewportSize.y) &&
@@ -128,7 +125,7 @@ namespace gbc
 	}
 
 #ifdef GBC_ENABLE_IMGUI
-	void EditorLayer::onImGuiRender()
+	void EditorLayer::onImGuiRender(TimeStep ts)
 	{
 		static bool show = true;
 		static bool opt_fullscreen_persistant = true;
@@ -197,57 +194,10 @@ namespace gbc
 		}
 		ImGui::End();
 
-		sceneHierarchyPanel.onImGuiRender();
-
-		ImGui::Begin("Selected Entity");
-		if (squareEntity)
-		{
-			ImGui::DragFloat2("Position", glm::value_ptr(position), 0.1f);
-			ImGui::DragFloat("Rotation", &rotation);
-			ImGui::DragFloat2("Scale", glm::value_ptr(scale), 0.1f);
-			squareEntity.get<TransformComponent>().transform = glm::scale(glm::rotate(glm::translate(glm::mat4(1.0f), position), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f)), scale);
-
-			auto& tag = squareEntity.get<TagComponent>().tag;
-			ImGui::Text("%s", tag.c_str());
-
-			auto& squareColor = squareEntity.get<SpriteRendererComponent>();
-			ImGui::ColorEdit4("Color", glm::value_ptr(squareColor.color));
-		}
-
-		ImGui::Separator();
-		ImGui::DragFloat2("Camera Transform", glm::value_ptr(primaryCamera.get<TransformComponent>().transform[3]));
-		
-		if (ImGui::Checkbox("Use Primary Camera", &usePrimaryCamera))
-		{
-			primaryCamera.get<CameraComponent>().primary = usePrimaryCamera;
-			secondaryCamera.get<CameraComponent>().primary = !usePrimaryCamera;
-		}
-
-		ImGui::End();
-
-		const Renderer2D::Statistics& stats = Renderer2D::getStatistics();
-		ImGui::Begin("Statistics");
-		ImGui::Text("FPS: %.0f", 1.0f / ts);
-		ImGui::Text("Draw Calls: %d", stats.drawCalls);
-		ImGui::Text("Quads");
-		ImGui::Text(" - Count: %d", stats.quadCount);
-		ImGui::Text(" - Index Count: %d", stats.getIndexCount());
-		ImGui::Text(" - Vertex Count: %d", stats.getVertexCount());
-		ImGui::End();
-
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
-		ImGui::Begin("Scene");
-
-		sceneFocused = ImGui::IsWindowFocused();
-		sceneHovered = ImGui::IsWindowHovered();
-		Application::get().getImGuiLayer()->setBlockEvents(/*!sceneFocused || */!sceneHovered);
-
-		ImVec2 size = ImGui::GetContentRegionAvail();
-		viewportSize = { size.x, size.y };
-
-		ImGui::Image((void*)fbo->getColorAttachment(), size, { 0.0f, 1.0f }, { 1.0f, 0.0f });
-		ImGui::End();
-		ImGui::PopStyleVar();
+		sceneHierarchyPanel.onImGuiRender(ts);
+		propertiesPanel.onImGuiRender(ts);
+		statisticsPanel.onImGuiRender(ts);
+		scenePanel.onImGuiRender(ts);
 	}
 #endif
 }

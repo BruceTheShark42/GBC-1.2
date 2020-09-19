@@ -7,7 +7,7 @@ namespace gbc
 {
 	struct WindowProps
 	{
-		WindowProps(unsigned int width = 1280, unsigned int height = 720, const char* title = "GB4 Engine",
+		WindowProps(unsigned int width = 1280, unsigned int height = 720, const char* title = "GBC-1.2 Engine",
 					bool vsync = true, bool captureMouse = false, bool resizable = true,
 					bool fullscreen = false, bool adaptiveSize = true)
 			: width(width), height(height), title(title), vsync(vsync), captureMouse(captureMouse),

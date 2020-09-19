@@ -1,28 +1,21 @@
 #include "SceneHierarchyPanel.h"
+#ifdef GBC_ENABLE_IMGUI
+
 #include <ImGui/imgui.h>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace gbc
 {
-	SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& scene)
-	{
-		setContext(scene);
-	}
-
-	void SceneHierarchyPanel::setContext(const Ref<Scene>& scene)
-	{
-		context = scene;
-	}
-
-	void SceneHierarchyPanel::onImGuiRender()
+	void SceneHierarchyPanel::onImGuiRender(TimeStep ts)
 	{
 		ImGui::Begin("Scene Hierarchy");
-
 		context->registry.each([&](entt::entity entityID)
 		{
-			Entity entity{ entityID, context.get() };
-			drawEntityNode(entity);
+			drawEntityNode({ entityID, context.get() });
 		});
 
+		if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+			selectionContext = {};
 		ImGui::End();
 	}
 
@@ -40,3 +33,5 @@ namespace gbc
 			ImGui::TreePop();
 	}
 }
+
+#endif

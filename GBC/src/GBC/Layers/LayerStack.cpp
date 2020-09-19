@@ -63,10 +63,10 @@ namespace gbc
 	}
 
 #ifdef GBC_ENABLE_IMGUI
-	void LayerStack::onImGuiRender()
+	void LayerStack::onImGuiRender(TimeStep ts)
 	{
 		for (Layer* layer : layers)
-			layer->onImGuiRender();
+			layer->onImGuiRender(ts);
 	}
 #endif
 }

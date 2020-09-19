@@ -54,7 +54,7 @@ namespace gbc
 
 #ifdef GBC_ENABLE_IMGUI
 			imguiLayer->begin();
-			layerStack.onImGuiRender();
+			layerStack.onImGuiRender(ts);
 			imguiLayer->end();
 #endif
 

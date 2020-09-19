@@ -1,22 +1,26 @@
 #pragma once
 
 #include <gbc.h>
+#ifdef GBC_ENABLE_IMGUI
+
+#include "SceneContextPanel.h"
 
 namespace gbc
 {
-	class SceneHierarchyPanel
+	class SceneHierarchyPanel : public SceneContextPanel
 	{
 	public:
 		SceneHierarchyPanel() = default;
-		SceneHierarchyPanel(const Ref<Scene>& scene);
-	public:
-		void setContext(const Ref<Scene>& scene);
+		SceneHierarchyPanel(const Ref<Scene>& scene) : SceneContextPanel(scene) {}
 
-		void onImGuiRender();
+		virtual void onImGuiRender(TimeStep ts) override;
 	private:
 		void drawEntityNode(Entity entity);
 	private:
-		Ref<Scene> context;
 		Entity selectionContext;
+
+		friend class PropertiesPanel;
 	};
 }
+
+#endif

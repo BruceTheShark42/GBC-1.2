@@ -2,6 +2,9 @@
 
 #include <gbc.h>
 #include "Panels/SceneHierarchyPanel.h"
+#include "Panels/StatisticsPanel.h"
+#include "Panels/PropertiesPanel.h"
+#include "Panels/ScenePanel.h"
 
 namespace gbc
 {
@@ -16,31 +19,27 @@ namespace gbc
 		virtual void onUpdate(TimeStep ts) override;
 		virtual void onEvent(Event& event) override;
 #ifdef GBC_ENABLE_IMGUI
-		virtual void onImGuiRender();
+		virtual void onImGuiRender(TimeStep ts) override;
 #endif
 	private:
-		glm::vec3 position = { 0.0f, 0.0f, 0.2f };
-		float rotation = 0.0f;
-		glm::vec3 scale = { 1.0f, 1.0f, 1.0f };
-		Ref<Texture2D> texture;
-		Ref<Texture2D> spriteSheet;
-		Ref<SubTexture2D> stairs;
+#ifdef GBC_ENABLE_IMGUI
 		Ref<FrameBuffer> fbo;
+#endif
 
 		Ref<Scene> scene;
 		Entity squareEntity;
-		Entity primaryCamera, secondaryCamera;
-		bool usePrimaryCamera = true;
+		Entity primaryCamera;
 
 		glm::vec2 viewportSize = { 0.0f, 0.0f };
-		bool sceneFocused = false, sceneHovered = false;
-
-		// TODO: There should be an easy way to get DeltaTime in onImGuiRender();
-		float ts = 0.0f;
+		bool sceneFocused = false;
+		bool sceneHovered = false;
 
 #ifdef GBC_ENABLE_IMGUI
 		// Panels
 		SceneHierarchyPanel sceneHierarchyPanel;
+		StatisticsPanel statisticsPanel;
+		PropertiesPanel propertiesPanel;
+		ScenePanel scenePanel;
 #endif
 	};
 }

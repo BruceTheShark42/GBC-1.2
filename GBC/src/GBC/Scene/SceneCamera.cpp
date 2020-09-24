@@ -12,9 +12,19 @@ namespace gbc
 
 	void SceneCamera::setOrthographic(float size, float nearClip, float farClip)
 	{
-		orthoSize = size;
-		orthoNear = nearClip;
-		orthoFar = farClip;
+		projectionType = ProjectionType::Orthographic;
+		orthographicSize = size;
+		orthographicNear = nearClip;
+		orthographicFar = farClip;
+		recalculateProjection();
+	}
+
+	void SceneCamera::setPerspective(float fov, float nearClip, float farClip)
+	{
+		projectionType = ProjectionType::Perspective;
+		perspectiveFOV = fov;
+		perspectiveNear = nearClip;
+		perspectiveFar = farClip;
 		recalculateProjection();
 	}
 
@@ -26,11 +36,23 @@ namespace gbc
 
 	void SceneCamera::recalculateProjection()
 	{
-		float orthoLeft = -orthoSize * aspectRatio * 0.5f;
-		float orthoRight = orthoSize * aspectRatio * 0.5f;
-		float orthoBottom = -orthoSize * 0.5f;
-		float orthoTop = orthoSize * 0.5f;
+		switch (projectionType)
+		{
+			case gbc::SceneCamera::ProjectionType::Perspective:
+			{
+				projection = glm::perspective(perspectiveFOV, aspectRatio, perspectiveNear, perspectiveFar);
+				break;
+			}
+			case gbc::SceneCamera::ProjectionType::Orthographic:
+			{
+				float orthoLeft = -orthographicSize * aspectRatio * 0.5f;
+				float orthoRight = orthographicSize * aspectRatio * 0.5f;
+				float orthoBottom = -orthographicSize * 0.5f;
+				float orthoTop = orthographicSize * 0.5f;
 
-		projection = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, orthoNear, orthoFar);
+				projection = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, orthographicNear, orthographicFar);
+				break;
+			}
+		}
 	}
 }

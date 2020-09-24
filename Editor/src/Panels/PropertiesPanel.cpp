@@ -53,6 +53,78 @@ namespace gbc
 			}
 		}
 
+		if (entity.has<CameraComponent>())
+		{
+			if (ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Camera"))
+			{
+				auto& cameraComponent = entity.get<CameraComponent>();
+				auto& camera = cameraComponent.camera;
+
+				ImGui::Checkbox("Primary", &cameraComponent.primary);
+
+				constexpr const char* projectionTypeNames[] = { "Perspective", "Orthographic" };
+				int currentProjectionType = static_cast<int>(camera.getProjectionType());
+				const char* currentProjectionTypeName = projectionTypeNames[currentProjectionType];
+
+				if (ImGui::BeginCombo("Projection", currentProjectionTypeName))
+				{
+					for (int i = 0; i < sizeof(projectionTypeNames) / sizeof(const char*); i++)
+					{
+						bool selected = i == currentProjectionType;
+						if (ImGui::Selectable(projectionTypeNames[i], &selected))
+						{
+							currentProjectionType = i;
+							camera.setProjectionType(static_cast<SceneCamera::ProjectionType>(currentProjectionType));
+						}
+
+						if (selected)
+							ImGui::SetItemDefaultFocus();
+					}
+
+					ImGui::EndCombo();
+				}
+
+				switch (camera.getProjectionType())
+				{
+					case SceneCamera::ProjectionType::Perspective:
+					{
+						float perspectiveFOV = glm::degrees(camera.getPerspectiveFOV());
+						if (ImGui::DragFloat("Size", &perspectiveFOV), 0.1f)
+							camera.setPerspectiveFOV(glm::radians(perspectiveFOV));
+
+						float perspectiveNearClip = camera.getPerspectiveNearClip();
+						if (ImGui::DragFloat("Near Clip", &perspectiveNearClip), 0.1f)
+							camera.setPerspectiveNearClip(perspectiveNearClip);
+
+						float perspectiveFarClip = camera.getPerspectiveFarClip();
+						if (ImGui::DragFloat("Far Clip", &perspectiveFarClip), 0.1f)
+							camera.setPerspectiveFarClip(perspectiveFarClip);
+
+						break;
+					}
+					case SceneCamera::ProjectionType::Orthographic:
+					{
+						float orthographicSize = camera.getOrthographicSize();
+						if (ImGui::DragFloat("Size", &orthographicSize), 0.1f)
+							camera.setOrthographicSize(orthographicSize);
+
+						float orthographicNearClip = camera.getOrthographicNearClip();
+						if (ImGui::DragFloat("Near Clip", &orthographicNearClip), 0.1f)
+							camera.setOrthographicNearClip(orthographicNearClip);
+
+						float orthographicFarClip = camera.getOrthographicFarClip();
+						if (ImGui::DragFloat("Far Clip", &orthographicFarClip), 0.1f)
+							camera.setOrthographicFarClip(orthographicFarClip);
+
+						ImGui::Checkbox("Fixed Aspect Ratio", &cameraComponent.fixedAspectRatio);
+						break;
+					}
+				}
+
+				ImGui::TreePop();
+			}
+		}
+
 		if (entity.has<SpriteRendererComponent>())
 		{
 			auto& color = entity.get<SpriteRendererComponent>().color;

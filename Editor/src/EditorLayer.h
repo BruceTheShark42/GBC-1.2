@@ -24,8 +24,6 @@ namespace gbc
 #endif
 
 		Ref<Scene> scene;
-		Entity squareEntity;
-		Entity primaryCamera;
 
 		glm::vec2 viewportSize{ 0.0f, 0.0f };
 		bool sceneFocused = false;

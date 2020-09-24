@@ -30,10 +30,10 @@ namespace gbc
 
 		scene = createRef<Scene>();
 
-		squareEntity = scene->createEntity("Square");
+		auto squareEntity = scene->createEntity("Square");
 		squareEntity.add<SpriteRendererComponent>(glm::vec4(0.870588f, 0.270588f, 0.270588f, 1.0f));
 
-		primaryCamera = scene->createEntity("Camera");
+		auto primaryCamera = scene->createEntity("Camera");
 		primaryCamera.add<CameraComponent>();
 
 		class CameraController : public ScriptableEntity
@@ -96,8 +96,8 @@ namespace gbc
 			(specs.width != viewportSize.x || specs.height != viewportSize.y) &&
 			viewportSize.x > 0.0f && viewportSize.y > 0.0f)
 		{
-			framebuffer->resize(viewportSize.x, viewportSize.y);
-			scene->onViewportResize(viewportSize.x, viewportSize.y);
+			framebuffer->resize((int)viewportSize.x, (int)viewportSize.y);
+			scene->onViewportResize((int)viewportSize.x, (int)viewportSize.y);
 		}
 #else
 		// Handle this in onEvent

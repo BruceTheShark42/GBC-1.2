@@ -12,17 +12,22 @@ namespace gbc
 	public:
 		Scene();
 		~Scene();
-	public:
+
 		void onUpdate(TimeStep ts);
 		void onViewportResize(int width, int height);
-	public:
+
 		Entity createEntity(const std::string& name = std::string());
+		void destroyEntity(Entity entity);
 	private:
+		template<typename T>
+		void onComponentAdded(Entity entity, T& component);
+
 		entt::registry registry;
 		int viewportWidth = 0;
 		int viewportHeight = 0;
 
 		friend class Entity;
+		// TODO: this is a baaaadaad idea
 		friend class SceneHierarchyPanel;
 	};
 }

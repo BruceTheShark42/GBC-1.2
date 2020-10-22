@@ -34,8 +34,7 @@ namespace gbc
 	private:
 		void recalculateProjection();
 
-		// For 3D, default to ProjectionType::Perspective
-		ProjectionType projectionType = ProjectionType::Orthographic;
+		ProjectionType projectionType = ProjectionType::Perspective;
 
 		// Perspective stuff
 		float perspectiveFOV = glm::radians(90.0f);

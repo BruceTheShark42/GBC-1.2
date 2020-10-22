@@ -12,16 +12,16 @@ namespace gbc
 	{
 	public:
 		PropertiesPanel() = default;
-		PropertiesPanel(const Ref<Scene>& scene, const SceneHierarchyPanel* sceneHierarchyPanel) : SceneContextPanel(scene), sceneHierarchyPanel(sceneHierarchyPanel) {}
+		PropertiesPanel(const Ref<Scene>& scene, SceneHierarchyPanel* sceneHierarchyPanel) : SceneContextPanel(scene), sceneHierarchyPanel(sceneHierarchyPanel) {}
 		virtual ~PropertiesPanel() = default;
 
-		inline void setSceneHierarchyPanel(const SceneHierarchyPanel* sceneHierarchyPanel) { this->sceneHierarchyPanel = sceneHierarchyPanel; }
+		inline void setSceneHierarchyPanel(SceneHierarchyPanel* sceneHierarchyPanel) { this->sceneHierarchyPanel = sceneHierarchyPanel; }
 
 		virtual void onImGuiRender(TimeStep ts) override;
 	private:
 		void drawComponents(Entity entity);
 
-		const SceneHierarchyPanel* sceneHierarchyPanel = nullptr;
+		SceneHierarchyPanel* sceneHierarchyPanel = nullptr;
 	};
 }
 

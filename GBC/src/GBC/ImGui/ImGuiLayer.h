@@ -10,13 +10,15 @@ namespace gbc
 	public:
 		virtual void onAttach() override;
 		virtual void onDetach() override;
-		virtual void onImGuiRender(TimeStep ts) override;
+		virtual void onImGuiRender(TimeStep ts) override {};
 		virtual void onEvent(Event& e) override;
 
 		void begin();
 		void end();
 
 		inline void setBlockEvents(bool blockEvents) { this->blockEvents = blockEvents; }
+
+		void setDarkThemeColors();
 	private:
 		bool blockEvents = true;
 	};

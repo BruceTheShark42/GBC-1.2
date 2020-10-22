@@ -7,8 +7,9 @@ namespace gbc
 	class ScriptableEntity
 	{
 	public:
+		ScriptableEntity() = default;
 		virtual ~ScriptableEntity() = default;
-	public:
+	
 		template<typename T>
 		T& GetComponent()
 		{

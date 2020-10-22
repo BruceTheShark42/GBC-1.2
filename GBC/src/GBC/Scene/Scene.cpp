@@ -22,23 +22,23 @@ namespace gbc
 		if (ts > 0.0f)
 		{
 			registry.view<NativeScriptComponent>().each([=](entt::entity entity, NativeScriptComponent& nsc)
-			{
-				// TODO: move to Scene::onScenePlay
-				if (!nsc.instance)
 				{
-					nsc.instance = nsc.instantiateScript();
-					nsc.instance->entity = Entity{ entity, this };
-					nsc.instance->OnCreate();
-				}
+					// TODO: move to Scene::onScenePlay
+					if (!nsc.instance)
+					{
+						nsc.instance = nsc.instantiateScript();
+						nsc.instance->entity = Entity{ entity, this };
+						nsc.instance->OnCreate();
+					}
 
-				nsc.instance->OnUpdate(ts);
-				// TODO: add "nsc.instance->OnDestroy();" to Scene::onSceneStop
-			});
+					nsc.instance->OnUpdate(ts);
+					// TODO: add "nsc.instance->OnDestroy();" to Scene::onSceneStop
+				});
 		}
 
 		// Get the primary camera
 		Camera* primaryCamera = nullptr;
-		glm::mat4* primaryTransform = nullptr;
+		glm::mat4 primaryTransform;
 		{
 			auto view = registry.view<TransformComponent, CameraComponent>();
 			for (auto entity : view)
@@ -47,7 +47,7 @@ namespace gbc
 				if (camera.primary)
 				{
 					primaryCamera = &camera.camera;
-					primaryTransform = &transform.transform;
+					primaryTransform = transform;
 					break;
 				}
 			}
@@ -56,7 +56,7 @@ namespace gbc
 		if (primaryCamera)
 		{
 			// Render 2D
-			Renderer2D::beginScene(*primaryCamera, *primaryTransform);
+			Renderer2D::beginScene(*primaryCamera, primaryTransform);
 
 			auto group = registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 			for (auto entity : group)
@@ -88,10 +88,39 @@ namespace gbc
 	{
 		Entity entity(registry.create(), this);
 		entity.add<TransformComponent>();
-		
+
 		auto& tag = entity.add<TagComponent>();
 		tag.tag = name.empty() ? "Entity" : name;
 
 		return entity;
 	}
+
+	void Scene::destroyEntity(Entity entity)
+	{
+		registry.destroy(entity);
+	}
+
+	template<typename T>
+	void Scene::onComponentAdded(Entity entity, T& component)
+	{
+		static_assert(false);
+	}
+
+	template<>
+	void Scene::onComponentAdded<TagComponent>(Entity entity, TagComponent& component) {}
+
+	template<>
+	void Scene::onComponentAdded<TransformComponent>(Entity entity, TransformComponent& component) {}
+
+	template<>
+	void Scene::onComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
+	{
+		component.camera.setViewportSize(viewportWidth, viewportHeight);
+	}
+
+	template<>
+	void Scene::onComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component) {}
+
+	template<>
+	void Scene::onComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component) {}
 }

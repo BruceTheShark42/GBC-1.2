@@ -29,14 +29,18 @@ namespace gbc
 #endif
 
 		scene = createRef<Scene>();
+		scene->onViewportResize(window.getWidth(), window.getHeight());
 
-		auto squareEntity = scene->createEntity("Square");
+		auto squareEntity = scene->createEntity("Square 1");
 		squareEntity.add<SpriteRendererComponent>(glm::vec4(0.870588f, 0.270588f, 0.270588f, 1.0f));
+
+		auto squareEntity2 = scene->createEntity("Square 2");
+		squareEntity2.add<SpriteRendererComponent>(glm::vec4(0.270588f, 0.870588f, 0.270588f, 1.0f));
 
 		auto primaryCamera = scene->createEntity("Camera");
 		primaryCamera.add<CameraComponent>();
 
-		class CameraController : public ScriptableEntity
+		class CameraController2D : public ScriptableEntity
 		{
 		public:
 			//void OnCreate()
@@ -52,15 +56,55 @@ namespace gbc
 			void OnUpdate(TimeStep ts)
 			{
 				float speed = 5.0f * ts;
-				auto& transform = GetComponent<TransformComponent>().transform;
+				auto& translation = GetComponent<TransformComponent>().translation;
 
-				if (Input::isKeyPressed(KeyCode::A)) transform[3][0] -= speed;
-				if (Input::isKeyPressed(KeyCode::D)) transform[3][0] += speed;
-				if (Input::isKeyPressed(KeyCode::W)) transform[3][1] += speed;
-				if (Input::isKeyPressed(KeyCode::S)) transform[3][1] -= speed;
+				if (Input::isKeyPressed(KeyCode::A)) translation.x -= speed;
+				if (Input::isKeyPressed(KeyCode::D)) translation.x += speed;
+				if (Input::isKeyPressed(KeyCode::W)) translation.y += speed;
+				if (Input::isKeyPressed(KeyCode::S)) translation.y -= speed;
 			}
 		};
-		primaryCamera.add<NativeScriptComponent>().bind<CameraController>();
+		//primaryCamera.add<NativeScriptComponent>().bind<CameraController2D>();
+
+		class CameraController3D : public ScriptableEntity
+		{
+		public:
+			CameraController3D() = default;
+
+			void OnCreate()
+			{
+				transform = &GetComponent<TransformComponent>();
+
+				// Move the camera back so it can see the squares
+				transform->translation.z += 3.0f;
+			}
+
+			void OnUpdate(TimeStep ts)
+			{
+				const float speed = 2.0f * ts;
+
+				const glm::vec3 forward = speed * glm::vec3{ cosf(transform->rotation.y), 0.0f, sinf(transform->rotation.y) };
+				const glm::vec3 left = glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f));
+
+				// Movement TODO: make use of forward vector
+				if (Input::isKeyPressed(KeyCode::W)) { transform->translation.z -= forward.x; transform->translation.x -= forward.z; }
+				if (Input::isKeyPressed(KeyCode::S)) { transform->translation.z += forward.x; transform->translation.x += forward.z; }
+				if (Input::isKeyPressed(KeyCode::A)) { transform->translation.x -= left.z; transform->translation.z -= left.x; }
+				if (Input::isKeyPressed(KeyCode::D)) { transform->translation.x += left.z; transform->translation.z += left.x; }
+				if (Input::isKeyPressed(KeyCode::LeftShift)) transform->translation.y -= speed;
+				if (Input::isKeyPressed(KeyCode::Space)) transform->translation.y += speed;
+
+				// Rotation TODO: use mouse
+				if (Input::isKeyPressed(KeyCode::Left)) transform->rotation.y += speed;
+				if (Input::isKeyPressed(KeyCode::Right)) transform->rotation.y -= speed;
+				if (Input::isKeyPressed(KeyCode::Down)) transform->rotation.x -= speed;
+				if (Input::isKeyPressed(KeyCode::Up)) transform->rotation.x += speed;
+			}
+		private:
+			// Has to be a pointer because c++ doesn't like uninitialized references...
+			TransformComponent* transform = nullptr;
+		};
+		primaryCamera.add<NativeScriptComponent>().bind<CameraController3D>();
 
 #ifdef GBC_ENABLE_IMGUI
 		StatisticsPanel* statisticsPanel = new StatisticsPanel();
@@ -78,7 +122,6 @@ namespace gbc
 		panels["Properties Panel"] = propertiesPanel;
 		panels["Scene Panel"] = scenePanel;
 #endif
-		scene->onViewportResize(window.getWidth(), window.getHeight());
 	}
 
 	void EditorLayer::onDetach()

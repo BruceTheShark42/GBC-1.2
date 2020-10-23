@@ -69,6 +69,20 @@ namespace gbc
 		}
 	}
 
+	void Scene::onEvent(Event& event)
+	{
+		auto view = registry.view<NativeScriptComponent>();
+		for (auto entity : view)
+		{
+			if (event.handled)
+				return;
+
+			NativeScriptComponent& component = registry.get<NativeScriptComponent>(entity);
+			if (component.instance != nullptr)
+				component.instance->OnEvent(event);
+		}
+	}
+
 	void Scene::onViewportResize(int width, int height)
 	{
 		viewportWidth = width;

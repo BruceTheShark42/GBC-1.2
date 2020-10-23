@@ -31,7 +31,10 @@ namespace gbc
 	void SceneCamera::setViewportSize(int width, int height)
 	{
 		aspectRatio = (float)width / (float)height;
-		recalculateProjection();
+		// minimizing/alt-tabbing in fullscreen cause the
+		// height to be zero and dividing by zero is bad
+		if (height != 0.0f)
+			recalculateProjection();
 	}
 
 	void SceneCamera::recalculateProjection()

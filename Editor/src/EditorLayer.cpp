@@ -1,17 +1,19 @@
 #include "EditorLayer.h"
 
 #ifdef GBC_ENABLE_IMGUI
-#include <ImGui/imgui.h>
+	#include <ImGui/imgui.h>
 
-// Panels
-#include "Panels/SceneHierarchyPanel.h"
-#include "Panels/StatisticsPanel.h"
-#include "Panels/PropertiesPanel.h"
-#include "Panels/ScenePanel.h"
+	// Panels
+	#include "Panels/SceneHierarchyPanel.h"
+	#include "Panels/StatisticsPanel.h"
+	#include "Panels/PropertiesPanel.h"
+	#include "Panels/ScenePanel.h"
 #endif
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#include "GBC/Scene/SceneSerializer.h"
 
 namespace gbc
 {
@@ -31,6 +33,7 @@ namespace gbc
 		scene = createRef<Scene>();
 		scene->onViewportResize(window.getWidth(), window.getHeight());
 
+#if 0
 		auto squareEntity = scene->createEntity("Square 1");
 		squareEntity.add<SpriteRendererComponent>(glm::vec4(0.870588f, 0.270588f, 0.270588f, 1.0f));
 
@@ -69,8 +72,6 @@ namespace gbc
 		class CameraController3D : public ScriptableEntity
 		{
 		public:
-			CameraController3D() = default;
-
 			void OnCreate()
 			{
 				transform = &GetComponent<TransformComponent>();
@@ -81,30 +82,84 @@ namespace gbc
 
 			void OnUpdate(TimeStep ts)
 			{
-				const float speed = 2.0f * ts;
+				const float movementSpeed = 2.0f * ts;
 
-				const glm::vec3 forward = speed * glm::vec3{ cosf(transform->rotation.y), 0.0f, sinf(transform->rotation.y) };
+				const glm::vec3 forward = movementSpeed * glm::vec3(cosf(transform->rotation.y), 0.0f, sinf(transform->rotation.y));
 				const glm::vec3 left = glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f));
 
-				// Movement TODO: make use of forward vector
 				if (Input::isKeyPressed(KeyCode::W)) { transform->translation.z -= forward.x; transform->translation.x -= forward.z; }
 				if (Input::isKeyPressed(KeyCode::S)) { transform->translation.z += forward.x; transform->translation.x += forward.z; }
 				if (Input::isKeyPressed(KeyCode::A)) { transform->translation.x -= left.z; transform->translation.z -= left.x; }
 				if (Input::isKeyPressed(KeyCode::D)) { transform->translation.x += left.z; transform->translation.z += left.x; }
-				if (Input::isKeyPressed(KeyCode::LeftShift)) transform->translation.y -= speed;
-				if (Input::isKeyPressed(KeyCode::Space)) transform->translation.y += speed;
+				if (Input::isKeyPressed(KeyCode::LeftShift)) transform->translation.y -= movementSpeed;
+				if (Input::isKeyPressed(KeyCode::Space)) transform->translation.y += movementSpeed;
 
-				// Rotation TODO: use mouse
-				if (Input::isKeyPressed(KeyCode::Left)) transform->rotation.y += speed;
-				if (Input::isKeyPressed(KeyCode::Right)) transform->rotation.y -= speed;
-				if (Input::isKeyPressed(KeyCode::Down)) transform->rotation.x -= speed;
-				if (Input::isKeyPressed(KeyCode::Up)) transform->rotation.x += speed;
+				// TODO: The reason this is being used is because ImGui still processes
+				// mouse events when the the mouse state for glfw is GLFW_HIDDEN
+				if (Input::isMouseButtonPressed(MouseCode::MBLeft))
+				{
+					const float rotationSpeed = 0.2f * ts;
+					
+					transform->rotation.y -= mouseDX * rotationSpeed;
+					transform->rotation.x = std::min(std::max(transform->rotation.x - mouseDY * rotationSpeed, minPitch), maxPitch);
+					mouseDX = 0.0f;
+					mouseDY = 0.0f;
+
+					// Rotation TODO: use mouse
+					//if (Input::isKeyPressed(KeyCode::Left)) transform->rotation.y = transform->rotation.y + rotationSpeed;
+					//if (Input::isKeyPressed(KeyCode::Right)) transform->rotation.y = transform->rotation.y - rotationSpeed;
+					//if (Input::isKeyPressed(KeyCode::Down)) transform->rotation.x = std::max(transform->rotation.x - rotationSpeed, minPitch);
+					//if (Input::isKeyPressed(KeyCode::Up)) transform->rotation.x = std::min(transform->rotation.x + rotationSpeed, maxPitch);
+				}
+			}
+
+			void OnEvent(Event& event)
+			{
+				//if (event.getType() == EventType::KeyPress)
+				//{
+				//	KeyPressEvent& kpe = (KeyPressEvent&)event;
+
+				//	if (!kpe.hasRepeated() && kpe.getKeyCode() == KeyCode::Escape)
+				//	{
+				//		// Capture the mouse for rotation
+				//		auto& window = Application::get().getWindow();
+				//		window.toggleCaptureMouse();
+				//		mouseCaptured = window.getCaptureMouse();
+				//	}
+				//}
+				//else 
+				if (event.getType() == EventType::MouseMove)
+				{
+					MouseMoveEvent& mme = (MouseMoveEvent&)event;
+
+					float mouseX = mme.getX();
+					float mouseY = mme.getY();
+					mouseDX = mouseX - lastMouseX;
+					mouseDY = mouseY - lastMouseY;
+					lastMouseX = mouseX;
+					lastMouseY = mouseY;
+				}
 			}
 		private:
 			// Has to be a pointer because c++ doesn't like uninitialized references...
 			TransformComponent* transform = nullptr;
+
+			bool mouseCaptured = false;
+
+			// TODO: this shouldn't have to exist because Input should handle it
+			float lastMouseX = 0.0f;
+			float lastMouseY = 0.0f;
+			float mouseDX = 0.0f;
+			float mouseDY = 0.0f;
+
+			const float maxPitch = glm::radians(90.0f);
+			const float minPitch = -maxPitch;
 		};
 		primaryCamera.add<NativeScriptComponent>().bind<CameraController3D>();
+#endif
+
+		SceneSerializer seralizer(scene);
+		seralizer.deserialize("assets/scenes/scene_backup.yml");
 
 #ifdef GBC_ENABLE_IMGUI
 		StatisticsPanel* statisticsPanel = new StatisticsPanel();
@@ -171,6 +226,9 @@ namespace gbc
 
 	void EditorLayer::onEvent(Event& event)
 	{
+		scene->onEvent(event);
+
+		// TODO: move this into ^^^^^
 #ifndef GBC_ENABLE_IMGUI
 		if (event.getType() == EventType::WindowResize)
 		{
@@ -255,12 +313,31 @@ namespace gbc
 				ImGui::EndMenu();
 			}
 
+			if (ImGui::BeginMenu("Scene"))
+			{
+				constexpr const char* path = "assets/scenes/scene.yml";
+
+				if (ImGui::MenuItem("Seralize"))
+				{
+					SceneSerializer serializer(scene);
+					serializer.serialize(path);
+				}
+
+				if (ImGui::MenuItem("Deseralize"))
+				{
+					SceneSerializer serializer(scene);
+					serializer.deserialize(path);
+				}
+
+				ImGui::EndMenu();
+			}
+
 			ImGui::EndMenuBar();
 		}
 		ImGui::End();
 
-		for (auto& keyValuePair : panels)
-			keyValuePair.second->onImGuiRender(ts);
+		for (auto& [name, panel] : panels)
+			panel->onImGuiRender(ts);
 	}
 #endif
 }

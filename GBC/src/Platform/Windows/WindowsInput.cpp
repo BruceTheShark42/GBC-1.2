@@ -10,25 +10,25 @@ namespace gbc
 	bool Input::isKeyPressed(KeyCode keyCode)
 	{
 		auto window = static_cast<GLFWwindow*>(Application::get().getWindow().getNativeWindow());
-		return glfwGetKey(window, static_cast<unsigned short>(keyCode)) != GLFW_RELEASE;
+		return glfwGetKey(window, static_cast<int>(keyCode)) == GLFW_PRESS;
 	}
 
 	bool Input::isKeyReleased(KeyCode keyCode)
 	{
 		auto window = static_cast<GLFWwindow*>(Application::get().getWindow().getNativeWindow());
-		return glfwGetKey(window, static_cast<unsigned short>(keyCode)) == GLFW_RELEASE;
+		return glfwGetKey(window, static_cast<int>(keyCode)) == GLFW_RELEASE;
 	}
 
 	bool Input::isMouseButtonPressed(MouseCode button)
 	{
 		auto window = static_cast<GLFWwindow*>(Application::get().getWindow().getNativeWindow());
-		return glfwGetMouseButton(window, static_cast<unsigned short>(button)) == GLFW_PRESS;
+		return glfwGetMouseButton(window, static_cast<int>(button)) == GLFW_PRESS;
 	}
 
 	bool Input::isMouseButtonReleased(MouseCode button)
 	{
 		auto window = static_cast<GLFWwindow*>(Application::get().getWindow().getNativeWindow());
-		return glfwGetMouseButton(window, static_cast<unsigned short>(button)) == GLFW_RELEASE;
+		return glfwGetMouseButton(window, static_cast<int>(button)) == GLFW_RELEASE;
 	}
 
 	std::pair<float, float> Input::getMousePos()

@@ -1,10 +1,15 @@
 workspace "GBC-1.2"
 	architecture "x64"
 	startproject "Sandbox"
+
 	configurations {
 		"Debug",
 		"Release",
 		"Dist"
+	}
+
+	flags {
+		"MultiProcessorCompile"
 	}
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
@@ -16,11 +21,13 @@ includedir["ImGui"] = "GBC/vendor/ImGui"
 includedir["glm"] = "GBC/vendor/glm"
 includedir["stb_image"] = "GBC/vendor/stb_image"
 includedir["entt"] = "GBC/vendor/entt/include"
+includedir["yaml_cpp"] = "GBC/vendor/yaml-cpp/include"
 
 group "Dependencies"
 	include "GBC/vendor/GLFW"
 	include "GBC/vendor/Glad"
 	include "GBC/vendor/ImGui"
+	include "GBC/vendor/yaml-cpp"
 group ""
 
 project "GBC"
@@ -57,14 +64,16 @@ project "GBC"
 		"%{includedir.ImGui}",
 		"%{includedir.glm}",
 		"%{includedir.stb_image}",
-		"%{includedir.entt}"
+		"%{includedir.entt}",
+		"%{includedir.yaml_cpp}"
 	}
 
 	links {
 		"GLFW",
 		"Glad",
 		"ImGui",
-		"opengl32.lib"
+		"opengl32.lib",
+		"yaml-cpp"
 	}
 
 	filter "system:windows"

@@ -2,6 +2,7 @@
 
 #include <entt.hpp>
 #include "GBC/Core/TimeStep.h"
+#include "GBC/Events/Event.h"
 
 namespace gbc
 {
@@ -14,6 +15,7 @@ namespace gbc
 		~Scene();
 
 		void onUpdate(TimeStep ts);
+		void onEvent(Event& event);
 		void onViewportResize(int width, int height);
 
 		Entity createEntity(const std::string& name = std::string());
@@ -27,6 +29,7 @@ namespace gbc
 		int viewportHeight = 0;
 
 		friend class Entity;
+		friend class SceneSerializer;
 		// TODO: this is a baaaadaad idea
 		friend class SceneHierarchyPanel;
 	};

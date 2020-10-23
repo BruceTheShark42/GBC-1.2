@@ -210,7 +210,7 @@ namespace gbc
 	}
 
 	void OpenGLShader::setUniform(const std::string& name, float              value)
-	{ glUniform1fv(getUniformLocation(name), 1, &value); }
+	{ glUniform1fv(getUniformLocation(name), 1,                              &value); }
 	void OpenGLShader::setUniform(const std::string& name, const glm::vec2&   value)
 	{ glUniform2fv(getUniformLocation(name), 1,                glm::value_ptr(value)); }
 	void OpenGLShader::setUniform(const std::string& name, const glm::vec3&   value)
@@ -267,5 +267,5 @@ namespace gbc
 	{ glUniformMatrix4fv(getUniformLocation(name), 1, false,   glm::value_ptr(value)); }
 
 	void OpenGLShader::setUniforms(const std::string& name, int*                values, unsigned int count)
-	{ glUniform1iv(getUniformLocation(name), count, values); }
+	{ glUniform1iv(getUniformLocation(name), count,                             values); }
 }

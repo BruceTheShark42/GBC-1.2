@@ -19,6 +19,7 @@ namespace gbc
 		virtual void OnCreate() {}
 		virtual void OnDestroy() {}
 		virtual void OnUpdate(TimeStep ts) {}
+		virtual void OnEvent(Event& event) {}
 	private:
 		Entity entity;
 

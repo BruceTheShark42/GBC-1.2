@@ -8,6 +8,16 @@
 
 namespace gbc
 {
+	struct TagComponent
+	{
+		std::string tag;
+
+		TagComponent() = default;
+		TagComponent(const TagComponent&) = default;
+		TagComponent(const std::string& tag)
+			: tag(tag) {}
+	};
+
 	struct TransformComponent
 	{
 		glm::vec3 translation = { 0.0f, 0.0f, 0.0f };
@@ -33,14 +43,14 @@ namespace gbc
 		}
 	};
 
-	struct TagComponent
+	struct CameraComponent
 	{
-		std::string tag;
+		SceneCamera camera;
+		bool primary = true; // TODO: move to scene
+		bool fixedAspectRatio = false;
 
-		TagComponent() = default;
-		TagComponent(const TagComponent&) = default;
-		TagComponent(const std::string& tag)
-			: tag(tag) {}
+		CameraComponent() = default;
+		CameraComponent(const CameraComponent&) = default;
 	};
 
 	struct SpriteRendererComponent
@@ -51,16 +61,6 @@ namespace gbc
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
 		SpriteRendererComponent(const glm::vec4& color)
 			: color(color) {}
-	};
-
-	struct CameraComponent
-	{
-		SceneCamera camera;
-		bool primary = true; // TODO: move to scene
-		bool fixedAspectRatio = false;
-
-		CameraComponent() = default;
-		CameraComponent(const CameraComponent&) = default;
 	};
 
 	struct NativeScriptComponent

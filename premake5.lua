@@ -15,13 +15,14 @@ workspace "GBC-1.2"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 includedir = {}
-includedir["GLFW"] = "GBC/vendor/GLFW/include"
-includedir["Glad"] = "GBC/vendor/Glad/include"
-includedir["ImGui"] = "GBC/vendor/ImGui"
-includedir["glm"] = "GBC/vendor/glm"
-includedir["stb_image"] = "GBC/vendor/stb_image"
-includedir["entt"] = "GBC/vendor/entt/include"
-includedir["yaml_cpp"] = "GBC/vendor/yaml-cpp/include"
+includedir["GLFW"] = "%{wks.location}/GBC/vendor/GLFW/include"
+includedir["Glad"] = "%{wks.location}/GBC/vendor/Glad/include"
+includedir["ImGui"] = "%{wks.location}/GBC/vendor/ImGui"
+includedir["glm"] = "%{wks.location}/GBC/vendor/glm"
+includedir["stb_image"] = "%{wks.location}/GBC/vendor/stb_image"
+includedir["entt"] = "%{wks.location}/GBC/vendor/entt/include"
+includedir["yaml_cpp"] = "%{wks.location}/GBC/vendor/yaml-cpp/include"
+includedir["ImGuizmo"] = "%{wks.location}/GBC/vendor/ImGuizmo"
 
 group "Dependencies"
 	include "GBC/vendor/GLFW"
@@ -30,170 +31,6 @@ group "Dependencies"
 	include "GBC/vendor/yaml-cpp"
 group ""
 
-project "GBC"
-	location "GBC"
-	kind "StaticLib"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "on"
-	
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-	pchheader "gbcpch.h"
-	pchsource "GBC/src/gbcpch.cpp"
-
-	files {
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp",
-		"%{prj.name}/vendor/stb_image/**.h",
-		"%{prj.name}/vendor/stb_image/**.cpp",
-		"%{prj.name}/vendor/glm/glm/**.hpp",
-		"%{prj.name}/vendor/glm/glm/**.inl"
-	}
-
-	defines {
-		"_CRT_SECURE_NO_WARNINGS"
-	}
-
-	includedirs {
-		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include",
-		"%{includedir.GLFW}",
-		"%{includedir.Glad}",
-		"%{includedir.ImGui}",
-		"%{includedir.glm}",
-		"%{includedir.stb_image}",
-		"%{includedir.entt}",
-		"%{includedir.yaml_cpp}"
-	}
-
-	links {
-		"GLFW",
-		"Glad",
-		"ImGui",
-		"opengl32.lib",
-		"yaml-cpp"
-	}
-
-	filter "system:windows"
-		systemversion "latest"
-
-		defines {
-			"GBC_PLATFORM_WINDOWS",
-			"GBC_BUILD_DLL",
-			"GLFW_INCLUDE_NONE"
-		}
-
-	filter "configurations:Debug"
-		defines "GBC_DEBUG"
-		runtime "Debug"
-		symbols "on"
-
-	filter "configurations:Release"
-		defines "GBC_RELEASE"
-		runtime "Release"
-		optimize "on"
-
-	filter "configurations:Dist"
-		defines "GBC_DIST"
-		runtime "Release"
-		optimize "on"
-
-project "Sandbox"
-	location "Sandbox"
-	kind "ConsoleApp"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "on"
-	
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-	files {
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
-	}
-
-	includedirs {
-		"GBC/vendor/spdlog/include",
-		"GBC/src",
-		"GBC/vendor",
-		"%{includedir.glm}",
-		"%{includedir.entt}"
-	}
-
-	links {
-		"GBC"
-	}
-
-	filter "system:windows"
-		systemversion "latest"
-
-		defines {
-			"GBC_PLATFORM_WINDOWS"
-		}
-
-	filter "configurations:Debug"
-		defines "GBC_DEBUG"
-		runtime "Debug"
-		symbols "on"
-
-	filter "configurations:Release"
-		defines "GBC_RELEASE"
-		runtime "Release"
-		optimize "on"
-
-	filter "configurations:Dist"
-		defines "GBC_DIST"
-		runtime "Release"
-		optimize "on"
-		
-project "Editor"
-	location "Editor"
-	kind "ConsoleApp"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "on"
-	
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-	files {
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
-	}
-
-	includedirs {
-		"GBC/vendor/spdlog/include",
-		"GBC/src",
-		"GBC/vendor",
-		"%{includedir.glm}",
-		"%{includedir.entt}"
-	}
-
-	links {
-		"GBC"
-	}
-
-	filter "system:windows"
-		systemversion "latest"
-
-		defines {
-			"GBC_PLATFORM_WINDOWS"
-		}
-
-	filter "configurations:Debug"
-		defines "GBC_DEBUG"
-		runtime "Debug"
-		symbols "on"
-
-	filter "configurations:Release"
-		defines "GBC_RELEASE"
-		runtime "Release"
-		optimize "on"
-
-	filter "configurations:Dist"
-		defines "GBC_DIST"
-		runtime "Release"
-		optimize "on"
+include "GBC"
+include "Sandbox"
+include "Editor"

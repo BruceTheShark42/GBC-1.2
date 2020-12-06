@@ -2,6 +2,7 @@
 
 #ifdef GBC_ENABLE_IMGUI
 	#include <ImGui/imgui.h>
+	#include <ImGuizmo.h>
 
 	// Panels
 	#include "Panels/SceneHierarchyPanel.h"
@@ -14,6 +15,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GBC/Scene/SceneSerializer.h"
+#include "GBC/Utils/PlatformUtils.h"
 
 namespace gbc
 {
@@ -159,17 +161,19 @@ namespace gbc
 #endif
 
 		SceneSerializer seralizer(scene);
-		seralizer.deserialize("assets/scenes/scene_backup.yml");
+		sceneFilePath = "assets/scenes/scene_backup.gscn";
+		seralizer.deserialize(sceneFilePath);
 
 #ifdef GBC_ENABLE_IMGUI
 		StatisticsPanel* statisticsPanel = new StatisticsPanel();
-		SceneHierarchyPanel* sceneHierarchyPanel = new SceneHierarchyPanel(scene);
+		sceneHierarchyPanel = new SceneHierarchyPanel(scene);
 		PropertiesPanel* propertiesPanel = new PropertiesPanel(scene, sceneHierarchyPanel);
 
-		ScenePanel* scenePanel = new ScenePanel(scene);
+		ScenePanel* scenePanel = new ScenePanel(sceneHierarchyPanel);
 		scenePanel->setSceneFocused(&sceneFocused);
 		scenePanel->setSceneHovered(&sceneHovered);
 		scenePanel->setViewportSize(&viewportSize);
+		scenePanel->setGizmoType(&gizmoType);
 		scenePanel->setFramebuffer(framebuffer);
 
 		panels["Statistics Panel"] = statisticsPanel;
@@ -182,8 +186,8 @@ namespace gbc
 	void EditorLayer::onDetach()
 	{
 #ifdef GBC_ENABLE_IMGUI
-		for (auto keyValuePair : panels)
-			delete keyValuePair.second;
+		for (auto& [name, panel] : panels)
+			delete panel;
 #endif
 	}
 
@@ -228,14 +232,63 @@ namespace gbc
 	{
 		scene->onEvent(event);
 
-		// TODO: move this into ^^^^^
 #ifndef GBC_ENABLE_IMGUI
 		if (event.getType() == EventType::WindowResize)
 		{
 			WindowResizeEvent& wre = (WindowResizeEvent&)event;
+			viewportSize.x = wre.getWidth();
+			viewportSize.y = wre.getHeight();
 			scene->onViewportResize(wre.getWidth(), wre.getHeight());
 		}
 #endif
+
+		if (event.getType() == EventType::KeyPress)
+		{
+			KeyPressEvent& kpe = (KeyPressEvent&)event;
+			const bool controlPressed = Input::isKeyPressed(KeyCode::LeftControl) || Input::isKeyPressed(KeyCode::RightControl);
+			bool shiftPressed = Input::isKeyPressed(KeyCode::LeftShift) || Input::isKeyPressed(KeyCode::RightShift);
+
+			if (!kpe.hasRepeated())
+			{
+				switch (kpe.getKeyCode())
+				{
+					case KeyCode::F11:
+						Application::get().getWindow().toggleFullscreen();
+						break;
+					case KeyCode::N:
+						if (controlPressed)
+							newScene();
+						break;
+					case KeyCode::O:
+						if (controlPressed)
+							openScene();
+						break;
+					case KeyCode::S:
+						if (controlPressed)
+						{
+							if (shiftPressed || sceneFilePath.empty())
+								saveSceneAs();
+							else
+								saveScene(sceneFilePath);
+						}
+						break;
+
+					// Gizmos
+					case KeyCode::Q:
+						gizmoType = -1;
+						break;
+					case KeyCode::W:
+						gizmoType = ImGuizmo::TRANSLATE;
+						break;
+					case KeyCode::E:
+						gizmoType = ImGuizmo::ROTATE;
+						break;
+					case KeyCode::R:
+						gizmoType = ImGuizmo::SCALE;
+						break;
+				}
+			}
+		}
 	}
 
 #ifdef GBC_ENABLE_IMGUI
@@ -286,6 +339,19 @@ namespace gbc
 			// Menus
 			if (ImGui::BeginMenu("File"))
 			{
+				if (ImGui::MenuItem("New", "Ctrl+N"))
+					newScene();
+
+				if (ImGui::MenuItem("Open...", "Ctrl+O"))
+					openScene();
+
+				if (ImGui::MenuItem("Save", "Ctrl+S"))
+					saveSceneAs();
+
+				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+					saveSceneAs();
+
+				// I want this to be the last one
 				if (ImGui::MenuItem("Exit"))
 					Application::get().terminate();
 
@@ -313,24 +379,6 @@ namespace gbc
 				ImGui::EndMenu();
 			}
 
-			if (ImGui::BeginMenu("Scene"))
-			{
-				constexpr const char* path = "assets/scenes/scene.yml";
-
-				if (ImGui::MenuItem("Seralize"))
-				{
-					SceneSerializer serializer(scene);
-					serializer.serialize(path);
-				}
-
-				if (ImGui::MenuItem("Deseralize"))
-				{
-					SceneSerializer serializer(scene);
-					serializer.deserialize(path);
-				}
-
-				ImGui::EndMenu();
-			}
 
 			ImGui::EndMenuBar();
 		}
@@ -340,4 +388,51 @@ namespace gbc
 			panel->onImGuiRender(ts);
 	}
 #endif
+
+	void EditorLayer::newScene()
+	{
+		// This has a really big bug: if you have stuff in a scene
+		// and create a new scene, add an entity witha a camera
+		// (move it back a bit to see stuff), and add an entity with
+		// a sprite renderer, old entities appear back in the scene.
+		// Some of the old entities are still there, but others have
+		// been overridden by the two entities you just added.
+		scene = createRef<Scene>();
+		scene->onViewportResize((int)viewportSize.x, (int)viewportSize.y);
+		sceneHierarchyPanel->setContext(scene);
+	}
+
+	void EditorLayer::openScene()
+	{
+		std::string filePath = FileDialogs::openFile("GBC Scene (*.gscn)\0*.gscn\0");
+		if (!filePath.empty())
+		{
+			scene = createRef<Scene>();
+			scene->onViewportResize((int)viewportSize.x, (int)viewportSize.y);
+			sceneHierarchyPanel->setContext(scene);
+
+			SceneSerializer serializer(scene);
+			serializer.deserialize(filePath);
+			sceneFilePath = filePath;
+		}
+	}
+
+	void EditorLayer::saveSceneAs()
+	{
+		std::string filePath = FileDialogs::saveFile("GBC Scene (*.gscn)\0*.gscn\0");
+		if (!filePath.empty())
+		{
+			size_t index = filePath.find_last_of(".gscn");
+			if (index != filePath.size() - 1)
+				filePath += ".gscn";
+			saveScene(filePath);
+			sceneFilePath = filePath;
+		}
+	}
+
+	void EditorLayer::saveScene(const std::string& filePath)
+	{
+		SceneSerializer serializer(scene);
+		serializer.serialize(filePath);
+	}
 }

@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
 
 #include "SceneCamera.h"
 #include "ScriptableEntity.h"
@@ -31,15 +33,18 @@ namespace gbc
 
 		operator glm::mat4()
 		{
-			return glm::scale(
-				glm::rotate(
-					glm::rotate(
-						glm::rotate(
-							glm::translate(glm::mat4(1.0f), translation),
-							rotation.y, { 0.0f, 1.0f, 0.0f }),
-						rotation.x, { 1.0f, 0.0f, 0.0f }),
-					rotation.z, { 0.0f, 0.0f, 1.0f }),
-				scale);
+			return glm::translate(glm::mat4(1.0f), translation) *
+				   glm::toMat4(glm::quat(rotation)) *
+				   glm::scale(glm::mat4(1.0f), scale);
+			//return glm::scale(
+			//	glm::rotate(
+			//		glm::rotate(
+			//			glm::rotate(
+			//				glm::translate(glm::mat4(1.0f), translation),
+			//				rotation.y, { 0.0f, 1.0f, 0.0f }),
+			//			rotation.x, { 1.0f, 0.0f, 0.0f }),
+			//		rotation.z, { 0.0f, 0.0f, 1.0f }),
+			//	scale);
 		}
 	};
 

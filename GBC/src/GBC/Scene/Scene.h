@@ -20,6 +20,8 @@ namespace gbc
 
 		Entity createEntity(const std::string& name = std::string());
 		void destroyEntity(Entity entity);
+
+		Entity getPrimaryCameraEntity();
 	private:
 		template<typename T>
 		void onComponentAdded(Entity entity, T& component);

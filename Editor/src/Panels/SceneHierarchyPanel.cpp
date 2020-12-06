@@ -6,6 +6,12 @@
 
 namespace gbc
 {
+	void SceneHierarchyPanel::setContext(const Ref<Scene>& scene)
+	{
+		context = scene;
+		selectionContext = {};
+	}
+
 	void SceneHierarchyPanel::onImGuiRender(TimeStep ts)
 	{
 		if (enabled)

@@ -114,6 +114,19 @@ namespace gbc
 		registry.destroy(entity);
 	}
 
+	Entity Scene::getPrimaryCameraEntity()
+	{
+		auto view = registry.view<CameraComponent>();
+		for (auto entity : view)
+		{
+			const auto& camera = view.get<CameraComponent>(entity);
+			if (camera.primary)
+				return { entity, this };
+		}
+
+		return {};
+	}
+
 	template<typename T>
 	void Scene::onComponentAdded(Entity entity, T& component)
 	{

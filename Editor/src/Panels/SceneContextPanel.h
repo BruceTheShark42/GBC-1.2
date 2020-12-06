@@ -14,7 +14,8 @@ namespace gbc
 		SceneContextPanel(const Ref<Scene>& scene) : context(scene) {}
 		virtual ~SceneContextPanel() = default;
 
-		inline void setContext(const Ref<Scene>& scene) { context = scene; }
+		virtual void setContext(const Ref<Scene>& scene);
+		virtual Ref<Scene> getContext() const { return context; }
 
 		virtual void onImGuiRender(TimeStep ts) = 0;
 	protected:
